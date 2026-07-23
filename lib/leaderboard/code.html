@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Community Leaderboard | Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#00687a",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "on-surface-variant": "#434655",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed": "#dbe1ff",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#001f26",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-container": "#eeefff",
+                    "surface": "#f7f9fb",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container": "#eceef0",
+                    "tertiary": "#006056",
+                    "on-secondary-container": "#006172",
+                    "outline": "#737686",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "primary": "#004ac6",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "tertiary-fixed": "#71f8e4",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "tertiary-container": "#007b6e",
+                    "on-tertiary-container": "#b1fff1",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#2563eb",
+                    "on-surface": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#acedff",
+                    "on-tertiary-fixed": "#00201c",
+                    "background": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "inverse-surface": "#2d3133",
+                    "secondary-container": "#57dffe",
+                    "on-primary-fixed": "#00174b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "2xl": "48px",
+                    "gutter": "16px",
+                    "unit": "8px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "margin-tablet": "24px",
+                    "xs": "4px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .text-gradient-primary {
+            background: linear-gradient(135deg, #004ac6, #00687a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .podium-shadow {
+            box-shadow: 0 10px 40px -10px rgba(0, 74, 198, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">menu</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high border-2 border-primary/20 flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young Bangladeshi man, clean-shaven with a friendly smile, wearing a modern blue polo shirt. The background is a soft-focus urban office setting with clean, minimalist lines and premium lighting that matches a light-mode UI aesthetic. The overall mood is reliable, trustworthy, and sophisticated, consistent with a high-end community app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1eoCxxblL5lChA7HGouBDIEF4ujMgD4ek1jkvRZ9TCns3Oo49QfrPCgVPwqArDJskbxtGK9V4wGiJAxTIpeasOY6th6yz1yvlxuN0I7oGMTyQMUDLfHTBUhcNERNxi0q6sI2DKpJ8Cz33-ohbFQVDUOgZMmFyHva3vspfunodWQ557mBMi8_nN7yQGtkXWOvNc1jL0-mDT34eWntAkvbnL8feqgklRYsN-Ly0pSPNwUODWqvkZJXQLA"/>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile max-w-2xl mx-auto">
+<!-- Hero Header -->
+<section class="mb-xl text-center">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-xs">Community Helpers</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Recognizing the heroes who reunite people with their lost items.</p>
+</section>
+<!-- Top 3 Podium (Bento-style layout) -->
+<section class="grid grid-cols-3 gap-md items-end mb-xl">
+<!-- Rank 2 -->
+<div class="flex flex-col items-center">
+<div class="relative mb-sm group">
+<div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-slate-300 to-slate-100 shadow-lg transition-transform group-hover:scale-105">
+<div class="w-full h-full rounded-full overflow-hidden border-2 border-white">
+<img class="w-full h-full object-cover" data-alt="A profile photo of a professional woman with a kind expression, wearing a stylish hijab in a neutral grey tone. The lighting is soft and bright, highlighting a premium and airy aesthetic. The background is a blurred minimalist interior with light blue accents, perfectly fitting a professional digital environment. The mood is helpful and trustworthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZogr_luaeRDuxo5qq5Dmr0Wj4PJzEh4qrdre_Oeedx20ba23vaqMREUx4GTJnjnDQVRrvhCrPvR7GbIxR9GO8Jjwmmg8-Gg9R8X6gGmeBCScsJB6N5vMR5DTkGmK_57U0aoqEJqRx5R84x9MWpUCp94sISrrNwWr6gmoCpVAIjgeHDb7cqCxB7GtT2CDh1Xp7aSpTrUsS2YIUIM6ILW3Ih9h3XxK24UQV7--p219XX_E1aJAO_kbacg"/>
+</div>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-slate-400 text-white w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+<span class="text-[10px] font-bold">2</span>
+</div>
+</div>
+<p class="font-title-md text-label-lg truncate w-full text-center">Farhana J.</p>
+<p class="font-label-sm text-label-sm text-secondary font-bold">2,450 pts</p>
+</div>
+<!-- Rank 1 -->
+<div class="flex flex-col items-center">
+<div class="relative mb-md group">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 animate-bounce">
+<span class="material-symbols-outlined text-amber-400 text-3xl" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="w-24 h-24 rounded-full p-1.5 bg-gradient-to-tr from-amber-400 to-yellow-200 shadow-2xl transition-transform group-hover:scale-105 podium-shadow">
+<div class="w-full h-full rounded-full overflow-hidden border-4 border-white">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a charismatic young man in Dhaka, wearing a crisp white shirt. He has a warm, confident gaze towards the camera. The photography style is high-end editorial, with a bright, high-key lighting setup that feels modern and premium. Background features soft pastel blues and whites, complementing the overall professional minimalism of the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDh7C0OKa7a_1Y-LY-lactgODX3t8nKtGA-o1xNpacqQ66A1XtaPcqsrzc14sM1lAhxh7OKKh4t06E2csvswInNxSav0dOUQqNZ-ZUqzciTYmZrGwCQVQhjpLaaQyAj9cptj8rMDw5WGvpIAoMfwsfZlCaJpMufSyp60bJ3pibaFZ5tsCChgn5c6Uzu0pb1Fb1XL9FD7ddczAnlLVPdrY2dP2cTwy34Wa6KTFgQddCyHPPieoRLIuNkw"/>
+</div>
+</div>
+<div class="absolute -bottom-2 -right-1 bg-amber-500 text-white w-8 h-8 rounded-full flex items-center justify-center border-2 border-white shadow-md">
+<span class="text-xs font-bold">1</span>
+</div>
+</div>
+<p class="font-title-lg text-title-md text-gradient-primary">Sabbir Ahmed</p>
+<p class="font-label-lg text-label-lg text-primary font-extrabold">3,120 pts</p>
+</div>
+<!-- Rank 3 -->
+<div class="flex flex-col items-center">
+<div class="relative mb-sm group">
+<div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-orange-400 to-orange-200 shadow-lg transition-transform group-hover:scale-105">
+<div class="w-full h-full rounded-full overflow-hidden border-2 border-white">
+<img class="w-full h-full object-cover" data-alt="Portrait of a friendly middle-aged man with short black hair, wearing professional glasses and a light teal shirt. The style is minimalist and clean, with a focus on bright, natural lighting. The background is a soft, out-of-focus park scene in Dhaka, evoking a sense of community and reliability. Modern digital photography aesthetic for a premium app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxnJZ5qWktouzYAhlsXgzcAXCJpASxMgHtdCKGnr9mzkoWPvIy3L-q4isDJuPTMm2irgkYHm4JkoelYsFdkBPj4EqXfObM9-ggbxrFKWQu-nj_MywynucB0wNEcTF2opw5IrohJBJ-B4cqVRHD__Sqe_uaoezud2OwHWqRZZFDWrqIgFFqQYk2fWgVmn8IvtgA-yp8Ib-ROy2PrPZ9ldS6Ca6hAGewT7OMc0-WxR2UQuGDhd-sbyDkXw"/>
+</div>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-orange-500 text-white w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+<span class="text-[10px] font-bold">3</span>
+</div>
+</div>
+<p class="font-title-md text-label-lg truncate w-full text-center">Nadir S.</p>
+<p class="font-label-sm text-label-sm text-secondary font-bold">1,890 pts</p>
+</div>
+</section>
+<!-- Main Leaderboard List -->
+<div class="space-y-md">
+<!-- Rank Card 4 -->
+<div class="glass-card rounded-xl p-md flex items-center gap-md shadow-sm hover:shadow-md transition-shadow">
+<span class="font-title-md text-on-surface-variant w-6 text-center">4</span>
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A minimalist profile avatar of a young woman with a creative professional aesthetic. She is wearing a modern mustard yellow top against a clean white wall. The lighting is soft and flattering, creating a high-end editorial feel. The image is bright and airy, fitting perfectly within a professional and trustworthy community platform for lost items." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBp0HAD1pBVGujlwNXpLxy7ZN1C-5zKrSU72ttwl0jzkn0avUAx6K5IJAfV3uEzFpCWBhYQEd9WxWqJMrDOh55V149Uc0x_xLtbw8etvM-2d_JtWg9XciXFrpOhF_HgjJgv7T90aMEwawdnL6bmjc3KmT3UclwBPZB5LId_eoaT-XgYBBOHqBOr4ZdruEQw_3SlEa064AIVPOHDJfXSLLSM_U-Kh-JgXAUlaCAIIGqQvaxBb8HsBFjGgQ"/>
+</div>
+<div class="flex-1">
+<h4 class="font-title-md text-on-surface">Tasfia Alam</h4>
+<div class="flex gap-xs mt-1">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container text-[10px] font-bold uppercase tracking-wider">Top Explorer</span>
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">12 Recoveries</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-primary">1,650</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase">Points</p>
+</div>
+</div>
+<!-- Rank Card 5 -->
+<div class="glass-card rounded-xl p-md flex items-center gap-md shadow-sm">
+<span class="font-title-md text-on-surface-variant w-6 text-center">5</span>
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Close up of a focused young man with short dark hair, wearing a clean white t-shirt. The background is a modern cafe interior with soft, natural morning light filtering in. The aesthetic is professional, minimalist, and very clean. This is a profile image designed for a premium Bangladeshi community application, emphasizing reliability and calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4nvzdsZAR2f1oXWU2vK3XprsNkZVTjeJQLAgeT5JlIoNHT5O34HBftxPRaVnYgCxOflFDXBJspXiX3HfFO_tYSb6kd1XA_DsJv_79PH7PPOuPUL2EbUtc1VGPupy7HBH2RpoSyh0WMJTMdMH_0WCZhyjpRyfgcEz63MBi-qHtnlHWRC19CSigMqO-xwPLpm6aWfrF4RKL0vuDzgUiRxQ8R30aQsJFojs-A4JWtGMzIFc_yqf4PNlj6A"/>
+</div>
+<div class="flex-1">
+<h4 class="font-title-md text-on-surface">Rafid Khan</h4>
+<div class="flex gap-xs mt-1">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">8 Recoveries</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-primary">1,420</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase">Points</p>
+</div>
+</div>
+<!-- Rank Card 6 -->
+<div class="glass-card rounded-xl p-md flex items-center gap-md shadow-sm">
+<span class="font-title-md text-on-surface-variant w-6 text-center">6</span>
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A portrait of a cheerful young woman in a teal traditional kameez with modern patterns. She has a bright and welcoming smile. The background is a softly lit garden terrace with high-end architectural details. The overall visual style is bright, professional, and sophisticated, aimed at a high-end urban user base in Dhaka." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBauRmuNw8RMZ8TVWlpvDPlDRpkLphqfpgqCILyEOO4tM386qC7j6J92PGZ3E-RF3E2V2XowCzL3XI6XKND1VRw3HlSujM8TpjFEYDK6nGVVrSsC9X-_rBCOYNqrUj-8X8HHGrL6LTi2KHdXw0f3OtYH2zb4ww4clCk8op17BeSiDrf_W5PJBW1tRUNG0mPkP93tdNeyVN0U8Xb0JH-lbDDXYo5XJAz0mW4-UvmMTNDD8i574t_zaX2mg"/>
+</div>
+<div class="flex-1">
+<h4 class="font-title-md text-on-surface">Sumaiya Islam</h4>
+<div class="flex gap-xs mt-1">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px] font-bold uppercase tracking-wider">5 Recoveries</span>
+</div>
+</div>
+<div class="text-right">
+<p class="font-title-md text-primary">1,280</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant uppercase">Points</p>
+</div>
+</div>
+<!-- More users simulated with small shimmer placeholders -->
+<div class="py-md text-center">
+<button class="font-label-lg text-primary hover:opacity-80 transition-opacity">Show more rankings</button>
+</div>
+</div>
+</main>
+<!-- My Rank Sticky Bar -->
+<div class="fixed bottom-[88px] left-1/2 -translate-x-1/2 w-[calc(100%-32px)] max-w-2xl z-40">
+<div class="bg-primary text-on-primary-container rounded-2xl p-md shadow-2xl shadow-primary/30 flex items-center gap-md border border-white/10">
+<div class="bg-white/20 w-10 h-10 rounded-full flex items-center justify-center font-bold text-white">42</div>
+<div class="flex-1">
+<p class="font-label-sm text-white/70 uppercase tracking-widest">Your Current Rank</p>
+<h4 class="font-title-md text-white">You're in the top 15%!</h4>
+</div>
+<div class="text-right">
+<p class="font-title-md text-white">480 pts</p>
+<p class="font-label-sm text-white/70">+15 today</p>
+</div>
+<div class="pl-md border-l border-white/20">
+<span class="material-symbols-outlined text-white">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2 cursor-pointer transition-transform duration-300">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2 cursor-pointer transition-transform duration-300">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-white rounded-full -mt-8 w-14 h-14 shadow-lg shadow-primary/40 scale-110">
+<span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2 cursor-pointer transition-transform duration-300">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousedown', () => card.classList.add('scale-[0.98]'));
+            card.addEventListener('mouseup', () => card.classList.remove('scale-[0.98]'));
+            card.addEventListener('mouseleave', () => card.classList.remove('scale-[0.98]'));
+        });
+
+        // Simple scroll reveal for list items
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.glass-card').forEach((card, index) => {
+            card.classList.add('opacity-0', 'translate-y-4', 'transition-all', 'duration-500');
+            card.style.transitionDelay = `${index * 100}ms`;
+            observer.observe(card);
+        });
+    </script>
+</body></html>

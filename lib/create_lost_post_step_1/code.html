@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Report Item | Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(247, 249, 251, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .step-transition {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .gradient-btn {
+            background: linear-gradient(90deg, #004ac6 0%, #00687a 100%);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #E2E8F0 0%, #F8FAFC 50%, #E2E8F0 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#001f26",
+                        "on-tertiary-container": "#b1fff1",
+                        "inverse-surface": "#2d3133",
+                        "surface-dim": "#d8dadc",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary": "#006056",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-primary-fixed": "#00174b",
+                        "on-primary-container": "#eeefff",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "surface-container-low": "#f2f4f6",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#0053db",
+                        "secondary": "#00687a",
+                        "outline": "#737686",
+                        "surface-container": "#eceef0",
+                        "primary": "#004ac6",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#acedff",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary-container": "#006172",
+                        "tertiary-container": "#007b6e",
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-primary": "#b4c5ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary-container": "#57dffe",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-surface": "#191c1e",
+                        "primary-container": "#2563eb",
+                        "surface-bright": "#f7f9fb",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-surface-variant": "#434655",
+                        "on-error": "#ffffff",
+                        "background": "#f7f9fb",
+                        "on-background": "#191c1e",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "unit": "8px",
+                        "2xl": "48px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "margin-tablet": "24px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen selection:bg-primary/20">
+<!-- Top App Bar (Suppress Navigation for focus) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 flex justify-between items-center px-margin-mobile h-16 shadow-sm shadow-primary/10">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity active:scale-90" onclick="window.history.back()">arrow_back</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-outline">account_circle</span>
+</div>
+</header>
+<main class="pt-24 pb-32 px-4 md:px-lg max-w-2xl mx-auto">
+<!-- Stepper -->
+<nav class="mb-xl flex items-center justify-between px-2">
+<div class="flex flex-col items-center gap-2" id="step-indicator-1">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-title-md transition-colors duration-300">1</div>
+<span class="font-label-sm text-label-sm text-primary">Status</span>
+</div>
+<div class="flex-1 h-[2px] mx-4 bg-surface-container-highest self-center mb-6"></div>
+<div class="flex flex-col items-center gap-2" id="step-indicator-2">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-title-md transition-colors duration-300">2</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Details</span>
+</div>
+<div class="flex-1 h-[2px] mx-4 bg-surface-container-highest self-center mb-6"></div>
+<div class="flex flex-col items-center gap-2" id="step-indicator-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center font-title-md transition-colors duration-300">3</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Scan</span>
+</div>
+</nav>
+<!-- Form Container -->
+<div class="glass-panel rounded-2xl p-md md:p-lg shadow-xl shadow-primary/10 overflow-hidden min-h-[400px] relative">
+<form id="reportForm" onsubmit="event.preventDefault();">
+<!-- Step 1: Status Selection -->
+<div class="step-transition" id="step-1">
+<h2 class="font-title-lg text-title-lg mb-sm text-primary">What happened?</h2>
+<p class="text-on-surface-variant mb-lg font-body-md">Choose whether you've lost something or found an item to help us categorize your report accurately.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<label class="group relative cursor-pointer">
+<input class="peer hidden" name="status" onchange="nextStep()" type="radio" value="lost"/>
+<div class="h-48 rounded-xl border-2 border-transparent bg-white/40 p-lg flex flex-col items-center justify-center text-center gap-md transition-all peer-checked:border-primary peer-checked:bg-primary-container/10 group-hover:bg-white/60">
+<span class="material-symbols-outlined text-4xl text-primary transition-transform group-active:scale-90">search_check</span>
+<span class="font-title-lg text-title-lg text-on-surface">I Lost Something</span>
+<p class="text-label-sm text-on-surface-variant">Post a report to search the database</p>
+</div>
+</label>
+<label class="group relative cursor-pointer">
+<input class="peer hidden" name="status" onchange="nextStep()" type="radio" value="found"/>
+<div class="h-48 rounded-xl border-2 border-transparent bg-white/40 p-lg flex flex-col items-center justify-center text-center gap-md transition-all peer-checked:border-secondary peer-checked:bg-secondary-container/10 group-hover:bg-white/60">
+<span class="material-symbols-outlined text-4xl text-secondary transition-transform group-active:scale-90">volunteer_activism</span>
+<span class="font-title-lg text-title-lg text-on-surface">I Found Something</span>
+<p class="text-label-sm text-on-surface-variant">Help return an item to its owner</p>
+</div>
+</label>
+</div>
+</div>
+<!-- Step 2: Item Info -->
+<div class="step-transition hidden translate-x-12 opacity-0" id="step-2">
+<h2 class="font-title-lg text-title-lg mb-sm text-primary">Tell us about the item</h2>
+<p class="text-on-surface-variant mb-lg font-body-md">Be as specific as possible to increase the chances of a match.</p>
+<div class="space-y-md">
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface px-1">Item Name</label>
+<input class="w-full h-14 bg-surface-container-low border-none rounded-xl px-4 focus:ring-2 focus:ring-primary text-body-lg" placeholder="e.g. Blue Leather Wallet" type="text"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface px-1">Category</label>
+<div class="flex flex-wrap gap-sm pt-xs">
+<label class="cursor-pointer">
+<input class="peer hidden" name="category" type="radio" value="electronics"/>
+<span class="px-md py-sm rounded-full bg-surface-container border border-outline-variant font-label-lg text-label-lg text-on-surface-variant peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary transition-all block">Electronics</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer hidden" name="category" type="radio" value="pets"/>
+<span class="px-md py-sm rounded-full bg-surface-container border border-outline-variant font-label-lg text-label-lg text-on-surface-variant peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary transition-all block">Pets</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer hidden" name="category" type="radio" value="docs"/>
+<span class="px-md py-sm rounded-full bg-surface-container border border-outline-variant font-label-lg text-label-lg text-on-surface-variant peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary transition-all block">Documents</span>
+</label>
+<label class="cursor-pointer">
+<input class="peer hidden" name="category" type="radio" value="other"/>
+<span class="px-md py-sm rounded-full bg-surface-container border border-outline-variant font-label-lg text-label-lg text-on-surface-variant peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary transition-all block">Other</span>
+</label>
+</div>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface px-1">Date &amp; Location</label>
+<div class="grid grid-cols-2 gap-md">
+<input class="h-14 bg-surface-container-low border-none rounded-xl px-4 focus:ring-2 focus:ring-primary text-body-md" type="date"/>
+<input class="h-14 bg-surface-container-low border-none rounded-xl px-4 focus:ring-2 focus:ring-primary text-body-md" placeholder="Area in Dhaka" type="text"/>
+</div>
+</div>
+</div>
+<div class="mt-xl flex gap-md">
+<button class="flex-1 h-12 rounded-full border border-outline text-primary font-label-lg hover:bg-surface-container transition-colors" onclick="prevStep()" type="button">Back</button>
+<button class="flex-[2] h-12 rounded-full gradient-btn text-on-primary font-label-lg shadow-lg shadow-primary/20 active:scale-95 transition-transform" onclick="nextStep()" type="button">Continue</button>
+</div>
+</div>
+<!-- Step 3: AI Scan & Description -->
+<div class="step-transition hidden translate-x-12 opacity-0" id="step-3">
+<h2 class="font-title-lg text-title-lg mb-sm text-primary">Visual Details</h2>
+<p class="text-on-surface-variant mb-lg font-body-md">Add a photo for AI analysis or describe the item in your own words.</p>
+<div class="space-y-lg">
+<!-- AI Scanner Placeholder -->
+<div class="relative group">
+<div class="w-full h-48 rounded-2xl border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center gap-sm overflow-hidden transition-colors hover:bg-surface-container">
+<div class="absolute inset-0 shimmer opacity-0 transition-opacity pointer-events-none" id="scan-shimmer"></div>
+<span class="material-symbols-outlined text-4xl text-outline group-hover:text-primary transition-colors">photo_camera</span>
+<p class="font-label-lg text-label-lg text-on-surface-variant">Tap to upload a photo</p>
+<p class="text-[10px] text-outline uppercase tracking-wider">AI Powered Scan Available</p>
+</div>
+<input class="absolute inset-0 opacity-0 cursor-pointer" onchange="simulateScan()" type="file"/>
+</div>
+<div class="flex flex-col gap-xs">
+<label class="font-label-lg text-label-lg text-on-surface px-1">Detailed Description</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-xl p-4 focus:ring-2 focus:ring-primary text-body-md" placeholder="Mention unique marks, stickers, or internal contents..." rows="4"></textarea>
+</div>
+<!-- Map Preview -->
+<div class="rounded-xl overflow-hidden h-32 relative">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A clean, minimalist digital map of Dhaka, Bangladesh, featuring soft teal and grey tones. The map highlights major landmarks with subtle glowing blue pin markers. The lighting is bright and modern, conforming to a premium UI aesthetic with soft shadows." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBB4cPwMfzPL8g49EjCUkiDRkmhcCP5WkSMftcXPoel0ze2I3A93JMiH27L_N5ZcpkxqW43TdpdzclYh6hXnl-NRU1VdJivYeVnkTnNkXj5O4VIhCgFhFJvnSR5bJ1jNjMHD4kctexpcoxk1fWFLI3ooCiJPWrSI4nDBZZqBokb5ZaK1IQsVi928fnaDFDf5aEq-IOjzCxF5o8L6IPk-8Gz8DvwNQER2pw4edW9W5x7va0mkf2AM5H01Q')"></div>
+<div class="absolute inset-0 bg-primary/10 backdrop-blur-[1px]"></div>
+<div class="absolute bottom-2 left-2 px-3 py-1 bg-white/90 rounded-full flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-sm text-primary" style="font-variation-settings: 'FILL' 1;">location_on</span>
+<span class="text-[10px] font-bold text-on-surface">Gulshan 2, Dhaka</span>
+</div>
+</div>
+</div>
+<div class="mt-xl flex gap-md">
+<button class="flex-1 h-12 rounded-full border border-outline text-primary font-label-lg hover:bg-surface-container transition-colors" onclick="prevStep()" type="button">Back</button>
+<button class="flex-[2] h-12 rounded-full gradient-btn text-on-primary font-label-lg shadow-lg shadow-primary/20 active:scale-95 transition-transform flex items-center justify-center gap-2" type="submit">
+<span>Submit Report</span>
+<span class="material-symbols-outlined text-sm">send</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+<!-- Security Badge -->
+<div class="mt-lg flex items-center justify-center gap-2 text-on-surface-variant/60">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-[10px] uppercase font-bold tracking-widest">End-to-End Secure Processing</span>
+</div>
+</main>
+<!-- Bottom Nav (Visible on Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</nav>
+<script>
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function updateStepper() {
+            for (let i = 1; i <= totalSteps; i++) {
+                const indicator = document.getElementById(`step-indicator-${i}`);
+                const circle = indicator.querySelector('div');
+                const label = indicator.querySelector('span');
+
+                if (i < currentStep) {
+                    circle.innerHTML = '<span class="material-symbols-outlined text-sm">check</span>';
+                    circle.classList.replace('bg-surface-container-highest', 'bg-primary');
+                    circle.classList.replace('text-on-surface-variant', 'text-on-primary');
+                    label.classList.replace('text-on-surface-variant', 'text-primary');
+                } else if (i === currentStep) {
+                    circle.textContent = i;
+                    circle.classList.replace('bg-surface-container-highest', 'bg-primary');
+                    circle.classList.replace('text-on-surface-variant', 'text-on-primary');
+                    label.classList.replace('text-on-surface-variant', 'text-primary');
+                } else {
+                    circle.textContent = i;
+                    circle.classList.replace('bg-primary', 'bg-surface-container-highest');
+                    circle.classList.replace('text-on-primary', 'text-on-surface-variant');
+                    label.classList.replace('text-primary', 'text-on-surface-variant');
+                }
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                const currentEl = document.getElementById(`step-${currentStep}`);
+                const nextEl = document.getElementById(`step-${currentStep + 1}`);
+                
+                currentEl.classList.add('-translate-x-12', 'opacity-0');
+                setTimeout(() => {
+                    currentEl.classList.add('hidden');
+                    nextEl.classList.remove('hidden');
+                    setTimeout(() => {
+                        nextEl.classList.remove('translate-x-12', 'opacity-0');
+                    }, 50);
+                }, 300);
+
+                currentStep++;
+                updateStepper();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                const currentEl = document.getElementById(`step-${currentStep}`);
+                const prevEl = document.getElementById(`step-${currentStep - 1}`);
+                
+                currentEl.classList.add('translate-x-12', 'opacity-0');
+                setTimeout(() => {
+                    currentEl.classList.add('hidden');
+                    prevEl.classList.remove('hidden');
+                    setTimeout(() => {
+                        prevEl.classList.remove('-translate-x-12', 'opacity-0');
+                    }, 50);
+                }, 300);
+
+                currentStep--;
+                updateStepper();
+            }
+        }
+
+        function simulateScan() {
+            const shimmer = document.getElementById('scan-shimmer');
+            shimmer.classList.remove('opacity-0');
+            shimmer.classList.add('opacity-40');
+            
+            setTimeout(() => {
+                shimmer.classList.add('opacity-0');
+                shimmer.classList.remove('opacity-40');
+                alert("AI Scan Complete: Item identified as 'Modern Leather Wallet'. Details updated.");
+            }, 2500);
+        }
+    </script>
+</body></html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lost &amp; Found BD - AI Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed": "#001f26",
+                    "on-tertiary-container": "#b1fff1",
+                    "inverse-surface": "#2d3133",
+                    "surface-dim": "#d8dadc",
+                    "inverse-on-surface": "#eff1f3",
+                    "tertiary": "#006056",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "on-primary-fixed": "#00174b",
+                    "on-primary-container": "#eeefff",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "surface-container-low": "#f2f4f6",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-high": "#e6e8ea",
+                    "on-tertiary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "secondary": "#00687a",
+                    "outline": "#737686",
+                    "surface-container": "#eceef0",
+                    "primary": "#004ac6",
+                    "tertiary-fixed": "#71f8e4",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed": "#acedff",
+                    "surface-variant": "#e0e3e5",
+                    "on-secondary-container": "#006172",
+                    "tertiary-container": "#007b6e",
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-primary": "#b4c5ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary-container": "#57dffe",
+                    "on-tertiary-fixed": "#00201c",
+                    "on-surface": "#191c1e",
+                    "primary-container": "#2563eb",
+                    "surface-bright": "#f7f9fb",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-surface-variant": "#434655",
+                    "on-error": "#ffffff",
+                    "background": "#f7f9fb",
+                    "on-background": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "surface": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "unit": "8px",
+                    "2xl": "48px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "margin-tablet": "24px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "label-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "title-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        .scanning-line {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #004ac6, transparent);
+            box-shadow: 0 0 15px #004ac6;
+            z-index: 10;
+            animation: scan 3s ease-in-out infinite;
+        }
+        .bounding-box {
+            position: absolute;
+            border: 2px solid #57dffe;
+            background: rgba(87, 223, 254, 0.1);
+            transition: all 0.5s ease-out;
+            pointer-events: none;
+        }
+        .bounding-box::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -24px;
+            left: 0;
+            background: #004ac6;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .glass-panel {
+            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary hover:opacity-80 transition-opacity">menu</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A high-quality, professional headshot of a young Bangladeshi male professional in a clean, modern studio setting. The lighting is soft and directional, highlighting facial features against a neutral grey background. He wears a smart casual navy blazer, conveying a sense of reliability and trust, consistent with a premium service application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx_1Sbs54GOn9G2cQNV8s-Ndo1ZngaEEzkwzQcV1sTJ9urzRKgt6ggNQHJW0KsRiOwo1Vlx3vx75O9NDnuzgG1DJ2BPxJ1W78tCQPt2_Wmj6qrpvo1R9Zi_6Rbm1bt4PnQa-tN1qkONzDpAeKjSl5oaQ8hfd5d48OmNPDTArqR5SwZ5aXHrkL-p7RFc3g7z8boPPpnWcgH46Wrxem7gm5PntVYFmZ6xB_yptdnf-zYqpSWKvOm-ibRag"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile max-w-4xl mx-auto">
+<!-- AI Scanning Section -->
+<section class="flex flex-col gap-lg">
+<div class="flex flex-col items-center text-center gap-xs">
+<span class="text-primary font-label-lg tracking-widest uppercase">Visual Intelligence</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Scanning Item...</h2>
+<p class="text-on-surface-variant max-w-md">Our neural network is identifying key characteristics to help match your lost wallet.</p>
+</div>
+<!-- Analysis Canvas -->
+<div class="relative w-full aspect-square md:aspect-video rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-white/40 bg-surface-container-low group">
+<img class="w-full h-full object-cover opacity-90" data-alt="A premium, detailed close-up shot of a classic black leather bi-fold wallet resting on a clean, minimalist white marble surface. The wallet shows high-quality grain texture and a small metallic logo in the corner. The scene is lit with soft, professional photography lighting that creates subtle highlights on the leather's edge, maintaining a professional and high-tech minimalist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB3bd9qY0HLiuvIpLCK0QeuyG_IE6OOwu-belINTttV2wl5-lhXfTdBu8tzOEuMRGUcdOkxv-iEe-LJF5s6Z8pLn8YSZiQse8xabFk3Bf3qM1wC6wjXrATJ9-F9I9BeBL0VusPCC-o-6VFkhrX2kgNWNzlMOogVmbXCcPQIlaFy0b3mCC7UFaVcQ9ed9fegQn7p6G_F57O9htY6WnpyAhWZ9jZMriD-_9PR88iO46CO95uK83qZIYSiyw"/>
+<!-- Scanning Overlay -->
+<div class="scanning-line"></div>
+<!-- Dynamic Bounding Boxes -->
+<div class="bounding-box top-[20%] left-[15%] w-[30%] h-[40%]" data-label="Material: Grain Leather" style="animation-delay: 0.5s;"></div>
+<div class="bounding-box top-[60%] left-[55%] w-[25%] h-[20%]" data-label="Feature: Logo Cluster" style="animation-delay: 1.2s;"></div>
+<div class="bounding-box top-[10%] left-[50%] w-[40%] h-[50%]" data-label="Type: Bi-fold Fold" style="animation-delay: 0.8s;"></div>
+<!-- Pulsing Core Signal -->
+<div class="absolute bottom-6 right-6 flex items-center gap-3 glass-panel px-4 py-2 rounded-full shadow-lg">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+</span>
+<span class="font-label-lg text-primary">AI Link Active</span>
+</div>
+</div>
+<!-- Extracted Attributes Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mt-4">
+<!-- Attribute Card 1 -->
+<div class="glass-panel p-4 rounded-xl flex flex-col gap-2 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary text-xl">category</span>
+<span class="text-label-sm text-secondary bg-secondary-container px-2 py-0.5 rounded-full">98% Match</span>
+</div>
+<span class="text-on-surface-variant text-label-sm">Object Class</span>
+<span class="font-title-md text-on-surface">Leather Wallet</span>
+</div>
+<!-- Attribute Card 2 -->
+<div class="glass-panel p-4 rounded-xl flex flex-col gap-2 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary text-xl">palette</span>
+<span class="text-label-sm text-secondary bg-secondary-container px-2 py-0.5 rounded-full">High Confidence</span>
+</div>
+<span class="text-on-surface-variant text-label-sm">Primary Tone</span>
+<span class="font-title-md text-on-surface">Matte Black</span>
+</div>
+<!-- Attribute Card 3 -->
+<div class="glass-panel p-4 rounded-xl flex flex-col gap-2 shadow-sm">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary text-xl">layers</span>
+<span class="text-label-sm text-secondary bg-secondary-container px-2 py-0.5 rounded-full">Detected</span>
+</div>
+<span class="text-on-surface-variant text-label-sm">Structure</span>
+<span class="font-title-md text-on-surface">Bi-fold</span>
+</div>
+</div>
+<!-- Tags Section -->
+<div class="flex flex-wrap gap-sm justify-center mt-2">
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-lg border border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">texture</span> Leather
+                </span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-lg border border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">branding_watermark</span> Logo Detected
+                </span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-lg border border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">square_foot</span> 4.5" x 3.5"
+                </span>
+<span class="px-4 py-1.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-lg border border-outline-variant/30 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">sell</span> Premium Brand
+                </span>
+</div>
+<!-- Action Area -->
+<div class="flex flex-col md:flex-row gap-md justify-center items-center mt-lg">
+<button class="w-full md:w-auto px-10 py-4 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-full font-title-md shadow-xl shadow-primary/20 scale-100 active:scale-95 transition-all flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">search_check</span>
+                    Find Potential Matches
+                </button>
+<button class="w-full md:w-auto px-8 py-4 bg-surface-variant/50 text-on-surface-variant rounded-full font-title-md hover:bg-surface-variant transition-colors flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">edit</span>
+                    Manual Correction
+                </button>
+</div>
+</section>
+</main>
+<!-- Navigation Shell (BottomNavBar for Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction: Bounding boxes flicker slightly to simulate "real-time" processing
+        const boxes = document.querySelectorAll('.bounding-box');
+        setInterval(() => {
+            boxes.forEach(box => {
+                if(Math.random() > 0.8) {
+                    box.style.opacity = (0.7 + Math.random() * 0.3).toString();
+                    box.style.transform = `scale(${1 + (Math.random() * 0.02 - 0.01)})`;
+                }
+            });
+        }, 150);
+
+        // Simulate progress for a "premium" feel
+        let progress = 0;
+        const headline = document.querySelector('h2');
+        const updateInterval = setInterval(() => {
+            progress += Math.random() * 5;
+            if(progress >= 100) {
+                progress = 100;
+                headline.innerText = 'Analysis Complete';
+                headline.classList.add('text-secondary');
+                clearInterval(updateInterval);
+            }
+        }, 400);
+    </script>
+</body></html>

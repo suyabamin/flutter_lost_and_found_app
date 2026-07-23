@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Onboarding - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#acedff",
+                    "primary-container": "#2563eb",
+                    "on-background": "#191c1e",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary": "#00687a",
+                    "outline": "#737686",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-dim": "#d8dadc",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-fixed": "#00201c",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#007b6e",
+                    "on-tertiary-container": "#b1fff1",
+                    "surface-container-high": "#e6e8ea",
+                    "on-primary-container": "#eeefff",
+                    "surface-tint": "#0053db",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#004ac6",
+                    "surface-container": "#eceef0",
+                    "on-secondary-container": "#006172",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary-container": "#57dffe",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-surface-variant": "#434655",
+                    "inverse-on-surface": "#eff1f3",
+                    "tertiary": "#006056",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-fixed": "#001f26",
+                    "tertiary-fixed": "#71f8e4",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "background": "#f7f9fb",
+                    "surface-variant": "#e0e3e5",
+                    "surface": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "margin-tablet": "24px",
+                    "gutter": "16px",
+                    "2xl": "48px",
+                    "sm": "8px",
+                    "unit": "8px",
+                    "xl": "32px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "title-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .onboarding-screen {
+            display: none;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .onboarding-screen.active {
+            display: flex;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .indicator {
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+        .indicator.active {
+            width: 32px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-surface-bright text-on-surface font-body-lg min-h-screen overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Header Section (Suppressed Global Nav per Transactional Rule) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 pointer-events-none">
+<div class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary pointer-events-auto">
+            Lost &amp; Found BD
+        </div>
+<button class="font-label-lg text-label-lg text-on-surface-variant hover:text-primary transition-colors pointer-events-auto" id="skipBtn">
+            Skip
+        </button>
+</header>
+<main class="relative w-full h-screen flex items-center justify-center">
+<!-- Page 1: Find What You Lost -->
+<section class="onboarding-screen active flex-col items-center justify-center px-margin-mobile w-full max-w-lg" id="page1">
+<div class="relative w-full aspect-square mb-12 flex items-center justify-center">
+<div class="absolute inset-0 bg-primary/5 rounded-full blur-3xl"></div>
+<img class="relative z-10 w-4/5 h-4/5 object-contain" data-alt="A professional minimalist illustration of a person joyfully discovering a lost wallet on a modern park bench. The art style is premium with clean lines, soft primary blue gradients, and ample whitespace. High-key lighting creates a serene, hopeful atmosphere characteristic of a modern digital experience for Bangladeshi professionals." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4N0WFzNQuJUXUuJtrGphP1acV-aCJlR2RQHesuYTxizoASkpn4BS_wykP3k2ENk3xwQOW9wMyR4lSn-XMAekQjYWQTx_rjSxhG0JsLeS_P-cgM8dvBSx7K2F0Z2ZJ0Kjngg9XZaqPr4LqWv2U8jXbJe-mh5Xo_oWvm1pHY1eJlI1oBFpj0lD0ae8xwy8Z0mpAPEI0af-gvEOsFs7XdGuHT1W5CkAXBuPWS_rB0ar1_n9ZKRo5bL2eJA"/>
+</div>
+<div class="text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-4">Find What You Lost</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Whether it's your keys, wallet, or a beloved pet, our community helps you reunite with your valuables across Bangladesh.</p>
+</div>
+</section>
+<!-- Page 2: Help Others -->
+<section class="onboarding-screen flex-col items-center justify-center px-margin-mobile w-full max-w-lg" id="page2">
+<div class="relative w-full aspect-square mb-12 flex items-center justify-center">
+<div class="absolute inset-0 bg-secondary/5 rounded-full blur-3xl"></div>
+<img class="relative z-10 w-4/5 h-4/5 object-contain" data-alt="A premium 3D-style illustration showing a kind individual handing over a found smartphone to a grateful recipient. The setting is a clean, modern urban landscape in Dhaka with soft teal and blue lighting. The visual style is professional minimalism with high-end editorial flair, emphasizing reliability and community trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDg67XvGI-LmMsiVJQo7GTbloI4erWNtYLetLl0tSt5fC0PEYC5X6wIcx0viypPlh3UOOw85GJpQLLAzVxqnBla1rtrjlHERLXy-36hdl7HUOrngA0PnICSiNTESYsT53nM3au3HnNSolYEKokf7mnyckL11OrwEOOkOiuPx7VXFuMOewoh8FqNDRVTFNmAFFnEuj76UwdKhrPLXQl985Whd6Z0AvWWWNcFrT4a6g2dZSml_5qh48jZcg"/>
+</div>
+<div class="text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-4">Help Others</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Turn someone's bad day around. Report items you find and connect with owners safely through our verified platform.</p>
+</div>
+</section>
+<!-- Page 3: AI-Powered Matching -->
+<section class="onboarding-screen flex-col items-center justify-center px-margin-mobile w-full max-w-lg" id="page3">
+<div class="relative w-full aspect-square mb-12 flex items-center justify-center">
+<div class="absolute inset-0 bg-tertiary/5 rounded-full blur-3xl"></div>
+<img class="relative z-10 w-4/5 h-4/5 object-contain" data-alt="A tech-forward digital illustration of a smartphone screen scanning a lost item with glowing blue laser grids. The background is a sophisticated mix of deep navy and bright white with glassmorphic elements. The mood is highly technological and efficient, showcasing advanced AI matching capabilities for the Bangladeshi market." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCF6Zpn-C15nh32lKgK5GSegIMs1QX4eZJrN3cNN5SN7pQ57CtB1KYpbeqN43VyuQ_4Qy8jK0stMAF0pobGhlXh55anR52LlTvByNIhcj2lqHq4f6HkLwpAVBTmEqFMULa45X2-9VT26FgCJ5fqAzcwRlkVA70nSCkDx1IaOAaa1dlUffYN7zaUYXgRn6ZfLo6gGmj58V7lvuaAOiAbfvRIyL-bm8GiBnAnOhmJpfxF4PnRDNethR-D9w"/>
+</div>
+<div class="text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary mb-4">AI-Powered Matching</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Our smart algorithms scan descriptions and photos instantly to find the best match for your lost or found items.</p>
+</div>
+</section>
+</main>
+<!-- Footer Controls -->
+<footer class="fixed bottom-0 w-full p-xl flex flex-col items-center gap-xl">
+<!-- Indicators -->
+<div class="flex gap-2 h-2">
+<div class="indicator active h-full w-8 rounded-full bg-primary"></div>
+<div class="indicator h-full w-2 rounded-full bg-outline-variant"></div>
+<div class="indicator h-full w-2 rounded-full bg-outline-variant"></div>
+</div>
+<!-- Actions -->
+<div class="w-full max-w-lg">
+<button class="w-full h-14 bg-gradient-to-r from-primary to-secondary text-on-primary font-title-md text-title-md rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2" id="nextBtn">
+<span>Next</span>
+<span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<button class="hidden w-full h-14 bg-gradient-to-r from-primary to-secondary text-on-primary font-title-md text-title-md rounded-xl shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all" id="getStartedBtn">
+                Get Started
+            </button>
+</div>
+</footer>
+<!-- Background Elements -->
+<div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+<div class="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px]"></div>
+<div class="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-secondary/5 blur-[120px]"></div>
+</div>
+<script>
+        const screens = document.querySelectorAll('.onboarding-screen');
+        const indicators = document.querySelectorAll('.indicator');
+        const nextBtn = document.getElementById('nextBtn');
+        const getStartedBtn = document.getElementById('getStartedBtn');
+        const skipBtn = document.getElementById('skipBtn');
+        let currentStep = 0;
+
+        function updateOnboarding() {
+            screens.forEach((screen, index) => {
+                screen.classList.toggle('active', index === currentStep);
+            });
+
+            indicators.forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentStep);
+                indicator.classList.toggle('bg-primary', index === currentStep);
+                indicator.classList.toggle('bg-outline-variant', index !== currentStep);
+            });
+
+            if (currentStep === screens.length - 1) {
+                nextBtn.classList.add('hidden');
+                getStartedBtn.classList.remove('hidden');
+                skipBtn.classList.add('opacity-0', 'pointer-events-none');
+            } else {
+                nextBtn.classList.remove('hidden');
+                getStartedBtn.classList.add('hidden');
+                skipBtn.classList.remove('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < screens.length - 1) {
+                currentStep++;
+                updateOnboarding();
+            }
+        });
+
+        getStartedBtn.addEventListener('click', () => {
+            // Ripple effect and redirect simulation
+            getStartedBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+            setTimeout(() => {
+                alert('Redirecting to Registration...');
+            }, 800);
+        });
+
+        skipBtn.addEventListener('click', () => {
+            currentStep = screens.length - 1;
+            updateOnboarding();
+        });
+
+        // Touch gestures (Basic Swipe)
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        function checkDirection() {
+            if (touchendX < touchstartX - 50) { // Swipe Left
+                if (currentStep < screens.length - 1) {
+                    currentStep++;
+                    updateOnboarding();
+                }
+            }
+            if (touchendX > touchstartX + 50) { // Swipe Right
+                if (currentStep > 0) {
+                    currentStep--;
+                    updateOnboarding();
+                }
+            }
+        }
+
+        document.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            checkDirection();
+        });
+    </script>
+</body></html>

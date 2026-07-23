@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard | Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary": "#00687a",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed": "#acedff",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#dbe1ff",
+                        "on-secondary-container": "#006172",
+                        "tertiary": "#006056",
+                        "on-tertiary-fixed": "#00201c",
+                        "secondary-container": "#57dffe",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-container": "#b1fff1",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "tertiary-container": "#007b6e",
+                        "primary": "#004ac6",
+                        "on-background": "#191c1e",
+                        "error": "#ba1a1a",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#eceef0",
+                        "outline": "#737686",
+                        "on-secondary-fixed": "#001f26",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "on-secondary": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-primary-container": "#eeefff",
+                        "error-container": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "primary-container": "#2563eb",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#71f8e4",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "surface-container-low": "#f2f4f6",
+                        "on-surface": "#191c1e",
+                        "surface-tint": "#0053db",
+                        "surface": "#f7f9fb",
+                        "on-surface-variant": "#434655",
+                        "inverse-primary": "#b4c5ff"
+                    },
+                    "spacing": {
+                        "xs": "4px", "unit": "8px", "md": "16px", "margin-mobile": "16px", "margin-tablet": "24px", "gutter": "16px", "xl": "32px", "sm": "8px", "2xl": "48px", "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"], "label-lg": ["Inter"], "headline-lg": ["Inter"], "headline-lg-mobile": ["Inter"], "body-md": ["Inter"], "title-md": ["Inter"], "title-lg": ["Inter"], "label-sm": ["Inter"], "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-lg text-body-lg min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16 md:px-margin-tablet">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:opacity-80 transition-opacity">menu</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex bg-surface-container-low px-4 py-1.5 rounded-full items-center gap-2 border border-outline-variant/30">
+<span class="material-symbols-outlined text-primary text-sm">shield</span>
+<span class="font-label-lg text-label-lg text-on-surface-variant">Admin Console</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-primary/20 cursor-pointer active:scale-90 transition-transform">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a South Asian male administrator in a clean office setting, featuring high-end corporate lighting and a minimalist aesthetic. The image is crisp, with soft blue ambient light reflecting the primary brand color, conveying authority and trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAw-tNSgKI2jWCuocmzRF4sr1f07Zim4E7-2Mah7W5IrNua9u6cG2vZgOhsoVONjol6J26bbzg3M7ktKsBt74Whd_71SzXdaM_UrdWVN5xVdPJYLVKhCgp97V8JYWSWnF7BxAZvHbvK-Ppg3zEdg1pecfvUNpFFoMb-T7yrPe8OjsV31-0jqEJY2mEztX2JAL1VGnkfBNxgd981Io8l0D23MpR7LAqvStmXGfL9iuT4D9flcg4pKUxBg"/>
+</div>
+</div>
+</header>
+<div class="flex pt-16 h-screen overflow-hidden">
+<!-- Sidebar Navigation (Desktop) -->
+<aside class="hidden md:flex flex-col h-full w-72 bg-surface border-r border-outline-variant/20 shadow-2xl shadow-primary/5 py-6">
+<nav class="flex-1 px-4 space-y-2">
+<a class="flex items-center gap-4 bg-primary-container/20 text-primary rounded-xl px-4 py-3 font-title-md text-title-md transition-all" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    Dashboard
+                </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-low rounded-xl px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+                    Moderation Queue
+                </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-low rounded-xl px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+                    User Management
+                </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-low rounded-xl px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                    Analytics
+                </a>
+<div class="pt-6 border-t border-outline-variant/20 mt-6">
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-container-low rounded-xl px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+                        System Settings
+                    </a>
+</div>
+</nav>
+<div class="px-6 py-4">
+<div class="bg-primary/5 rounded-2xl p-4 border border-primary/10">
+<p class="font-label-sm text-label-sm text-primary uppercase tracking-wider mb-1">Server Status</p>
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+<span class="font-title-md text-sm text-on-surface">All Systems Optimal</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto custom-scrollbar p-margin-mobile md:p-margin-tablet bg-surface-container-lowest/30">
+<!-- Statistics Bento Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter mb-lg">
+<!-- Stat Card 1 -->
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/5 flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-primary-container bg-primary-container/10 p-2 rounded-lg mb-4">analytics</span>
+<p class="text-on-surface-variant font-label-lg text-label-lg">Total Reports</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">12,482</h2>
+</div>
+<div class="mt-4 flex items-center text-emerald-600 font-label-lg text-label-lg">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                        +14% vs last month
+                    </div>
+</div>
+<!-- Stat Card 2 -->
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/5 flex flex-col justify-between border-l-4 border-l-secondary">
+<div>
+<span class="material-symbols-outlined text-secondary bg-secondary/10 p-2 rounded-lg mb-4">person_check</span>
+<p class="text-on-surface-variant font-label-lg text-label-lg">Active Users</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">3,210</h2>
+</div>
+<div class="mt-4 flex items-center text-emerald-600 font-label-lg text-label-lg">
+<span class="material-symbols-outlined text-sm mr-1">trending_up</span>
+                        +8.2% this week
+                    </div>
+</div>
+<!-- Stat Card 3 -->
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/5 flex flex-col justify-between">
+<div>
+<span class="material-symbols-outlined text-tertiary bg-tertiary/10 p-2 rounded-lg mb-4">handshake</span>
+<p class="text-on-surface-variant font-label-lg text-label-lg">Recovery Rate</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">68.4%</h2>
+</div>
+<div class="mt-4 flex items-center text-secondary-container font-label-lg text-label-lg">
+<span class="material-symbols-outlined text-sm mr-1">check_circle</span>
+                        Verified Successful Returns
+                    </div>
+</div>
+<!-- Stat Card 4 -->
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/5 flex flex-col justify-between border-l-4 border-l-error">
+<div>
+<span class="material-symbols-outlined text-error bg-error/10 p-2 rounded-lg mb-4">warning</span>
+<p class="text-on-surface-variant font-label-lg text-label-lg">Pending Moderation</p>
+<h2 class="font-display-lg text-headline-lg text-on-surface">142</h2>
+</div>
+<div class="mt-4 flex items-center text-error font-label-lg text-label-lg">
+<span class="material-symbols-outlined text-sm mr-1">priority_high</span>
+                        Requires Immediate Action
+                    </div>
+</div>
+</div>
+<!-- Dashboard Body: Two Columns -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Pending Reports Queue (Left 2 Columns) -->
+<div class="lg:col-span-2 space-y-gutter">
+<div class="flex items-center justify-between">
+<h3 class="font-title-lg text-title-lg text-on-surface">Pending Moderation Queue</h3>
+<button class="text-primary font-label-lg text-label-lg hover:underline">View All</button>
+</div>
+<div class="space-y-4">
+<!-- Queue Item 1 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 items-center group hover:bg-white/90 transition-all duration-300">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-quality product photograph of a lost silver Apple MacBook Pro in a premium leather sleeve, shot against a soft grey professional studio background with minimalist lighting. The image emphasizes the sleek metal texture and modern design language of the platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCX2AebjNEXvXe0EoVodVVW2EzL9r5nANsTIYKXSK7dSjI_8Hy19dIZX2LoCvOXbX7ORHE1GhCe9qt5dKWbjzSYKt1o5FkWzRDb9-IjVDTtd2s2g3D7-Bmh3vOk9scvJLI_hvN4UcP1tYrUH6MfJSLMcsnPU46Ph3NNO5Q45j-JlIupX2TcJ7YDeAQ7-MO0N5IL_1_6nmNIp6RVsamBgnaR7GyVHIkP6ImjHDmtt-Y2o-x3g_Scyxwu2A"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-secondary-container/20 text-on-secondary-container font-label-sm text-[10px] uppercase">Electronics</span>
+<span class="text-on-surface-variant text-xs font-body-md">• 14 mins ago</span>
+</div>
+<h4 class="font-title-md text-on-surface truncate">Silver MacBook Pro 14" - Dhanmondi Lake</h4>
+<p class="text-on-surface-variant text-sm font-body-md line-clamp-1">Found near the central bridge. Device is locked but in good condition.</p>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">check</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-error/10 text-error hover:bg-error hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Queue Item 2 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 items-center group hover:bg-white/90 transition-all duration-300">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A close-up high-resolution photograph of a set of car keys for a luxury vehicle on a marble surface. The lighting is elegant and directional, creating soft shadows. The scene is clean, minimal, and fits the sophisticated professional aesthetic of a premium service platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3HWWq3Rr9kc0k-JGHJW6JHnm-qJKxViL2RvRJdSB7yOW2SonwFnaPQ16i8KYRaKuMX6Y6a_si939mmE59JHRw1hHvYOIc7QpFoSO1RfvGtlDV2WIt72vZ7JBNKDIAIMokFh3Jw3Tdmt1ZY8JoViJVzkCI_uorufyj49C994GHeiYs9VQLIgeDlO1nbo3N_gCN2Sb4VACTfLJmWrxsMaMqp2wTtErIiLheQxOViAXPjUWNXKCl5If3cw"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-tertiary-container/20 text-on-tertiary-container font-label-sm text-[10px] uppercase">Personal items</span>
+<span class="text-on-surface-variant text-xs font-body-md">• 42 mins ago</span>
+</div>
+<h4 class="font-title-md text-on-surface truncate">BMW Car Keys - Gulshan 2</h4>
+<p class="text-on-surface-variant text-sm font-body-md line-clamp-1">Left at Coffee Bean &amp; Tea Leaf. Registered owner info might be available.</p>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">check</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-error/10 text-error hover:bg-error hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+<!-- Queue Item 3 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 items-center group hover:bg-white/90 transition-all duration-300">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A beautiful, soft-focus photograph of a small golden retriever puppy with a bright blue collar, sitting in a sunny park with soft green grass. The lighting is warm and ethereal, conveying a sense of hope and care. The image style is clean, modern, and high-end editorial." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjTM77NIPIJPU5wuZfufEyg2qWWmi_JWgK3eKnOIUiTEr4UdysxFJ93FDCVv_MVi8c9FWknWT36mBSOCMiSiVGPVDMd1-VTZWEfjxwJNgUhY9IF-g6oJD3Ub5bucPLP_z4x_FBA-LGBAkXa26c-o0q49ZUFfodcVPHAwrjOJgklgsHKNuWclMOun_M7tYiRQnIhDa27Si2qvm5NbIe_rn8CcXDAc1gPThEv6TsT7pQCWUBUxc3s1u7uA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="px-2 py-0.5 rounded-full bg-error-container/20 text-on-error-container font-label-sm text-[10px] uppercase">Pets</span>
+<span class="text-on-surface-variant text-xs font-body-md">• 1 hour ago</span>
+</div>
+<h4 class="font-title-md text-on-surface truncate">Golden Retriever Puppy - Banani 11</h4>
+<p class="text-on-surface-variant text-sm font-body-md line-clamp-1">Friendly puppy wandering alone. No microchip found yet.</p>
+</div>
+<div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500 hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">check</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-error/10 text-error hover:bg-error hover:text-white transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Platform Activity Log -->
+<div class="mt-lg">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-md">Recent Reports Log</h3>
+<div class="glass-card rounded-2xl overflow-hidden">
+<table class="w-full text-left text-sm">
+<thead class="bg-surface-container text-on-surface-variant font-label-lg uppercase text-[10px] tracking-widest">
+<tr>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Item ID</th>
+<th class="px-6 py-4">User</th>
+<th class="px-6 py-4">Location</th>
+<th class="px-6 py-4">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4"><span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-emerald-500"></div> Resolved</span></td>
+<td class="px-6 py-4 font-mono font-medium">#LFB-9021</td>
+<td class="px-6 py-4">Sabbir Ahmed</td>
+<td class="px-6 py-4">Uttara, Sector 4</td>
+<td class="px-6 py-4"><button class="material-symbols-outlined text-outline-variant hover:text-primary">visibility</button></td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4"><span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-primary-container"></div> Active</span></td>
+<td class="px-6 py-4 font-mono font-medium">#LFB-8854</td>
+<td class="px-6 py-4">Maria Islam</td>
+<td class="px-6 py-4">Mirpur DOHS</td>
+<td class="px-6 py-4"><button class="material-symbols-outlined text-outline-variant hover:text-primary">visibility</button></td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-6 py-4"><span class="flex items-center gap-2"><div class="w-2 h-2 rounded-full bg-error"></div> Flagged</span></td>
+<td class="px-6 py-4 font-mono font-medium">#LFB-8720</td>
+<td class="px-6 py-4">Unknown_01</td>
+<td class="px-6 py-4">Unknown</td>
+<td class="px-6 py-4"><button class="material-symbols-outlined text-outline-variant hover:text-primary">visibility</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- User Reports & Flagging (Right Column) -->
+<div class="space-y-gutter">
+<h3 class="font-title-lg text-title-lg text-on-surface">Flagged Bad Actors</h3>
+<div class="space-y-4">
+<!-- Flagged User Card -->
+<div class="glass-card rounded-2xl p-5 border-l-4 border-l-error">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-error/10 flex items-center justify-center text-error">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Anonymous_User22</h4>
+<p class="text-xs text-on-surface-variant">Flagged 3 times today</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-error cursor-pointer">report</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body-md mb-4 italic">"Multiple reports of spamming fake found-item claims in Bashundhara area."</p>
+<div class="flex gap-2">
+<button class="flex-1 py-2 rounded-xl bg-error text-white font-label-lg text-label-lg hover:shadow-lg hover:shadow-error/20 transition-all">Ban User</button>
+<button class="flex-1 py-2 rounded-xl border border-outline-variant text-on-surface-variant font-label-lg text-label-lg hover:bg-surface-container-low transition-all">Dismiss</button>
+</div>
+</div>
+<!-- Flagged User Card 2 -->
+<div class="glass-card rounded-2xl p-5">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-secondary-container/10 flex items-center justify-center text-on-secondary-container">
+<span class="material-symbols-outlined">account_circle</span>
+</div>
+<div>
+<h4 class="font-title-md text-on-surface">Rakib_99</h4>
+<p class="text-xs text-on-surface-variant">Duplicate posts</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant cursor-pointer">more_vert</span>
+</div>
+<p class="text-sm text-on-surface-variant font-body-md mb-4 italic">"Posting the same lost wallet report across 5 different categories."</p>
+<div class="flex gap-2">
+<button class="flex-1 py-2 rounded-xl bg-primary text-white font-label-lg text-label-lg">Warn User</button>
+<button class="flex-1 py-2 rounded-xl border border-outline-variant text-on-surface-variant font-label-lg text-label-lg">Merge Posts</button>
+</div>
+</div>
+</div>
+<!-- Platform Health Visualization -->
+<div class="glass-card rounded-2xl p-6 h-64 relative overflow-hidden flex flex-col justify-end">
+
+<div class="relative z-10">
+<h4 class="font-title-md text-on-surface">Platform Traffic</h4>
+<p class="text-xs text-on-surface-variant mb-4">Live concurrent users: 1,422</p>
+<div class="h-16 w-full flex items-end gap-1">
+<div class="w-full bg-primary/40 rounded-t-sm h-1/2"></div>
+<div class="w-full bg-primary/40 rounded-t-sm h-2/3"></div>
+<div class="w-full bg-primary/60 rounded-t-sm h-3/4"></div>
+<div class="w-full bg-primary/40 rounded-t-sm h-1/2"></div>
+<div class="w-full bg-primary/80 rounded-t-sm h-full"></div>
+<div class="w-full bg-primary/60 rounded-t-sm h-2/3"></div>
+<div class="w-full bg-primary/90 rounded-t-sm h-4/5"></div>
+<div class="w-full bg-primary/40 rounded-t-sm h-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom spacing for mobile navigation height -->
+<div class="h-24 md:hidden"></div>
+</main>
+</div>
+<!-- Mobile Bottom Navigation -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-surface-container/70 backdrop-blur-2xl flex justify-around items-center px-4 pb-4 pt-2 shadow-[0_-4px_20px_rgba(0,74,198,0.1)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple Micro-interaction script for the table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', () => {
+                row.classList.toggle('bg-primary/10');
+            });
+        });
+
+        // Toggle mobile drawer logic (mock)
+        const menuBtn = document.querySelector('header .material-symbols-outlined');
+        menuBtn.addEventListener('click', () => {
+            console.log('Mobile menu toggled');
+            // Logic to reveal a side drawer on mobile would go here
+        });
+    </script>
+</body></html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AI Match Results - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-surface": "#2d3133",
+                        "on-primary-container": "#eeefff",
+                        "on-surface-variant": "#434655",
+                        "on-tertiary-fixed": "#00201c",
+                        "tertiary-fixed": "#71f8e4",
+                        "outline": "#737686",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#006056",
+                        "on-primary-fixed": "#00174b",
+                        "surface-tint": "#0053db",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "inverse-on-surface": "#eff1f3",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#006172",
+                        "secondary-container": "#57dffe",
+                        "primary-container": "#2563eb",
+                        "surface": "#f7f9fb",
+                        "primary": "#004ac6",
+                        "error": "#ba1a1a",
+                        "inverse-primary": "#b4c5ff",
+                        "background": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed": "#dbe1ff",
+                        "secondary-fixed": "#acedff",
+                        "on-tertiary-container": "#b1fff1",
+                        "surface-container-low": "#f2f4f6",
+                        "on-background": "#191c1e",
+                        "surface-container-high": "#e6e8ea",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "on-error-container": "#93000a",
+                        "on-primary": "#ffffff",
+                        "secondary": "#00687a",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed": "#001f26",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "tertiary-container": "#007b6e",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-primary-fixed-variant": "#003ea8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-tablet": "24px",
+                        "lg": "24px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "xl": "32px",
+                        "2xl": "48px",
+                        "xs": "4px",
+                        "margin-mobile": "16px",
+                        "unit": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .radial-progress {
+            --value: 0;
+            --size: 6rem;
+            --thickness: 8px;
+            display: grid;
+            place-content: center;
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            background: radial-gradient(closest-side, rgba(255, 255, 255, 0.8) 80%, transparent 0 100%),
+                        conic-gradient(#004ac6 calc(var(--value) * 1%), rgba(236, 238, 240, 0.5) 0);
+        }
+        .gradient-button {
+            background: linear-gradient(90deg, #004ac6 0%, #00687a 100%);
+        }
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Inter', sans-serif;
+            padding-top: 64px;
+            padding-bottom: 80px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        #shader-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        main {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="text-on-background">
+<canvas id="shader-canvas"></canvas>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/60 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/5 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">menu</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-white/30">
+<img class="w-full h-full object-cover" data-alt="A professional headshot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAAUXmwUxeAxPOT7GrEOyFnqoUpHodQi2CmYctMJKp_HmFK7LNADJAuNzaKK5SLstBB8zUaMEJcUJL8SrsjaM7p4m4S95dZiC-aTC3KzMvZMHjzhwsyEOD4-9dBjr03h4zUi_OmwmLWPn6Y9be9m_jNf4k9OpC-xuWy4kyOcPuavIIULQNvy0196MXKJ_XIzuHDxrCRVdKQ6dVLJ5dG0CgMqvqN0SztvbmCED26DBWN61XF-lTQJPNB0g"/>
+</div>
+</header>
+<main class="max-w-5xl mx-auto px-margin-mobile py-lg space-y-lg">
+<!-- Comparison Header Section -->
+<section class="text-center space-y-sm">
+<div class="inline-flex items-center px-4 py-1.5 bg-secondary-container/80 backdrop-blur-md text-on-secondary-container rounded-full font-label-lg text-label-lg mb-4">
+<span class="material-symbols-outlined text-sm mr-2" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                AI Match Analysis
+            </div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Potential Match Found</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-lg mx-auto">We've identified a strong match between your report and a newly found item in Dhaka City.</p>
+</section>
+<!-- Bento Layout: Score & Comparison -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+<!-- Radial Score Card -->
+<div class="md:col-span-4 glass-card p-lg rounded-xl flex flex-col items-center justify-center text-center shadow-lg shadow-primary/5">
+<div class="radial-progress relative mb-4">
+<span class="font-headline-lg text-headline-lg text-primary">92%</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary mb-2">Match Certainty</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">High confidence level based on visual and metadata analysis.</p>
+</div>
+<!-- AI Explanation Card -->
+<div class="md:col-span-8 glass-card p-lg rounded-xl flex flex-col justify-center shadow-lg shadow-primary/5 border-l-4 border-primary/60">
+<div class="flex items-center gap-3 mb-4 text-primary">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-title-md text-title-md">AI Insights</span>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed">
+                    The AI model has detected high spatial and visual correlations. 
+                    <span class="font-bold text-primary">The brand, color, and location match your report with 92% certainty.</span> 
+                    Both items share identical logo placement on the front panel and the specific "Metallic Navy" shade unique to the 2023 collection.
+                </p>
+<div class="mt-6 flex flex-wrap gap-sm">
+<span class="px-3 py-1 bg-white/50 backdrop-blur-sm rounded-full text-label-sm font-label-sm text-on-surface-variant border border-white/20">Brand Match</span>
+<span class="px-3 py-1 bg-white/50 backdrop-blur-sm rounded-full text-label-sm font-label-sm text-on-surface-variant border border-white/20">Color Correlation</span>
+<span class="px-3 py-1 bg-white/50 backdrop-blur-sm rounded-full text-label-sm font-label-sm text-on-surface-variant border border-white/20">Geo-Proximity</span>
+</div>
+</div>
+<!-- Split Comparison Side-by-Side -->
+<div class="md:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Your Report Card -->
+<div class="glass-card overflow-hidden rounded-xl shadow-lg border border-primary/10">
+<div class="p-4 bg-primary/5 border-b border-primary/10 flex justify-between items-center">
+<span class="font-label-lg text-label-lg text-primary uppercase tracking-wider font-bold">Your Report</span>
+<span class="text-on-surface-variant text-label-sm font-label-sm">Reported: Oct 24, 2023</span>
+</div>
+<div class="aspect-video w-full overflow-hidden bg-surface-container/50">
+<img class="w-full h-full object-cover" data-alt="Lost wallet" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjztRR_VVq9Uvti01ggXaiHELKsVFauAbIqRUdi2Ud_-B-4dbGnjWIBMJQEU38m_HEwAm-ci_ia56g9Tda5z0E6lJG3QRG4gjJnHNHPbJW4M-zJpg5DZELU-9okXM4zpEC02zrjsox3ENRl1Q-_ZyXYCjP7UJ4lpDBBFpyqlGw1i-aLHtiy6_okWu6N9Xxp6Plso8FNPsRTo04RQYARuQlOzmBTKY1gjxDs4KlyTuijsEhILVn1eeTSQ"/>
+</div>
+<div class="p-lg space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Premium Leather Wallet</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Metallic Navy Blue</p>
+</div>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-md text-body-md">Gulshan 2, Dhaka</span>
+</div>
+<div class="p-3 bg-white/40 backdrop-blur-sm rounded-lg border border-white/20">
+<p class="font-body-md text-body-md text-on-surface italic">"Contains my NID, two credit cards, and some cash. Small scratch on the left corner."</p>
+</div>
+</div>
+</div>
+<!-- Match Item Card -->
+<div class="glass-card overflow-hidden rounded-xl shadow-lg border border-secondary/10">
+<div class="p-4 bg-secondary/5 border-b border-secondary/10 flex justify-between items-center">
+<span class="font-label-lg text-label-lg text-secondary uppercase tracking-wider font-bold">Found Item</span>
+<span class="text-on-surface-variant text-label-sm font-label-sm">Found: Oct 26, 2023</span>
+</div>
+<div class="aspect-video w-full overflow-hidden bg-surface-container/50">
+<img class="w-full h-full object-cover" data-alt="Found wallet" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0rKcRvM_eQj0Byx7kozkXGxiQTeMv6a63OPKXoOA2amlvY3AY5rZP73BV4hqCnf5KUlYz7io3BGG4QKcsoyNLBUNrHiNiY7pR4V8CU-PcdQmau_6daFge9znyk5-zjfkR52Fw03Sz6D6Bd3qesBKR2lZgRwePMzt0gU1Ve1bScwb1J_24DbzUT77PSdCZpzB9LWZAQaU_2Aap-jwAQdZvZtJBhctBlfN05Wl9iUBSzWzOOZTZJ-fGpA"/>
+</div>
+<div class="p-lg space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Men's Wallet (Found)</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Dark Blue Leather</p>
+</div>
+<span class="px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm rounded">Verified</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="font-body-md text-body-md">Banani Block E, Dhaka (1.2km away)</span>
+</div>
+<div class="p-3 bg-white/40 backdrop-blur-sm rounded-lg border border-white/20">
+<p class="font-body-md text-body-md text-on-surface">"Found near the park entrance. Appears to have cards inside. Excellent condition."</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Proximity Card -->
+<div class="md:col-span-12 glass-card p-lg rounded-xl shadow-lg space-y-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">map</span>
+<h3 class="font-title-md text-title-md">Location Proximity</h3>
+</div>
+<span class="font-label-lg text-label-lg text-primary font-bold">1.2 km distance</span>
+</div>
+<div class="h-48 w-full rounded-lg overflow-hidden relative border border-white/30 shadow-inner">
+<img class="w-full h-full object-cover grayscale opacity-60" data-location="Dhaka" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_tYsa2wJphqcbtWF5wo_Dpa4_SUlQloS_uM44VnU0g1aiClZLjY-EG1pQtDnS_Cnob2oTR7HEwczwo28SRhpjdm0LVu_NSaVKrD40UandmLA7G7Rx8jEJAI0wrmH2RCZ4Bs92E3z0imOO0QWndisC9OoOvrLWQQr0mhzaqGOPN9l2ri8b7j48CdjPOM-1PZWXMeePti6_V5FzZvJ_nMe052Af4P0Yucivm_Ed5PTzEoxK583nyiYuyg"/>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="relative">
+<div class="absolute -top-2 -left-2 w-12 h-12 bg-primary/20 rounded-full animate-ping"></div>
+<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white border-4 border-white shadow-lg z-10">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-md pt-lg relative z-10">
+<button class="gradient-button text-on-primary font-title-md text-title-md py-4 px-8 rounded-xl flex-1 shadow-lg shadow-primary/20 scale-100 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">chat</span>
+                Contact Finder
+            </button>
+<button class="bg-white/60 backdrop-blur-md text-on-surface font-title-md text-title-md py-4 px-8 rounded-xl flex-1 shadow-sm border border-white/30 scale-100 hover:bg-white/80 active:scale-95 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">close</span>
+                Not My Item
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-white/40 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.05)] border-t border-white/20">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/20 text-primary rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</nav>
+<script>
+        // WebGL Shader Background Logic
+        const canvas = document.getElementById('shader-canvas');
+        const gl = canvas.getContext('webgl');
+
+        const vertexShaderSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentShaderSource = `
+            precision highp float;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            uniform vec2 u_mouse;
+
+            float noise(vec2 p) {
+                return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+            }
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                vec2 m = u_mouse / u_resolution.xy;
+                
+                float t = u_time * 0.4;
+                
+                vec2 p1 = vec2(0.5 + 0.3 * cos(t), 0.5 + 0.3 * sin(t));
+                vec2 p2 = vec2(0.5 + 0.3 * sin(t * 0.7), 0.5 + 0.3 * cos(t * 1.3));
+                vec2 p3 = vec2(m.x, m.y);
+                
+                float d1 = length(uv - p1);
+                float d2 = length(uv - p2);
+                float d3 = length(uv - p3);
+                
+                vec3 color1 = vec3(0.145, 0.388, 0.921);
+                vec3 color2 = vec3(0.023, 0.713, 0.831);
+                vec3 color3 = vec3(0.972, 0.980, 0.984);
+                
+                float influence1 = smoothstep(0.8, 0.0, d1);
+                float influence2 = smoothstep(0.6, 0.0, d2);
+                float influence3 = smoothstep(0.4, 0.0, d3) * 0.3;
+                
+                vec3 finalColor = color3;
+                finalColor = mix(finalColor, color1, influence1 * 0.15);
+                finalColor = mix(finalColor, color2, influence2 * 0.1);
+                finalColor = mix(finalColor, color1, influence3);
+                
+                float grain = (noise(uv * 512.0 + u_time) - 0.5) * 0.02;
+                finalColor += grain;
+                
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const program = gl.createProgram();
+        gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vertexShaderSource));
+        gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource));
+        gl.linkProgram(program);
+
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, 'position');
+        const timeLocation = gl.getUniformLocation(program, 'u_time');
+        const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+        const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = window.innerHeight - e.clientY;
+        });
+
+        function render(time) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+
+            gl.useProgram(program);
+            gl.enableVertexAttribArray(positionLocation);
+            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            gl.uniform1f(timeLocation, time * 0.001);
+            gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+            gl.uniform2f(mouseLocation, mouseX, mouseY);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+
+        // Radial progress animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const radial = document.querySelector('.radial-progress');
+            let current = 0;
+            const target = 92;
+            const interval = setInterval(() => {
+                if (current >= target) {
+                    clearInterval(interval);
+                    current = target;
+                }
+                radial.style.setProperty('--value', current);
+                radial.querySelector('span').innerText = current + '%';
+                current += 1;
+            }, 15);
+        });
+    </script>
+</body></html>

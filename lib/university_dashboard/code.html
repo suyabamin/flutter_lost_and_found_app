@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>University Dashboard | Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-fixed-variant": "#003ea8",
+                    "secondary": "#00687a",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "secondary-fixed": "#acedff",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "surface-container-high": "#e6e8ea",
+                    "primary-fixed": "#dbe1ff",
+                    "on-secondary-container": "#006172",
+                    "tertiary": "#006056",
+                    "on-tertiary-fixed": "#00201c",
+                    "secondary-container": "#57dffe",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-container": "#b1fff1",
+                    "on-error": "#ffffff",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "tertiary-container": "#007b6e",
+                    "primary": "#004ac6",
+                    "on-background": "#191c1e",
+                    "error": "#ba1a1a",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#eceef0",
+                    "outline": "#737686",
+                    "on-secondary-fixed": "#001f26",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "on-secondary": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-container": "#eeefff",
+                    "error-container": "#ffdad6",
+                    "background": "#f7f9fb",
+                    "primary-container": "#2563eb",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed": "#71f8e4",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "surface-container-low": "#f2f4f6",
+                    "on-surface": "#191c1e",
+                    "surface-tint": "#0053db",
+                    "surface": "#f7f9fb",
+                    "on-surface-variant": "#434655",
+                    "inverse-primary": "#b4c5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "unit": "8px",
+                    "md": "16px",
+                    "margin-mobile": "16px",
+                    "margin-tablet": "24px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "sm": "8px",
+                    "2xl": "48px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #c3c6d7; border-radius: 10px; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24 md:pb-0 md:pt-16">
+<!-- TopAppBar -->
+<header class="bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed cursor-pointer scale-95 active:scale-90 transition-transform">menu</span>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Lost &amp; Found BD</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 mr-6">
+<a class="text-primary dark:text-primary-fixed font-title-md transition-opacity hover:opacity-80" href="#">Dashboard</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-title-md transition-opacity hover:opacity-80" href="#">Inventory</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-title-md transition-opacity hover:opacity-80" href="#">Analytics</a>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a university administrative official for Dhaka University. He is wearing a formal suit, with the prestigious university campus architecture visible in the soft-focus background. The image is brightly lit with a clean, high-key aesthetic, featuring subtle blue and white tones to match the Lost &amp; Found BD design system. Professional, reliable, and trustworthy mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaxupwBuJUAhTQFb3stTYZ3PdR79cmnOc-bfGvdOAywBWO1biL3KG1QMdig1yNA6N6py6bfoNtFyuVdsnBWjunjv5MW9rOOaLnv_h8ynyckgg7y8t2Vlc-PQ6PXPx-mygZxRfsSIhewoV-F2RK1lnQGJVQyiOjVAmrT98QUkmPYQ8mKwNSIDjvR-qxXJP2LkqdcwJK28lrAhQZQ6b8cs1cqBlaJmyGOYBLClPINFLNR91YnhJfV9lElQ"/>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile lg:px-margin-tablet py-8 mt-4">
+<!-- University Branding & Stats -->
+<div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="px-3 py-1 bg-primary/10 text-primary rounded-full font-label-lg text-label-lg uppercase tracking-wider">Institutional View</span>
+</div>
+<h2 class="font-display-lg text-display-lg text-on-surface tracking-tight mb-2">Dhaka University</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">Central management portal for the Proctor Office. Manage recoveries across all halls and departments.</p>
+</div>
+<div class="flex gap-4">
+<button class="bg-primary text-on-primary px-6 py-3 rounded-xl font-title-md shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                    Report Recovery
+                </button>
+</div>
+</div>
+<!-- Quick Stats Bento -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-10">
+<div class="md:col-span-2 glass-card rounded-2xl p-6 shadow-sm shadow-primary/10 flex flex-col justify-between overflow-hidden relative">
+<div class="absolute -right-4 -top-4 w-32 h-32 bg-primary/5 rounded-full blur-3xl"></div>
+<div>
+<span class="material-symbols-outlined text-primary mb-4 text-3xl">account_balance</span>
+<h3 class="font-title-lg text-title-lg mb-1">Items at Desk</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Currently held at the Proctor's office</p>
+</div>
+<div class="mt-8">
+<span class="text-5xl font-extrabold text-primary">142</span>
+<span class="text-tertiary font-label-lg ml-2">+12 this week</span>
+</div>
+</div>
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/10">
+<span class="material-symbols-outlined text-secondary mb-4 text-3xl">meeting_room</span>
+<h3 class="font-title-md text-title-md mb-1">Found in Hall</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Unclaimed items in residence halls</p>
+<span class="text-3xl font-bold text-on-surface">58</span>
+</div>
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/10">
+<span class="material-symbols-outlined text-tertiary mb-4 text-3xl">history_edu</span>
+<h3 class="font-title-md text-title-md mb-1">Student Reports</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">Active loss reports filed</p>
+<span class="text-3xl font-bold text-on-surface">215</span>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Items Inventory List -->
+<div class="lg:col-span-2 space-y-gutter">
+<div class="flex items-center justify-between">
+<h3 class="font-title-lg text-title-lg">Inventory at Desk</h3>
+<button class="text-primary font-label-lg flex items-center gap-1">
+                        View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Filters -->
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="px-4 py-2 bg-primary text-on-primary rounded-full font-label-lg whitespace-nowrap">All Items</button>
+<button class="px-4 py-2 bg-surface-container text-on-surface-variant rounded-full font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Electronics</button>
+<button class="px-4 py-2 bg-surface-container text-on-surface-variant rounded-full font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Documents</button>
+<button class="px-4 py-2 bg-surface-container text-on-surface-variant rounded-full font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Keys</button>
+<button class="px-4 py-2 bg-surface-container text-on-surface-variant rounded-full font-label-lg whitespace-nowrap hover:bg-surface-container-high transition-colors">Wallets</button>
+</div>
+<!-- List of Items -->
+<div class="space-y-4">
+<!-- Item 1 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 items-center hover:shadow-md transition-shadow group">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of a lost black leather wallet with various cards partially visible inside, sitting on a polished university office desk. The lighting is soft and professional, highlighting the texture of the leather. The background shows a hint of a campus office setting with blue and white accents, maintaining a reliable and organized aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBL-NuwxJ3_xAPb7CkOKa4dcE7don0-dxltoK8ONoui58qrIJpUoIvfNeCOmVesqDMT8Rr0GNyjOMuEcFmyPBQqG6Ua7HnIMnkIrRRNzmsy5AXxqmorN6BiPjZQMRXGPzHptZvl8luUYxPquGcHsjvn8EGuFWMNwrUVIqgsSOdTyJPTPZlYAZunYZTFRrC81JffE5R3OsjtLFWLon09WR9BiWF-maVQfJ1PGuV6CvwXG_bd3JGj2gVB5A"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-title-md text-title-md">Black Leather Wallet</h4>
+<p class="text-label-sm font-label-sm text-secondary uppercase mb-1">Found in: Jagannath Hall</p>
+</div>
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary rounded text-[10px] font-bold uppercase">Safe at Desk</span>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<span class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                    24 Oct, 2023
+                                </span>
+<span class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[16px]">person</span>
+                                    Reported by: Staff
+                                </span>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-primary/10 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Item 2 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 items-center hover:shadow-md transition-shadow group">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-quality image of an expensive scientific calculator, likely a Casio model, placed on a student study table. The lighting is crisp and clear, emphasizing the gadget's buttons and screen. The setting is a university environment, conveying a sense of academic life. The color palette is modern and clean with primary blue highlights." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDOFNsda2PB7fpxub9KQhR_EJfK7n1xRjzPgCHLGorp44N_CN2sqytOo-BYbfWJ2jpyk7P_iCQK2VNQeRcAsm8F-J7L3SIRaK6mFuSUMfEZhfcXXBU1lN9Bp3LpS9rWfnL_ykDluy-5sdKSlCsXqPTrsTITj8anP9Mlfj5JUAswvJPbCsLLvmdm266w8vrCE1CmD8mR864hZvPtPFjS3OrsSej1uILNh0HxEtiEk3VOM37hwKsHBuhKQ"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-title-md text-title-md">Scientific Calculator (Casio)</h4>
+<p class="text-label-sm font-label-sm text-secondary uppercase mb-1">Found in: Curzon Hall</p>
+</div>
+<span class="px-2 py-0.5 bg-primary/10 text-primary rounded text-[10px] font-bold uppercase">Match Pending</span>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<span class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                    23 Oct, 2023
+                                </span>
+<span class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[16px]">person</span>
+                                    Reported by: Student
+                                </span>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-primary/10 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Item 3 -->
+<div class="glass-card rounded-2xl p-4 flex gap-4 items-center hover:shadow-md transition-shadow group">
+<div class="w-20 h-20 rounded-xl bg-surface-container-highest overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A bunch of keys with a distinct university-themed keychain, laying on a blue surface. The photo is sharp with a shallow depth of field, making the metallic keys stand out. The lighting is professional and the overall atmosphere is one of order and security, fitting the Lost &amp; Found BD brand guidelines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDACuCpmD_8GU75mMSxmURxo46Hla4OplaUWD1m0MCs9-1aaGgH6KBp0GlKEx3l7Pp8hLdvo0ufc9GbrR-VPZ9YtOGMLwxrSr9n3I8blt1LzQMKFudeLs4PEdillvSbnCiJwi3TPAZh1N4EDh0_61EgnoUdsXpOzUNZx9-QzbGaP6ghG_QCkX772OQ1ItQpdxrU2DwZkF2lN9gWjnIxlagdwK2vsAL3-d7IxfAb_z0YuT91uC93q8GTcQ"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-title-md text-title-md">Keys with Keychain</h4>
+<p class="text-label-sm font-label-sm text-secondary uppercase mb-1">Found in: Arts Faculty</p>
+</div>
+<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary rounded text-[10px] font-bold uppercase">Safe at Desk</span>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<span class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                    22 Oct, 2023
+                                </span>
+<span class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-[16px]">person</span>
+                                    Reported by: Security
+                                </span>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-primary/10 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Sidebar Actions & Contact -->
+<div class="space-y-gutter">
+<!-- Proctor Office Card -->
+<div class="bg-primary text-on-primary rounded-3xl p-6 shadow-xl shadow-primary/30 relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+<div class="relative z-10">
+<h3 class="font-title-lg text-title-lg mb-4">Proctor Office</h3>
+<p class="font-body-md text-body-md text-on-primary/80 mb-6">Central Hub for Dhaka University Security and Item Verification.</p>
+<div class="space-y-4 mb-8">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-primary">call</span>
+<span class="font-label-lg">+880 2-9661900</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-primary">mail</span>
+<span class="font-label-lg">proctor@du.ac.bd</span>
+</div>
+</div>
+<button class="w-full bg-white text-primary py-3 rounded-xl font-bold hover:bg-primary-fixed-dim transition-colors">
+                            Contact Duty Officer
+                        </button>
+</div>
+</div>
+<!-- Recent Activity -->
+<div class="glass-card rounded-3xl p-6 shadow-sm shadow-primary/10">
+<h3 class="font-title-md text-title-md mb-4">Live Updates</h3>
+<div class="space-y-6">
+<div class="flex gap-3 relative">
+<div class="w-2 h-2 rounded-full bg-tertiary mt-2 relative z-10"></div>
+<div class="absolute left-[3px] top-4 w-0.5 h-full bg-surface-container-highest"></div>
+<div>
+<p class="font-label-lg text-label-lg">Item Returned</p>
+<p class="text-label-sm text-on-surface-variant italic">HP Laptop claimed by Student #2021-332</p>
+<span class="text-[10px] text-outline font-bold mt-1 block">15 MINS AGO</span>
+</div>
+</div>
+<div class="flex gap-3 relative">
+<div class="w-2 h-2 rounded-full bg-primary mt-2 relative z-10"></div>
+<div class="absolute left-[3px] top-4 w-0.5 h-full bg-surface-container-highest"></div>
+<div>
+<p class="font-label-lg text-label-lg">New Recovery</p>
+<p class="text-label-sm text-on-surface-variant italic">Student ID Card found in Rokeya Hall</p>
+<span class="text-[10px] text-outline font-bold mt-1 block">2 HOURS AGO</span>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-2 h-2 rounded-full bg-secondary mt-2 relative z-10"></div>
+<div>
+<p class="font-label-lg text-label-lg">System Alert</p>
+<p class="text-label-sm text-on-surface-variant italic">Weekly inventory audit initiated</p>
+<span class="text-[10px] text-outline font-bold mt-1 block">5 HOURS AGO</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Hall Links -->
+<div class="glass-card rounded-3xl p-6 shadow-sm shadow-primary/10">
+<h3 class="font-title-md text-title-md mb-4">Hall Desks</h3>
+<div class="grid grid-cols-2 gap-2">
+<button class="p-3 bg-surface-container-low rounded-xl text-label-sm font-bold text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-colors">Z.H. Hall</button>
+<button class="p-3 bg-surface-container-low rounded-xl text-label-sm font-bold text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-colors">F.H. Hall</button>
+<button class="p-3 bg-surface-container-low rounded-xl text-label-sm font-bold text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-colors">S.N. Hall</button>
+<button class="p-3 bg-surface-container-low rounded-xl text-label-sm font-bold text-on-surface-variant hover:bg-secondary-container hover:text-on-secondary-container transition-colors">K.N. Hall</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<div class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</nav>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 md:bottom-8 md:right-8 w-16 h-16 bg-gradient-to-tr from-primary to-secondary text-on-primary rounded-[24px] shadow-2xl shadow-primary/40 flex items-center justify-center group active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform duration-300">add</span>
+</button>
+<script>
+        // Simple micro-interaction for cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+            card.style.transition = 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        });
+    </script>
+</body></html>

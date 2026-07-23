@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lost &amp; Found BD - Splash Screen</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#acedff",
+                    "primary-container": "#2563eb",
+                    "on-background": "#191c1e",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary": "#00687a",
+                    "outline": "#737686",
+                    "on-error-container": "#93000a",
+                    "primary-fixed": "#dbe1ff",
+                    "surface-dim": "#d8dadc",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary-fixed": "#00201c",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-error": "#ffffff",
+                    "tertiary-container": "#007b6e",
+                    "on-tertiary-container": "#b1fff1",
+                    "surface-container-high": "#e6e8ea",
+                    "on-primary-container": "#eeefff",
+                    "surface-tint": "#0053db",
+                    "error": "#ba1a1a",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-highest": "#e0e3e5",
+                    "primary": "#004ac6",
+                    "surface-container": "#eceef0",
+                    "on-secondary-container": "#006172",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "secondary-container": "#57dffe",
+                    "on-primary": "#ffffff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-surface-variant": "#434655",
+                    "inverse-on-surface": "#eff1f3",
+                    "tertiary": "#006056",
+                    "on-primary-fixed": "#00174b",
+                    "on-secondary-fixed": "#001f26",
+                    "tertiary-fixed": "#71f8e4",
+                    "surface-container-lowest": "#ffffff",
+                    "inverse-primary": "#b4c5ff",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "background": "#f7f9fb",
+                    "surface-variant": "#e0e3e5",
+                    "surface": "#f7f9fb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "16px",
+                    "lg": "24px",
+                    "xs": "4px",
+                    "margin-tablet": "24px",
+                    "gutter": "16px",
+                    "2xl": "48px",
+                    "sm": "8px",
+                    "unit": "8px",
+                    "xl": "32px",
+                    "md": "16px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "title-md": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.9; }
+        }
+        
+        .animate-pulse-logo {
+            animation: pulse-soft 3s ease-in-out infinite;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        #shader-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-surface-bright flex items-center justify-center min-h-screen">
+<!-- Full-screen Shader Background -->
+<canvas id="shader-canvas"></canvas>
+<!-- Main Splash Content Container -->
+<main class="relative z-10 flex flex-col items-center justify-center p-margin-mobile text-center">
+<!-- Brand identity block -->
+<div class="flex flex-col items-center justify-center space-y-lg animate-pulse-logo">
+<!-- Centered Logo with Glassmorphism backing for visibility -->
+<div class="relative w-48 h-48 md:w-64 md:h-64 flex items-center justify-center">
+<!-- Outer Glow Ring -->
+<div class="absolute inset-0 rounded-full bg-primary/10 blur-3xl scale-125"></div>
+<!-- Glass circle behind logo for contrast -->
+<div class="absolute inset-4 rounded-3xl glass-effect"></div>
+<!-- Main Image Asset -->
+<img alt="Lost &amp; Found Bangladesh Logo" class="w-full h-full object-contain drop-shadow-2xl relative z-10 p-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDhVDH72m-UkJp4r0IjiXzfNXevgo-OzQpUSvBaC4kpcE-ikJ-tGAUXd57OLBlOlXieReMWC4ZmQIGJE1Z3Z8teLuFO8b_zNqlX4ZmUCEjG9fvu-rbIfrTCGGpg-ALb6XTyB2GQnwol0VPeNh8hBSWypgDsrc7D28ANsIcNifmJpJ13tOLKp6OC-L6LgaqYOpbzgV7exksbNZV_q76OuzVuiu09wtStydfrp-eOnSiaPVTrSzHRiDE8w"/>
+</div>
+<!-- Typography Lockup -->
+<div class="space-y-xs">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary tracking-tight">
+                Lost &amp; Found BD
+            </h1>
+<p class="font-body-md text-body-md text-on-surface-variant/80 uppercase tracking-widest">
+                Reliability • Efficiency • Calm
+            </p>
+</div>
+</div>
+<!-- Footer / Progress Indicator -->
+<div class="absolute bottom-12 left-0 w-full flex flex-col items-center space-y-md">
+<!-- Minimalistic Loader Line -->
+<div class="w-32 h-1 bg-surface-container/50 rounded-full overflow-hidden backdrop-blur-sm">
+<div class="h-full bg-primary w-0 transition-all duration-[3000ms] ease-out" id="loader-progress"></div>
+</div>
+<p class="font-label-sm text-label-sm text-outline-variant italic">
+            Connecting you back to what matters...
+        </p>
+</div>
+</main>
+<!-- Interactive Shader Script -->
+<script>
+    const canvas = document.getElementById('shader-canvas');
+    const gl = canvas.getContext('webgl');
+
+    if (!gl) {
+        console.error('WebGL not supported');
+    }
+
+    const vertexSource = `
+        attribute vec2 position;
+        void main() {
+            gl_Position = vec4(position, 0.0, 1.0);
+        }
+    `;
+
+    const fragmentSource = `
+        precision highp float;
+        uniform float u_time;
+        uniform vec2 u_resolution;
+        uniform vec2 u_mouse;
+
+        float noise(vec2 p) {
+            return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+        }
+
+        void main() {
+            vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+            vec2 m = u_mouse / u_resolution.xy;
+            
+            float t = u_time * 0.4;
+            
+            vec2 p1 = vec2(0.5 + 0.3 * cos(t), 0.5 + 0.3 * sin(t));
+            vec2 p2 = vec2(0.5 + 0.3 * sin(t * 0.7), 0.5 + 0.3 * cos(t * 1.3));
+            vec2 p3 = vec2(m.x, 1.0 - m.y); // Corrected Y for GL coordinates
+            
+            float d1 = length(uv - p1);
+            float d2 = length(uv - p2);
+            float d3 = length(uv - p3);
+            
+            vec3 color1 = vec3(0.145, 0.388, 0.921); // Primary Blue
+            vec3 color2 = vec3(0.023, 0.713, 0.831); // Secondary Cyan
+            vec3 color3 = vec3(0.972, 0.980, 0.984); // Surface/Background
+            
+            float influence1 = smoothstep(0.8, 0.0, d1);
+            float influence2 = smoothstep(0.6, 0.0, d2);
+            float influence3 = smoothstep(0.4, 0.0, d3) * 0.3;
+            
+            vec3 finalColor = color3;
+            finalColor = mix(finalColor, color1, influence1 * 0.15);
+            finalColor = mix(finalColor, color2, influence2 * 0.1);
+            finalColor = mix(finalColor, color1, influence3);
+            
+            float grain = (noise(uv * 512.0 + u_time) - 0.5) * 0.02;
+            finalColor += grain;
+            
+            gl_FragColor = vec4(finalColor, 1.0);
+        }
+    `;
+
+    function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+            console.error(gl.getShaderInfoLog(shader));
+            gl.deleteShader(shader);
+            return null;
+        }
+        return shader;
+    }
+
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error(gl.getProgramInfoLog(program));
+    }
+
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+    const positionLocation = gl.getAttribLocation(program, 'position');
+    const timeLocation = gl.getUniformLocation(program, 'u_time');
+    const resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+    const mouseLocation = gl.getUniformLocation(program, 'u_mouse');
+
+    let mouseX = 0, mouseY = 0;
+    window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+    window.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+            mouseX = e.touches[0].clientX;
+            mouseY = e.touches[0].clientY;
+        }
+    });
+
+    function render(time) {
+        time *= 0.001;
+        
+        if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+
+        gl.useProgram(program);
+        gl.enableVertexAttribArray(positionLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        gl.uniform1f(timeLocation, time);
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        gl.uniform2f(mouseLocation, mouseX, mouseY);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+    }
+
+    requestAnimationFrame(render);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const progressBar = document.getElementById('loader-progress');
+        if (progressBar) {
+            setTimeout(() => {
+                progressBar.style.width = '100%';
+            }, 100);
+        }
+    });
+</script>
+<!-- Subtle Vignette and Texture Layer -->
+<div class="fixed inset-0 pointer-events-none z-20 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,74,198,0.03)_100%)]"></div>
+<div class="fixed inset-0 pointer-events-none z-20 opacity-[0.02] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+</body></html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Activity History - Lost & Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#b4c5ff",
+                        "background": "#f7f9fb",
+                        "primary-container": "#2563eb",
+                        "on-secondary-container": "#006172",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary": "#00687a",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "on-secondary-fixed": "#001f26",
+                        "on-tertiary-container": "#b1fff1",
+                        "surface-variant": "#e0e3e5",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "inverse-surface": "#2d3133",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-background": "#191c1e",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container": "#eceef0",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "secondary-container": "#57dffe",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#00201c",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f7f9fb",
+                        "tertiary-container": "#007b6e",
+                        "tertiary": "#006056",
+                        "primary": "#004ac6",
+                        "outline": "#737686",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#acedff",
+                        "on-surface-variant": "#434655",
+                        "surface-tint": "#0053db"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "lg": "24px",
+                        "margin-tablet": "24px",
+                        "unit": "8px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-lg min-h-screen pb-24">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">menu</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost & Found BD</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20 bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="Professional studio portrait of a Bangladeshi man in a blue shirt, smiling warmly against a soft-focus urban background. High-end lifestyle photography style with clean natural lighting and shallow depth of field, reflecting a verified community member persona for a premium digital service." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvhvcjMO1MNmq91M9NpOcvBU5Y4q59KT2ougL5szO4MNLJXtxcGPd30-5fCCpKmQ85i8JmUOSby578ZDVkzeqH1LrZ1Trnj9NAo77wA9LFwTL5M4vVINLE8DpOvVQpXG9XvgJdpyFK24XwUHtCsbXO_l4w9x-E1Wkf8Af71L1U2m6n_vxpgU_XLSEXEDBIMxjusMyL4JchwKrqpWZTt1h-KJkgKi1Cb5dLUarF81_rexTfUcFopSySFw"/>
+</div>
+</div>
+</header>
+<main class="pt-20 px-margin-mobile max-w-4xl mx-auto">
+<!-- Search & Filter Section -->
+<section class="mt-6 mb-8 animate-fade-in" style="animation-delay: 0.1s;">
+<h2 class="font-title-lg text-title-lg text-on-surface mb-2">Activity History</h2>
+<p class="font-body-md text-on-surface-variant mb-6">Track and manage your past reports and successful returns.</p>
+<div class="flex flex-col gap-4">
+<!-- Search Bar -->
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low rounded-xl border-none focus:ring-2 focus:ring-primary transition-all font-body-md shadow-sm" placeholder="Search item name, location, or tag..." type="text"/>
+</div>
+<!-- Chips Filter -->
+<div class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar">
+<button class="px-6 py-2 rounded-full bg-primary text-on-primary font-label-lg whitespace-nowrap shadow-md shadow-primary/20">All Activity</button>
+<button class="px-6 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-lg whitespace-nowrap hover:bg-secondary-container/80 transition-colors">Lost Reports</button>
+<button class="px-6 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-lg whitespace-nowrap hover:bg-secondary-container/80 transition-colors">Found Reports</button>
+<button class="px-6 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-lg whitespace-nowrap hover:bg-secondary-container/80 transition-colors">Successful Returns</button>
+</div>
+</div>
+</section>
+<!-- Timeline / History List -->
+<div class="space-y-6 relative before:absolute before:left-[19px] before:top-4 before:bottom-4 before:w-[2px] before:bg-outline-variant/30">
+<!-- Entry 1: Successful Return -->
+<div class="relative pl-12 animate-fade-in" style="animation-delay: 0.2s;">
+<div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-tertiary flex items-center justify-center text-on-tertiary z-10 shadow-lg shadow-tertiary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-white/50 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Black Leather Wallet</h3>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Found Report • Dec 12, 2023</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-lg">Returned</span>
+</div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A high-quality close-up of a minimalist black leather wallet lying on a clean white surface. The lighting is soft and professional, highlighting the texture of the leather. This image represents a found item in a premium lost and found application, emphasizing clarity and trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuArGyHUmsG0fxk7XizZXm2E9zIAyyUGGX9oj8NG_1gHotdA-1cTT_L6lTk3e2fcuhSwOBsMhoFSKCjDVhVAcu6ug8FpTy0Z6zuegFm3UumkLhnQpaEAQlugywWq9jDjTxuM3ff4GRiend3idnGWZzKYSa-KlZbbjVVsMJgY0bD4W1Y1pFKuKKO8NIY6jA7S_fUzK8vhqXObujAZabS8cn1iSvdiPgh9ZSy1qya0DCI5TMON8yQB-IpMhA"/>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface-variant line-clamp-2">Successfully returned to the owner at Jamuna Future Park, Dhaka. Verified through ID check.</p>
+</div>
+</div>
+<div class="flex justify-end gap-3">
+<button class="px-4 py-2 text-primary font-label-lg hover:bg-primary/5 rounded-lg transition-colors">View Details</button>
+</div>
+</div>
+</div>
+<!-- Entry 2: Closed/Lost -->
+<div class="relative pl-12 animate-fade-in" style="animation-delay: 0.3s;">
+<div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-outline z-10 shadow-sm">
+<span class="material-symbols-outlined">history_toggle_off</span>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-white/50 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">iPhone 13 Pro (Blue)</h3>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Lost Report • Nov 28, 2023</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-lg">Closed</span>
+</div>
+<div class="mb-4">
+<p class="font-body-md text-on-surface-variant">Report marked as closed after 30 days without matches. Lost near Dhanmondi Lake area.</p>
+</div>
+<div class="flex justify-end gap-3">
+<button class="flex items-center gap-2 px-6 py-2 bg-primary rounded-full text-on-primary font-label-lg shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]">repartition</span>
+                            Re-post
+                        </button>
+</div>
+</div>
+</div>
+<!-- Entry 3: Archived Found -->
+<div class="relative pl-12 animate-fade-in" style="animation-delay: 0.4s;">
+<div class="absolute left-0 top-1 w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed z-10 shadow-md">
+<span class="material-symbols-outlined">inventory_2</span>
+</div>
+<div class="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-white/50 group hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Car Keys (Toyota)</h3>
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-wider">Found Report • Oct 15, 2023</p>
+</div>
+<span class="px-3 py-1 rounded-full bg-outline-variant text-on-surface font-label-lg">Archived</span>
+</div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-16 h-16 rounded-lg bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-3xl">vpn_key</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-on-surface-variant">Handed over to local security desk at Banani Road 11. Reference ID: #KY-9921.</p>
+</div>
+</div>
+<div class="flex justify-end gap-3">
+<button class="px-4 py-2 text-primary font-label-lg hover:bg-primary/5 rounded-lg transition-colors">View Archived Details</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Helper (Hidden by default) -->
+<div class="hidden flex-col items-center justify-center py-20 text-center">
+<div class="w-24 h-24 rounded-full bg-surface-container-high flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-5xl text-outline-variant">history</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-2">No past activity found</h3>
+<p class="font-body-md text-on-surface-variant max-w-xs">Items you report lost or found will appear here once they are resolved.</p>
+</div>
+</main>
+<!-- Navigation Shell (BottomNavBar) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/10 p-2 rounded-xl transition-all">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/10 p-2 rounded-xl transition-all">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full w-14 h-14 -mt-8 shadow-xl shadow-primary/30 scale-110 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-white/10 p-2 rounded-xl transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary rounded-xl px-3 py-1 transition-all">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</button>
+</nav>
+<script>
+        // Simple Micro-interaction for filter chips
+        const chips = document.querySelectorAll('.flex.gap-2 button');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => {
+                    c.classList.remove('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/20');
+                    c.classList.add('bg-secondary-container', 'text-on-secondary-container');
+                });
+                chip.classList.add('bg-primary', 'text-on-primary', 'shadow-md', 'shadow-primary/20');
+                chip.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+            });
+        });
+
+        // Re-post button interaction
+        const repostBtn = document.querySelector('button:has(span:contains("repartition"))');
+        if(repostBtn) {
+            repostBtn.addEventListener('click', () => {
+                repostBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Posting...';
+                setTimeout(() => {
+                    repostBtn.innerHTML = '<span class="material-symbols-outlined">check</span> Success';
+                    repostBtn.classList.replace('bg-primary', 'bg-tertiary');
+                }, 1500);
+            });
+        }
+    </script>
+</body></html>

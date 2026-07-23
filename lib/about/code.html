@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About Us | Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f7f9fb",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e6e8ea",
+                    "on-secondary-fixed": "#001f26",
+                    "secondary-fixed": "#acedff",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "secondary": "#00687a",
+                    "on-tertiary-fixed": "#00201c",
+                    "tertiary-fixed": "#71f8e4",
+                    "secondary-container": "#57dffe",
+                    "primary-fixed": "#dbe1ff",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d8dadc",
+                    "on-error": "#ffffff",
+                    "surface-container": "#eceef0",
+                    "primary-container": "#2563eb",
+                    "on-surface": "#191c1e",
+                    "error": "#ba1a1a",
+                    "on-secondary": "#ffffff",
+                    "surface-bright": "#f7f9fb",
+                    "inverse-primary": "#b4c5ff",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-primary": "#ffffff",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "on-primary-container": "#eeefff",
+                    "surface-container-low": "#f2f4f6",
+                    "outline": "#737686",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "on-primary-fixed": "#00174b",
+                    "tertiary": "#006056",
+                    "tertiary-container": "#007b6e",
+                    "on-tertiary": "#ffffff",
+                    "inverse-on-surface": "#eff1f3",
+                    "outline-variant": "#c3c6d7",
+                    "on-secondary-container": "#006172",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "on-surface-variant": "#434655",
+                    "background": "#f7f9fb",
+                    "on-tertiary-container": "#b1fff1",
+                    "on-background": "#191c1e",
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-surface": "#2d3133",
+                    "primary": "#004ac6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "sm": "8px",
+                    "2xl": "48px",
+                    "xl": "32px",
+                    "margin-mobile": "16px",
+                    "gutter": "16px",
+                    "xs": "4px",
+                    "md": "16px",
+                    "unit": "8px",
+                    "lg": "24px",
+                    "margin-tablet": "24px"
+            },
+            "fontFamily": {
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fb; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #004ac6, #00687a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .primary-gradient-btn {
+            background: linear-gradient(90deg, #004ac6, #00687a);
+        }
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .float-animation { animation: subtle-float 6s ease-in-out infinite; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">menu</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a modern user in a clean corporate setting, soft high-key lighting, minimalist blue background, 8k resolution, premium digital aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS16IGW1raTdN1vsdYZmPXEMuW1BF892kRxJ1LzgPsrImbjWJ-wk6rV7ynuqZ50oRu9XgoE7RyJrlxJFu6aPsHqZk-_DC2gRc_8h4IQlmwC9woUkN4QyyVbisL8LYB8Kv_4FmxbocPHcRU3oymIghc_Pov2IKmduepoZy10VpYUqamHmKBYtfRhwScRkDKSEPJxEwYbWvxxei8Er5VM8_eYWojdQdxgASk7Xf2HXf-U7UkOc_EHwPCow"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile md:px-margin-tablet max-w-4xl mx-auto space-y-lg">
+<!-- Hero Section: Logo & Version -->
+<section class="text-center space-y-md py-lg relative overflow-hidden">
+
+<div class="inline-block p-6 rounded-3xl bg-white shadow-xl shadow-primary/10 float-animation">
+<span class="material-symbols-outlined text-[64px] text-primary" style="font-variation-settings: 'FILL' 1;">travel_explore</span>
+</div>
+<div class="space-y-xs">
+<h2 class="font-headline-lg text-headline-lg text-primary">Lost &amp; Found BD</h2>
+<p class="font-label-lg text-label-lg text-outline">v2.4.0 (Stable Build)</p>
+</div>
+</section>
+<!-- Bento Grid: Content Sections -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Our Mission Card -->
+<div class="glass-card p-lg rounded-3xl shadow-sm hover:shadow-md transition-shadow md:col-span-2">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h3 class="font-title-lg text-title-lg">Our Mission</h3>
+</div>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                    We aim to build a trust-based ecosystem where lost valuables find their way home. In a bustling nation like Bangladesh, we bridge the gap between finders and owners using cutting-edge technology and community-driven integrity. Our goal is to reduce the stress of loss and celebrate the honesty of our fellow citizens.
+                </p>
+</div>
+<!-- How it Works Card -->
+<div class="glass-card p-lg rounded-3xl shadow-sm border-l-4 border-primary">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary">settings_suggest</span>
+<h3 class="font-title-lg text-title-lg">How it Works</h3>
+</div>
+<ul class="space-y-sm">
+<li class="flex gap-sm items-start">
+<span class="bg-primary-container text-on-primary-container px-2 rounded-lg font-bold">1</span>
+<p class="font-body-md text-body-md">Report your lost item or found artifact with photos and location details.</p>
+</li>
+<li class="flex gap-sm items-start">
+<span class="bg-primary-container text-on-primary-container px-2 rounded-lg font-bold">2</span>
+<p class="font-body-md text-body-md">Our AI matches reports based on visual data and geolocation proximity.</p>
+</li>
+<li class="flex gap-sm items-start">
+<span class="bg-primary-container text-on-primary-container px-2 rounded-lg font-bold">3</span>
+<p class="font-body-md text-body-md">Securely connect with the other party to verify ownership and arrange returns.</p>
+</li>
+</ul>
+</div>
+<!-- Meet the Team Action Card -->
+<div class="relative overflow-hidden p-lg rounded-3xl bg-secondary text-on-secondary shadow-lg group cursor-pointer active:scale-[0.98] transition-all">
+<div class="absolute inset-0 opacity-20 group-hover:scale-110 transition-transform duration-700 bg-cover bg-center" data-alt="A candid, high-quality photograph of a diverse team of tech professionals working in a modern, plant-filled office in Dhaka. Warm natural lighting, collaborative atmosphere, focus on smiling faces and laptops. Professional minimalism style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDsH2Z83kvFNP5jgN3AMKgCbN93pFzYMlZasWXfm9iILV-50EaunnJauDKC91qZT1A36tgjTN1gAsJ0oSWnPS3VXvffmEUMXJEal4KmrIS7qf-ZyAIu4YC-2JSNt4okeV1NskE3LzdqUCdo9essWgqJ95jBa0ZKM0H9y40rQg-I11MXKQvwpM0ytSoWoMIO6pwyirPlX6AhGxdizxpKiNPE7gT-y909qGjbt_KPbEb1EyEZfkkw5S9Vvg')"></div>
+<div class="relative z-10 flex flex-col h-full justify-between gap-xl">
+<h3 class="font-title-lg text-title-lg">Join the Journey</h3>
+<p class="font-body-md text-body-md opacity-90">Meet the engineers, designers, and community leaders behind this initiative.</p>
+<div class="flex items-center gap-xs font-label-lg">
+<span>Meet the Team</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Social & Community Section -->
+<section class="glass-card p-lg rounded-3xl text-center space-y-md border-t-4 border-secondary-container">
+<h3 class="font-title-md text-title-md text-outline-variant tracking-widest uppercase">Stay Connected</h3>
+<div class="flex justify-center gap-lg">
+<a class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all scale-100 active:scale-90" href="#">
+<span class="material-symbols-outlined">public</span>
+</a>
+<a class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all scale-100 active:scale-90" href="#">
+<span class="material-symbols-outlined">groups</span>
+</a>
+<a class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all scale-100 active:scale-90" href="#">
+<span class="material-symbols-outlined">mail</span>
+</a>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm mx-auto">
+                Join our community of over 50,000 verified users across Bangladesh.
+            </p>
+</section>
+<!-- Footer Note -->
+<footer class="text-center py-md space-y-xs opacity-60">
+<p class="font-label-sm text-label-sm">Made with ❤️ in Dhaka, Bangladesh</p>
+<p class="font-label-sm text-label-sm">© 2024 Lost &amp; Found BD Foundation</p>
+</footer>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl flex justify-around items-center px-4 pb-4 pt-2 shadow-[0_-4px_20px_rgba(0,74,198,0.1)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</nav>
+<!-- Interaction Script -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ripple-like effect on glass cards
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+                });
+            });
+        });
+    </script>
+</body></html>

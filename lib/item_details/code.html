@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lost &amp; Found BD - Item Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-highest": "#e0e3e5",
+                    "inverse-surface": "#2d3133",
+                    "on-primary-container": "#eeefff",
+                    "on-surface-variant": "#434655",
+                    "on-tertiary-fixed": "#00201c",
+                    "tertiary-fixed": "#71f8e4",
+                    "outline": "#737686",
+                    "on-tertiary": "#ffffff",
+                    "tertiary": "#006056",
+                    "on-primary-fixed": "#00174b",
+                    "surface-tint": "#0053db",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "inverse-on-surface": "#eff1f3",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#006172",
+                    "secondary-container": "#57dffe",
+                    "primary-container": "#2563eb",
+                    "surface": "#f7f9fb",
+                    "primary": "#004ac6",
+                    "error": "#ba1a1a",
+                    "inverse-primary": "#b4c5ff",
+                    "background": "#f7f9fb",
+                    "surface-variant": "#e0e3e5",
+                    "on-secondary": "#ffffff",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed": "#dbe1ff",
+                    "secondary-fixed": "#acedff",
+                    "on-tertiary-container": "#b1fff1",
+                    "surface-container-low": "#f2f4f6",
+                    "on-background": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container": "#eceef0",
+                    "on-error-container": "#93000a",
+                    "on-primary": "#ffffff",
+                    "secondary": "#00687a",
+                    "on-surface": "#191c1e",
+                    "on-secondary-fixed": "#001f26",
+                    "surface-bright": "#f7f9fb",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "tertiary-container": "#007b6e",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-primary-fixed-variant": "#003ea8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "margin-tablet": "24px",
+                    "lg": "24px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "xl": "32px",
+                    "2xl": "48px",
+                    "xs": "4px",
+                    "margin-mobile": "16px",
+                    "unit": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+      .ai-gradient {
+        background: linear-gradient(135deg, #004ac6 0%, #00687a 100%);
+      }
+      .no-scrollbar::-webkit-scrollbar {
+        display: none;
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">arrow_back</button>
+<h1 class="font-headline-lg text-headline-lg font-bold text-primary dark:text-primary-fixed">Lost &amp; Found BD</h1>
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-on-surface-variant dark:text-outline-variant hover:opacity-80 transition-opacity">share</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional close-up studio portrait of a young South Asian man with a friendly expression. The lighting is soft and cinematic, following a premium light-mode aesthetic with a blurred, clean office background. The colors are natural and warm, emphasizing reliability and professional trust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCztGjhDTCs2SZU0lH197e-t1Z_fvJ_OBdm-AZUmWaxjcsszu2gY4JNaSzd-wStsNcvn-JcCGQBRAftr29epQD6exLn0g2wrUvUulNutOla9HV_tMrzOL55Fdto75nny9RZenOXZfbSJdCnkKomcOXnYflipcBsawhvffvMWarnjCd_0VuOU6hyntgbIa7goMcq1Rl3KS7aeWV6nIdu9miw4Z6MQFbYwpqqCHFIcEO9h7L65caoSMxSAQ"/>
+</div>
+</div>
+</header>
+<main class="pt-16 max-w-4xl mx-auto">
+<!-- Image Gallery Carousel -->
+<section class="relative group">
+<div class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar h-[400px] md:h-[500px]">
+<div class="flex-none w-full snap-start relative">
+<img class="w-full h-full object-cover" data-alt="A premium high-resolution photograph of a lost silver MacBook Pro 14-inch resting on a clean, modern white marble countertop. The lighting is bright and airy with soft shadows, highlighting the metallic texture and sleek design. The background features a subtle, out-of-focus high-end cafe interior with warm wood accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJ6PND3Va_tGuK9ryPhh4QK5fbrck3_ZGGdIhGBBlB7oqf3ooFwnHfcZlGLkbvPGtAzhgMPyf6N5QYrT4vwHuIeJnZ_V_Z3rU74adZSq1XArEALh-zoe0_xBNt4vmBRpQnxLAOjWJX7lV4AY-G0tUK8hntXJQFFapefwyv95vNJjw6QCQ95wGppG-C4JowJUMz0ycqrWH6fpIm_x-cYgqVMXdKYdQSFnA0OgUvH7hdWwzkkAlMN8XDlA"/>
+</div>
+<div class="flex-none w-full snap-start relative">
+<img class="w-full h-full object-cover" data-alt="A detailed macro shot showing the serial number and a small unique scratch on the corner of a silver laptop. The image is captured with a professional shallow depth of field, emphasizing the specific identifying marks. The lighting is clinical yet soft, maintaining the premium professional minimalism aesthetic of the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4YSB4wiLq_MdWCa6kfoDqH1T1W6Z7ico26w4CScHmyV2TuBU535DggsqPHBroaM2yKWI0sPCACozU2WKEeSqSxouDZjKi9WrKRogimzhDWA_46zylrIJJWuzUPgXcQYUUqqJQZa3JZgLX6vx_WsaRaLTCPVizRC3OmvmM9f5N6eGSfzv6a1FUfTLM_4QfT5DqJq6TX2o771667gh23iJunwGckgKWySNIeCLDJtw0zdARfM4J1mjt4w"/>
+</div>
+<div class="flex-none w-full snap-start relative">
+<img class="w-full h-full object-cover" data-alt="A wide-angle shot of a sleek laptop sleeve and a branded charger left on a minimalist grey sofa. The scene is illuminated by natural sunlight from a nearby window, creating a serene and calm atmosphere. The color palette is composed of cool greys and soft whites, matching the app's clean visual identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8jhwIESkFOq_IkGpZFh0Wy1KhgNdfMF25TIDQEzEpejT3lYzYT7xY5HlGx6LjZTv7b1Imxy2-4t3qP8HE1VbYTY02gNog75OpzqDq9hmdd8mCQ3QQLLO4g3_lUqz9IGrCNjvw04q3CtaQUBY3faxqnn5STD9ktKm0MHHvAAvGIIMLtULAcsnN5mlz21yU8PXtRFzOWmWalWL_-6k_2Ay5CgT0P7rSqMJzPRVW-DFcVGgPXyQXvRJqvg"/>
+</div>
+</div>
+<!-- Pagination Indicators -->
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
+<span class="w-2 h-2 rounded-full bg-white shadow-md"></span>
+<span class="w-2 h-2 rounded-full bg-white/50 shadow-md"></span>
+<span class="w-2 h-2 rounded-full bg-white/50 shadow-md"></span>
+</div>
+<!-- Favorite Toggle -->
+<button class="absolute top-6 right-6 w-12 h-12 rounded-full glass-card flex items-center justify-center text-primary shadow-lg scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+</section>
+<!-- Content Section -->
+<section class="px-margin-mobile -mt-8 relative z-10">
+<div class="glass-card rounded-2xl p-6 shadow-xl shadow-primary/5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<div class="flex gap-2 mb-2">
+<span class="px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">Electronics</span>
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">Found</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">MacBook Pro 14" M2</h2>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span> Found on Oct 24, 2023
+                        </p>
+</div>
+<!-- AI Match Score -->
+<div class="flex flex-col items-center">
+<div class="relative w-16 h-16 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-surface-container-highest" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-primary" cx="32" cy="32" fill="transparent" r="28" stroke="currentColor" stroke-dasharray="176" stroke-dashoffset="26" stroke-width="4"></circle>
+</svg>
+<span class="absolute font-title-md text-title-md text-primary">85%</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1 text-center">AI Match</span>
+</div>
+</div>
+<div class="space-y-6">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface mb-2">Description</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+                            Found a silver MacBook Pro in a black leather sleeve at North End Coffee Roasters, Dhanmondi. The device is in excellent condition. There is a small, distinctive sticker on the bottom right corner of the lid. If this belongs to you, please provide the serial number or describe the sticker to claim.
+                        </p>
+</div>
+<!-- Location Snippet -->
+<div>
+<h3 class="font-title-md text-title-md text-on-surface mb-3">Found Location</h3>
+<div class="rounded-xl overflow-hidden h-48 border border-outline-variant shadow-sm relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-location="Dhanmondi, Dhaka" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaS0CL6wE1Rxo9Behn_-HBMDiZhOQ_4Qe90gkXaUDkzUTo8DMgSRMJKuEFVX5IMmvFAcOQT1nhHQ9MESG2fQIYLq8a3nPuQs1V81LN55alga3C0w5I9OcNoqvq0p3mRIEpvnnd8Cz5tQGGswuqUXVhIJPCZ5I3_J5To7FQ7_nDTwlFYljmgxWtUFAq8MssFAOUSSULXCqdNedmwqQpAeD0Rt2Tpjy82ROIVTzdRtsk5QLz9dAIqgCF7w"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-4">
+<div class="flex items-center gap-2 text-white">
+<span class="material-symbols-outlined">location_on</span>
+<span class="font-label-lg text-label-lg">North End Coffee, Dhanmondi 27</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Additional Details Chips -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 rounded-xl bg-surface-container-low border border-white/40">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Color</span>
+<span class="font-title-md text-title-md text-on-surface">Space Silver</span>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-white/40">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block mb-1">Status</span>
+<span class="font-title-md text-title-md text-primary">Verifying Claim</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Action Bar -->
+<div class="fixed bottom-20 left-0 w-full px-margin-mobile z-40 pointer-events-none">
+<div class="max-w-4xl mx-auto flex gap-3 pointer-events-auto">
+<button class="flex-1 h-14 rounded-full ai-gradient text-on-primary font-title-md text-title-md flex items-center justify-center gap-2 shadow-lg shadow-primary/20 scale-100 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">chat</span>
+                Chat with Owner
+            </button>
+<button class="flex-1 h-14 rounded-full bg-surface-container-highest text-on-surface font-title-md text-title-md flex items-center justify-center gap-2 border border-outline-variant scale-100 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">verified</span>
+                Claim Item
+            </button>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</div>
+</nav>
+<script>
+        // Simple micro-interaction for the carousel
+        const carousel = document.querySelector('.overflow-x-auto');
+        const dots = document.querySelectorAll('.absolute.bottom-6 span');
+        
+        carousel.addEventListener('scroll', () => {
+            const scrollIndex = Math.round(carousel.scrollLeft / carousel.offsetWidth);
+            dots.forEach((dot, idx) => {
+                dot.style.opacity = idx === scrollIndex ? '1' : '0.5';
+                dot.style.width = idx === scrollIndex ? '12px' : '8px';
+            });
+        });
+
+        // Favorite toggle micro-interaction
+        const favBtn = document.querySelector('button .material-symbols-outlined[style*="favorite"]');
+        let isFav = false;
+        favBtn.parentElement.addEventListener('click', () => {
+            isFav = !isFav;
+            favBtn.style.fontVariationSettings = isFav ? "'FILL' 1" : "'FILL' 0";
+            favBtn.classList.toggle('text-error', isFav);
+        });
+    </script>
+</body></html>

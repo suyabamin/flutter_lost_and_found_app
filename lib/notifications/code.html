@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notifications - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary": "#00687a",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-dim": "#d8dadc",
+                    "primary-fixed-dim": "#b4c5ff",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "on-primary": "#ffffff",
+                    "surface-tint": "#0053db",
+                    "on-surface-variant": "#434655",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-low": "#f2f4f6",
+                    "primary-fixed": "#dbe1ff",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#001f26",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#191c1e",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "on-secondary": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary-container": "#eeefff",
+                    "surface": "#f7f9fb",
+                    "surface-bright": "#f7f9fb",
+                    "surface-container": "#eceef0",
+                    "tertiary": "#006056",
+                    "on-secondary-container": "#006172",
+                    "outline": "#737686",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "primary": "#004ac6",
+                    "inverse-primary": "#b4c5ff",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "tertiary-fixed": "#71f8e4",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "tertiary-container": "#007b6e",
+                    "on-tertiary-container": "#b1fff1",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#2563eb",
+                    "on-surface": "#191c1e",
+                    "surface-container-high": "#e6e8ea",
+                    "error-container": "#ffdad6",
+                    "secondary-fixed": "#acedff",
+                    "on-tertiary-fixed": "#00201c",
+                    "background": "#f7f9fb",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c3c6d7",
+                    "inverse-surface": "#2d3133",
+                    "secondary-container": "#57dffe",
+                    "on-primary-fixed": "#00174b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "24px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "2xl": "48px",
+                    "gutter": "16px",
+                    "unit": "8px",
+                    "lg": "24px",
+                    "sm": "8px",
+                    "md": "16px",
+                    "xl": "32px",
+                    "margin-tablet": "24px",
+                    "xs": "4px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f7f9fb;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .ai-match-glow {
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .unread-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #004ac6;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">arrow_back</button>
+<h1 class="font-title-lg text-title-lg text-primary">Alerts</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">settings</button>
+<img class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/10" data-alt="A professional headshot of a young Bangladeshi man with a clean haircut and modern glasses, wearing a smart casual linen shirt. The portrait is set against a soft, out-of-focus urban background with cool blue and grey tones, matching the premium minimalist aesthetic of the Lost and Found BD app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEHDRKXwHSVx7c-GO4hLVgnTkbTlP2tOp7XJnmcsH8n8xWFc6jlr4ysMjyvSD9_YC5hxAvV6_wnLTJ4GMtur0oDsPtKtOvRlj0BpOMWydkt1n6OZYT6Ux8U-95dlvFSP1ONE-9HJJlGc0mSfSJIt-gWASVvJgSmxEWhh4yK9Ev9DKJmjRdWnMnEvhU5CG9PcNb5pICqBtCYULZYeMMTSGp9kNhSw9fFMSZvZFXwHOoGk7YoHOG4ghMfg"/>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile max-w-2xl mx-auto space-y-md">
+<!-- Action Header -->
+<div class="flex justify-between items-center mb-lg">
+<h2 class="font-title-md text-title-md text-on-surface">Recent Updates</h2>
+<button class="font-label-lg text-label-lg text-primary px-4 py-2 rounded-full hover:bg-primary/5 transition-colors">
+                Mark all as read
+            </button>
+</div>
+<!-- Notification List -->
+<div class="space-y-md">
+<!-- AI Match Category (Blue Glow) -->
+<div class="glass-card ai-match-glow p-md rounded-2xl flex gap-md relative overflow-hidden group transition-all hover:scale-[1.01] active:scale-95">
+<div class="absolute top-0 right-0 p-3">
+<div class="unread-dot"></div>
+</div>
+<div class="w-12 h-12 bg-primary-container/20 rounded-xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex-1 space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">AI Match Found</span>
+<span class="font-label-sm text-label-sm text-outline">2m ago</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface">Potential Match: Black Leather Wallet</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">Our AI found a 94% match for your reported lost item near Gulshan 2. Check the details now.</p>
+</div>
+</div>
+<!-- Message Category -->
+<div class="glass-card p-md rounded-2xl flex gap-md transition-all hover:scale-[1.01] active:scale-95">
+<div class="w-12 h-12 shrink-0 relative">
+<img class="w-12 h-12 rounded-full object-cover" data-alt="A candid profile photo of a person smiling, captured in high-definition with soft, cinematic lighting. The color palette is clean, featuring whites and soft blues that align with a professional, trustworthy messaging interface for a community-based lost and found platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiDIVN2ESH_S8szsI4M45yP3OWsPFGn8THrVOL8If4r6Ywik6E3n-CFNZ03W-DFXGqSsof9K806fvQnpuBwHF7PV6kkv9cHH1wuydoS2TWEaVcUB1mct1hqsdk27W7ZxBuL_L_o6-eWPslQZ3pG3nLjk-AQKOfiIPd7LkOq16pY98_9NazH6Ln5L_N-Z6jC6D043-QfqKBYdtsrhViAg_0UjJg7dkJnuumUHV81tJpQH19QXDSLxC6jg"/>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 bg-secondary rounded-full flex items-center justify-center border-2 border-surface">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'wght' 600;">mail</span>
+</div>
+</div>
+<div class="flex-1 space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-secondary">New Message</span>
+<span class="font-label-sm text-label-sm text-outline">15m ago</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface">Rahat Khan</h3>
+<p class="font-body-md text-body-md text-on-surface-variant italic">"I think I found your keys at the coffee shop..."</p>
+</div>
+</div>
+<!-- System Alert Category -->
+<div class="glass-card p-md rounded-2xl flex gap-md transition-all hover:scale-[1.01] active:scale-95 opacity-80">
+<div class="w-12 h-12 bg-surface-container-high rounded-xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">verified_user</span>
+</div>
+<div class="flex-1 space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-outline">Security</span>
+<span class="font-label-sm text-label-sm text-outline">2h ago</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface">Account Verified</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Your profile verification is complete. You can now post high-priority alerts.</p>
+</div>
+</div>
+<!-- AI Match Category -->
+<div class="glass-card ai-match-glow p-md rounded-2xl flex gap-md transition-all hover:scale-[1.01] active:scale-95">
+<div class="w-12 h-12 bg-primary-container/20 rounded-xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">pets</span>
+</div>
+<div class="flex-1 space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">AI Match Found</span>
+<span class="font-label-sm text-label-sm text-outline">5h ago</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface">Found: Golden Retriever</h3>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-2">A pet matching your description was just spotted in Dhanmondi Lake area. Location data updated.</p>
+</div>
+</div>
+<!-- System Alert -->
+<div class="glass-card p-md rounded-2xl flex gap-md transition-all hover:scale-[1.01] active:scale-95 opacity-80">
+<div class="w-12 h-12 bg-surface-container-high rounded-xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant">update</span>
+</div>
+<div class="flex-1 space-y-xs">
+<div class="flex justify-between items-start">
+<span class="font-label-sm text-label-sm text-outline">System</span>
+<span class="font-label-sm text-label-sm text-outline">Yesterday</span>
+</div>
+<h3 class="font-title-md text-title-md text-on-surface">App Update Available</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">v2.4.0 is here with improved AI mapping and real-time chat features.</p>
+</div>
+</div>
+</div>
+<!-- Empty State (Hidden) -->
+<div class="hidden flex-col items-center justify-center py-2xl space-y-md text-center" id="empty-state">
+<div class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-4xl">notifications_off</span>
+</div>
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface">All caught up!</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">We'll let you know when something important happens.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 p-2" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for marking as read
+        document.querySelector('button.font-label-lg').addEventListener('click', function() {
+            const dots = document.querySelectorAll('.unread-dot');
+            dots.forEach(dot => {
+                dot.style.opacity = '0';
+                dot.style.transform = 'scale(0)';
+                dot.parentElement.parentElement.classList.add('opacity-80');
+            });
+            this.textContent = 'All read';
+            this.classList.add('opacity-50');
+            this.disabled = true;
+        });
+
+        // Simple card interaction simulation
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const dot = this.querySelector('.unread-dot');
+                if (dot) {
+                    dot.style.opacity = '0';
+                    this.classList.add('opacity-80');
+                }
+            });
+        });
+    </script>
+</body></html>

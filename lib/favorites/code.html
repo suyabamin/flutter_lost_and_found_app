@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Favorites - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#00174b",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "primary-container": "#2563eb",
+                        "on-surface-variant": "#434655",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#71f8e4",
+                        "secondary": "#00687a",
+                        "inverse-surface": "#2d3133",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#006172",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-tertiary-container": "#b1fff1",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#191c1e",
+                        "surface-tint": "#0053db",
+                        "surface": "#f7f9fb",
+                        "background": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "outline": "#737686",
+                        "secondary-container": "#57dffe",
+                        "tertiary": "#006056",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "surface-container": "#eceef0",
+                        "primary-fixed": "#dbe1ff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container-highest": "#e0e3e5",
+                        "tertiary-container": "#007b6e",
+                        "on-secondary-fixed": "#001f26",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed": "#acedff",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-error-container": "#93000a",
+                        "primary": "#004ac6",
+                        "outline-variant": "#c3c6d7",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "md": "16px",
+                        "margin-tablet": "24px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "8px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .fill-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- Top AppBar (from JSON) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">Lost &amp; Found BD</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a young Bangladeshi man in a modern office setting. He is smiling warmly, wearing a crisp white shirt. The background is a soft-focus urban workspace with blue and teal ambient lighting, reflecting a premium digital professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAo-6N221kalGJsRDbIQ0Q2XN0twcUAbs73rM5GpcFa7sjuHn094fHSyn-8mBkGemCMc_RSTejnwVApE5X8Bv3xY0FagqfUyFJScluP-4jb6LQlrJN8v4QVWxR-L5FLG62A-68aKbJoZpTfAfOpkpCbyBd234LiEnSkHpk-gbS9UpiGEiNynh-LvPs0tKSqRWQVqdYoiOdNYJrQT5V0RN7R2zjLn8W7fkAJLqaiBuZq74cwfGqxTdUmzg"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-margin-mobile max-w-4xl mx-auto">
+<!-- Section Header -->
+<div class="mb-8">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Saved Items</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your tracked lost and found reports.</p>
+</div>
+<!-- 2-Column Bento/Grid Layout -->
+<div class="grid grid-cols-2 gap-4 md:gap-6">
+<!-- Item Card 1 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col shadow-sm shadow-primary/10 group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+<div class="relative h-40 md:h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-quality close-up of a premium leather wallet lying on a clean, light-colored wooden table. The lighting is soft and natural, coming from a nearby window, creating gentle shadows. The aesthetic is clean and professional, focusing on the texture of the brown leather. Minimalist and calm mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDWp45dWdBcmj_Da_SAIw4ORizZGdLT7RIi_fcbkSzF5GrdN35HOnR0g8x3tfuJa-IO-TBwnxIoL2cgf410zQpzk9Yj95vNpSObz_x2rkqqDSZiRZUul-DgWyYoONf8cgz71TsYdVCOg1v12broZmmnavV2gPd107ko_LUonsyKBUQkLbFUCPE-ciAZoMFgy7Qt0Jf9wUjhTNv03vJewi1YbaofFPkEfZjZuAF96FQdFVacoy8pF8ng5w"/>
+<button class="absolute top-2 right-2 w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-error transition-all hover:bg-white/60 active:scale-90">
+<span class="material-symbols-outlined fill-icon" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<div class="absolute bottom-2 left-2 px-3 py-1 bg-secondary-container/80 backdrop-blur-md rounded-full">
+<span class="font-label-sm text-label-sm text-on-secondary-container">Lost</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface truncate">Brown Leather Wallet</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+<span class="font-body-md text-body-md">Gulshan 2, Dhaka</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-outline">2 days ago</span>
+<button class="p-2 rounded-full text-primary hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item Card 2 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col shadow-sm shadow-primary/10 group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+<div class="relative h-40 md:h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A cute golden retriever puppy sitting patiently in a lush green park in Dhaka. The lighting is the golden hour sun, casting warm glows on the dog's fur. The background features blurred tropical trees and a soft blue sky, maintaining a premium and emotional visual tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkuHzYKWiWux8Vhmg4rRO3CFr1yQCkPgU-tGze0gHNOArx5stmSDBgTtfwC9UpOrlM_VGKh_6OI7pio9bwMnn0hGb6L_mlIAfRaXXkAE-gCTiZog0jJUbxmqLZz_ERIY-6MsPgNxGEQQ26pspjkIc1sFuOmfEHxZ1Eje52YM815709Cm37xEC-BoS-X_vtP2Zqs6vnyOqkyyTgj4xMW372uhi-zcq-tShL5geKevHu6kHAdr1fNEBDWg"/>
+<button class="absolute top-2 right-2 w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-error transition-all hover:bg-white/60 active:scale-90">
+<span class="material-symbols-outlined fill-icon" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<div class="absolute bottom-2 left-2 px-3 py-1 bg-tertiary-container/80 backdrop-blur-md rounded-full">
+<span class="font-label-sm text-label-sm text-on-tertiary-container">Found</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface truncate">Golden Retriever</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+<span class="font-body-md text-body-md">Banani DOHS</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-outline">5 hours ago</span>
+<button class="p-2 rounded-full text-primary hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item Card 3 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col shadow-sm shadow-primary/10 group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+<div class="relative h-40 md:h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A modern set of silver car keys with a sleek remote fob, resting on a polished dark marble surface. The lighting is sophisticated and moody, with blue and white reflections highlighting the metallic surfaces of the keys. The composition is artistic and minimalist, evoking a premium urban feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-vLRTZCNrUDqEg2DKJOQEoP1bwv2NhJAXcx5W-XYvQD6X5qq-yDJGELHlP5tfR_ntbJeK6ktqKkPvzHwvxkbUZd7cwWS6pR4osCFA53aeEf5rdtpH_qINQrQDM7_Vs873oo_y7rCmdv5nhdHcNIuBhGn9tVAyTxixrdQFvVSbi_TjYny5owrqePdhr-SxNo8sN9hFzNiNrfomNOL7y9o52Y-EloLmNrqJkPDCzH0e0ppIK-ENRZ2TdA"/>
+<button class="absolute top-2 right-2 w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-error transition-all hover:bg-white/60 active:scale-90">
+<span class="material-symbols-outlined fill-icon" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<div class="absolute bottom-2 left-2 px-3 py-1 bg-secondary-container/80 backdrop-blur-md rounded-full">
+<span class="font-label-sm text-label-sm text-on-secondary-container">Lost</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface truncate">Toyota Car Keys</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+<span class="font-body-md text-body-md">Dhanmondi 27</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-outline">Yesterday</span>
+<button class="p-2 rounded-full text-primary hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Item Card 4 -->
+<div class="glass-card rounded-xl overflow-hidden flex flex-col shadow-sm shadow-primary/10 group transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+<div class="relative h-40 md:h-56 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="An elegant, minimalist designer handbag in soft cream leather, placed against a neutral architectural concrete wall. The lighting is diffused and bright, creating a clean light-mode aesthetic with subtle depth. The focus is on the craftsmanship and premium quality of the item, presented in an editorial fashion." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVTq_bKYjjR2h8jNzOBlNEsbvxBH7QWfc2eivScGAMYRFsyf9SGSXg1IjItrdAVAXw0iynDvKE3kuovO10wLZGdJ3I0uRywE1ovo8flwz10i4HM_vKwtcjmgg01RdWNLsWoT1f6CiH5Egt4B8Fb3OQbgpk97OGJMzSm6VIPziKmiDqEh7iVgMwTpvuWOK6HfauxkK012Z7JX98yaSEU0ooGqNQNwWbQovmGtNt6Rj--sX2j1_mxvw5dg"/>
+<button class="absolute top-2 right-2 w-10 h-10 rounded-full bg-white/40 backdrop-blur-md flex items-center justify-center text-error transition-all hover:bg-white/60 active:scale-90">
+<span class="material-symbols-outlined fill-icon" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<div class="absolute bottom-2 left-2 px-3 py-1 bg-tertiary-container/80 backdrop-blur-md rounded-full">
+<span class="font-label-sm text-label-sm text-on-tertiary-container">Found</span>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface truncate">Cream Handbag</h3>
+<div class="flex items-center gap-1 text-on-surface-variant mt-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="location_on">location_on</span>
+<span class="font-body-md text-body-md">Jamuna Future Park</span>
+</div>
+</div>
+<div class="mt-4 flex justify-between items-center">
+<span class="font-label-sm text-label-sm text-outline">3 days ago</span>
+<button class="p-2 rounded-full text-primary hover:bg-primary-container/20 transition-colors">
+<span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Optional Bottom Action for Empty State Concept (Hidden here but ready) -->
+<div class="hidden flex flex-col items-center justify-center py-20 text-center" id="empty-state">
+<div class="w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-outline text-5xl" data-icon="heart_broken">heart_broken</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-2">No Favorites Yet</h3>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xs">Items you heart will appear here so you can keep track of them easily.</p>
+<button class="mt-8 px-6 py-3 bg-primary text-on-primary rounded-full font-label-lg text-label-lg shadow-lg shadow-primary/20 hover:opacity-90 transition-all active:scale-95">
+                Explore Items
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar (from JSON) -->
+<!-- Destination Rule: Render for top-level ecosystem -->
+<!-- Active State Logic: Mapping "Saved Items" (Navigation Drawer) usually falls under "Profile" or "Home" but here we map to Profile for user's personal space -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="add_circle">add_circle</span>
+<span class="font-label-sm text-label-sm text-primary">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<!-- Active: Profile (Since Saved/Favorites is a personal feature) -->
+<a class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Floating Action Button (FAB) - Suppressed on details but useful on collection lists -->
+<button class="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-tr from-primary to-primary-container text-on-primary rounded-xl shadow-2xl shadow-primary/30 flex items-center justify-center group active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-90 transition-transform duration-300" data-icon="add">add</span>
+</button>
+<script>
+        // Micro-interactions for heart buttons
+        document.querySelectorAll('.material-symbols-outlined[data-icon="favorite"]').forEach(btn => {
+            btn.parentElement.addEventListener('click', function(e) {
+                e.preventDefault();
+                const icon = this.querySelector('.material-symbols-outlined');
+                const isFilled = icon.style.fontVariationSettings.includes("'FILL' 1");
+                
+                if (isFilled) {
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    icon.parentElement.classList.remove('text-error');
+                    icon.parentElement.classList.add('text-on-surface-variant');
+                } else {
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                    icon.parentElement.classList.remove('text-on-surface-variant');
+                    icon.parentElement.classList.add('text-error');
+                }
+            });
+        });
+
+        // Simple scroll appearance for TopAppBar
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+                header.style.backgroundColor = 'rgba(247, 249, 251, 0.95)';
+            } else {
+                header.classList.remove('shadow-md');
+                header.style.backgroundColor = 'rgba(247, 249, 251, 0.8)';
+            }
+        });
+    </script>
+</body></html>

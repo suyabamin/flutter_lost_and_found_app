@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rewards Wallet - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .premium-gradient {
+            background: linear-gradient(135deg, #004ac6 0%, #2563eb 100%);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .tap-highlight-transparent {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#b4c5ff",
+                        "background": "#f7f9fb",
+                        "primary-container": "#2563eb",
+                        "on-secondary-container": "#006172",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "secondary": "#00687a",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "on-secondary-fixed": "#001f26",
+                        "on-tertiary-container": "#b1fff1",
+                        "surface-variant": "#e0e3e5",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "inverse-surface": "#2d3133",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-background": "#191c1e",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container": "#eceef0",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "secondary-container": "#57dffe",
+                        "surface": "#f7f9fb",
+                        "on-primary-container": "#eeefff",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d8dadc",
+                        "surface-container-high": "#e6e8ea",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary-fixed": "#00201c",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-surface": "#191c1e",
+                        "surface-container-low": "#f2f4f6",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f7f9fb",
+                        "tertiary-container": "#007b6e",
+                        "tertiary": "#006056",
+                        "primary": "#004ac6",
+                        "outline": "#737686",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#acedff",
+                        "on-surface-variant": "#434655",
+                        "surface-tint": "#0053db"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "lg": "24px",
+                        "margin-tablet": "24px",
+                        "unit": "8px",
+                        "md": "16px",
+                        "sm": "8px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontSize": {
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface mb-24">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="text-primary hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A clean, professional headshot of a young Bangladeshi man with a friendly expression. He is wearing a minimalist navy blue polo shirt against a blurred, high-end office background with soft bokeh lighting. The overall image has a professional, airy, and trustworthy light-mode aesthetic that complements a modern financial dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBP0L-87SU5a937K1wgRjReKp9rqUj3nfEDT20L3xvsFDkwcz8uY7t7UDz1_JEFRxTzr_nFoKMEqMfvyAapaS16_wnOPTXI6Ws20m5viL3_Jexp6X1tC1MEH1Bp1-gskWHzBvRNg-oYsBPg_z65dwuKx6srX9bKRUY93UyBkvlBkdkAqnp2csOM0pcibLeE_dx8akWrB-G3PY-R6nBzW41Jc9hH5xDZRUxPd9gTgPVflIVhdkjUC_Po6w"/>
+</div>
+</header>
+<main class="mt-20 px-margin-mobile space-y-6 max-w-2xl mx-auto">
+<!-- Wallet Balance Card -->
+<section class="premium-gradient rounded-3xl p-6 text-on-primary shadow-xl shadow-primary/20 relative overflow-hidden">
+
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-8">
+<div>
+<p class="font-label-lg text-label-lg opacity-80 mb-1 uppercase tracking-wider">Total Balance</p>
+<h2 class="font-display-lg text-display-lg font-bold">৳ 4,250.00</h2>
+</div>
+<div class="bg-white/20 backdrop-blur-md rounded-full p-2">
+<span class="material-symbols-outlined text-3xl" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-white text-primary font-title-md text-title-md py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-surface-container-lowest transition-all scale-100 active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="payments">payments</span>
+                        Cash Out
+                    </button>
+<button class="bg-white/10 backdrop-blur-md text-white border border-white/20 font-title-md text-title-md py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-white/20 transition-all scale-100 active:scale-95">
+<span class="material-symbols-outlined text-xl" data-icon="history">history</span>
+                        History
+                    </button>
+</div>
+</div>
+</section>
+<!-- Helper Badge Progress -->
+<section class="glass-card rounded-3xl p-6 shadow-sm shadow-primary/10">
+<div class="flex justify-between items-center mb-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-2xl bg-secondary-container/30 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-3xl" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Silver Helper</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">750 points to Gold</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-title-lg text-title-lg font-bold text-primary">1,250</span>
+<span class="font-label-sm text-label-sm block text-on-surface-variant">XP Points</span>
+</div>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden mb-2">
+<div class="h-full premium-gradient w-[65%] rounded-full shadow-[0_0_10px_rgba(37,99,235,0.4)] transition-all duration-1000 ease-out"></div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-center mt-3">Help 3 more people to reach <strong>Gold Rank</strong>!</p>
+</section>
+<!-- Recent Activity -->
+<section>
+<div class="flex justify-between items-center mb-4 px-2">
+<h3 class="font-title-lg text-title-lg font-bold text-on-surface">Recent Activity</h3>
+<button class="text-primary font-label-lg text-label-lg font-semibold hover:underline">View All</button>
+</div>
+<div class="space-y-3">
+<!-- Activity Item 1 -->
+<div class="glass-card rounded-2xl p-4 flex items-center justify-between hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" data-icon="handshake" style="font-variation-settings: 'FILL' 1;">handshake</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Successful Return</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">iPhone 13 - Dhaka Cantt.</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-title-md text-title-md text-tertiary font-bold">+৳ 500</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">2h ago</p>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="glass-card rounded-2xl p-4 flex items-center justify-between hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" data-icon="volunteer_activism" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Community Bonus</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Top Contributor Weekly</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-title-md text-title-md text-primary font-bold">+৳ 250</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Yesterday</p>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="glass-card rounded-2xl p-4 flex items-center justify-between hover:translate-x-1 transition-transform cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined" data-icon="card_membership" style="font-variation-settings: 'FILL' 1;">card_membership</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface">Level Up Reward</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Reached Silver Rank</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-title-md text-title-md text-secondary font-bold">+৳ 1,000</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant">3 days ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Community Fund Info -->
+<section class="bg-surface-container-low rounded-3xl p-6 border border-outline-variant/30">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<h3 class="font-title-md text-title-md text-on-surface font-bold">About Community Rewards</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">
+                The Community Fund is supported by platform fees and generous donations. Every successful return contributes to this fund, which we distribute to our helpers as a token of gratitude for their honesty.
+            </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="p-3 bg-white rounded-xl shadow-sm border border-primary/5">
+<h4 class="font-label-lg text-label-lg font-bold text-primary mb-1">How to earn?</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Report found items and return them to owners through our verified process.</p>
+</div>
+<div class="p-3 bg-white rounded-xl shadow-sm border border-primary/5">
+<h4 class="font-label-lg text-label-lg font-bold text-primary mb-1">When to cash out?</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Minimum balance of ৳ 500 is required for bank or mobile wallet transfer.</p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interactions and animations
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100 + 300);
+            });
+
+            // Smooth progress bar animation
+            const progressBar = document.querySelector('.premium-gradient.w-\\[65\\%\\]');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+                setTimeout(() => {
+                    progressBar.style.width = '65%';
+                }, 800);
+            }
+        });
+    </script>
+</body></html>

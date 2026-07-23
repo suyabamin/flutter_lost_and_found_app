@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Office Dashboard | Lost & Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .active-tab-glow {
+            box-shadow: 0 0 15px rgba(0, 74, 198, 0.15);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "on-primary-fixed-variant": "#003ea8",
+                "secondary": "#00687a",
+                "inverse-on-surface": "#eff1f3",
+                "surface-dim": "#d8dadc",
+                "surface-container-lowest": "#ffffff",
+                "surface-bright": "#f7f9fb",
+                "secondary-fixed": "#acedff",
+                "on-primary-fixed": "#00174b",
+                "on-secondary-fixed-variant": "#004e5c",
+                "on-tertiary": "#ffffff",
+                "primary-fixed-dim": "#b4c5ff",
+                "surface-container-high": "#e6e8ea",
+                "primary-fixed": "#dbe1ff",
+                "on-secondary-container": "#006172",
+                "tertiary": "#006056",
+                "on-tertiary-fixed": "#00201c",
+                "secondary-container": "#57dffe",
+                "inverse-surface": "#2d3133",
+                "on-tertiary-container": "#b1fff1",
+                "on-error": "#ffffff",
+                "on-tertiary-fixed-variant": "#005048",
+                "tertiary-container": "#007b6e",
+                "primary": "#004ac6",
+                "on-background": "#191c1e",
+                "error": "#ba1a1a",
+                "on-error-container": "#93000a",
+                "surface-container": "#eceef0",
+                "outline": "#737686",
+                "on-secondary-fixed": "#001f26",
+                "tertiary-fixed-dim": "#4fdbc8",
+                "on-secondary": "#ffffff",
+                "outline-variant": "#c3c6d7",
+                "surface-variant": "#e0e3e5",
+                "surface-container-highest": "#e0e3e5",
+                "on-primary-container": "#eeefff",
+                "error-container": "#ffdad6",
+                "background": "#f7f9fb",
+                "primary-container": "#2563eb",
+                "on-primary": "#ffffff",
+                "tertiary-fixed": "#71f8e4",
+                "secondary-fixed-dim": "#4cd7f6",
+                "surface-container-low": "#f2f4f6",
+                "on-surface": "#191c1e",
+                "surface-tint": "#0053db",
+                "surface": "#f7f9fb",
+                "on-surface-variant": "#434655",
+                "inverse-primary": "#b4c5ff"
+              },
+              "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+              },
+              "spacing": {
+                "xs": "4px",
+                "unit": "8px",
+                "md": "16px",
+                "margin-mobile": "16px",
+                "margin-tablet": "24px",
+                "gutter": "16px",
+                "xl": "32px",
+                "sm": "8px",
+                "2xl": "48px",
+                "lg": "24px"
+              },
+              "fontFamily": {
+                "display-lg": ["Inter"],
+                "label-lg": ["Inter"],
+                "headline-lg": ["Inter"],
+                "headline-lg-mobile": ["Inter"],
+                "body-md": ["Inter"],
+                "title-md": ["Inter"],
+                "title-lg": ["Inter"],
+                "label-sm": ["Inter"],
+                "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-24 md:pb-0 font-body-md text-body-md">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile md:px-margin-tablet h-16">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">menu</button>
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-primary">Lost & Found BD</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex gap-6 items-center mr-6">
+<a class="font-title-md text-primary font-semibold" href="#">Workspace</a>
+<a class="font-title-md text-on-surface-variant hover:opacity-80 transition-opacity" href="#">Global Feed</a>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a corporate employee for a user profile avatar. The subject is a young Bengali professional in business casual attire, smiling warmly against a soft-focus office background with natural lighting. The image maintains a high-end, clean aesthetic with professional lighting and sharp focus on the face, blending perfectly with a modern UI design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAmYFj-lIKCwITLenGRDtSv1XfMhJSiiIQRe0UBMk2G92qWQs0kFwsjEiQiEIuBvU7CA5973Hr0ZDUkROxCH0mDnDOv87WLdvdUhyGJMiLxUMZBKwKF-C9l74xIzgpAd_Xj1TZc_iHsRHVI4zefhPlvN6eTz-7bSszCKRly0iF7jB-wn9eAJaHVL52Tn4NaWyez8HYWrR57jd4PCi9G-2cn7gTyZhV96YCApy7BOaDJLAMra6FjJxUOnw"/>
+</div>
+</div>
+</header>
+<main class="pt-24 px-margin-mobile md:px-margin-tablet max-w-7xl mx-auto mb-12">
+<!-- Header Section -->
+<section class="mb-10">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<span class="text-secondary font-label-lg tracking-wider uppercase">Office Workspace</span>
+<h2 class="font-display-lg text-headline-lg md:text-display-lg text-on-surface mt-2">Corporate Dashboard</h2>
+<p class="text-on-surface-variant font-body-lg mt-2 max-w-xl">Centralized inventory for lost items within the Dhaka HQ. Security-verified claims and colleague reporting.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-primary-container text-on-primary-container px-6 py-3 rounded-xl font-title-md flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 transition-all scale-100 active:scale-95">
+<span class="material-symbols-outlined">add_circle</span>
+                        Report Found Item
+                    </button>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="bento-grid">
+<!-- Main Feed: Internal Found Items -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-6">
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/5">
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-title-lg text-title-lg text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+                            Internal Found Items
+                        </h3>
+<div class="flex bg-surface-container rounded-lg p-1">
+<button class="px-4 py-1 text-label-sm font-bold bg-white text-primary rounded-md shadow-sm">Recent</button>
+<button class="px-4 py-1 text-label-sm font-bold text-on-surface-variant">Unclaimed</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Found Item Card 1 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close-up shot of a sleek silver laptop charger and a pair of professional noise-canceling headphones left on a wooden office desk. The lighting is soft and cinematic, highlighting the metallic textures. The background shows a blurred corporate environment with modern furniture and green plants, fitting a premium professional dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5187W9spb3d04MyTm1mVgHym5S6kH0u7rjH4u0usls7-LQ11FewR5MQx7vnsK2M8nCHRI4dPj-P3hKNGpBcbQvMxMyWmLAKv-0wdhpxfeCYxw1EreatWUpBGgewHJHHEBPFXFviB-h0mlMkGNKmm3WrbvYy8xWG-5o0JKwCp_zy31oWCBqkKD4STjGWHzF3IEbuFJcCHgdYu9MrdQ9Uy-DSe0L1hp4J35dNlHRr7Vt2fVRldE2rL2lw"/>
+<div class="absolute top-3 left-3 px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    Meeting Room 4B
+                                </div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-title-md text-on-surface">Apple MacBook M2 Charger</h4>
+<span class="text-outline text-label-sm">2h ago</span>
+</div>
+<p class="text-on-surface-variant text-body-md line-clamp-1">Left near the projector cable. 96W USB-C brick.</p>
+<div class="mt-4 flex items-center justify-between">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center border border-white text-[10px] font-bold">JD</div>
+<div class="w-6 h-6 rounded-full bg-secondary-container flex items-center justify-center border border-white text-[10px] font-bold">SA</div>
+</div>
+<button class="text-primary font-title-md flex items-center gap-1 hover:underline">
+                                        View Details <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Found Item Card 2 -->
+<div class="group relative bg-white rounded-xl overflow-hidden border border-outline-variant/30 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300">
+<div class="h-40 overflow-hidden relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A high-quality image of a lost corporate ID card and a set of car keys lying on a marble reception counter. The ID card has a lanyard with a professional logo. The scene is bright and airy with high-key lighting, capturing the clean and professional atmosphere of a high-end corporate office in Dhaka." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV2KkgwwI06GQhyGfhXJLZjq10YTRxqsj8GAYg1yfRcQP06R-fKI6xJohby78C26aET0F5a0ev9P_oZj6SAqtpnk9dxoIh9iVYa5iQRpgbPD7REz6vKMqXeDQjwwfk9HoQpuq85FYP5gb5xagVeMUqqxy1UDP9d8f_bd8nvna86tielbq5txd1n7akRWiwzZyiiWEc7QVqvu-0QpsUSwHkPsb_x7kLlnUr32Y5lE7pPDebMzlY2KN3IQ"/>
+<div class="absolute top-3 left-3 px-3 py-1 bg-tertiary-container text-on-tertiary-container rounded-full font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                    Cafeteria
+                                </div>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-title-md text-on-surface">Employee ID Card</h4>
+<span class="text-outline text-label-sm">5h ago</span>
+</div>
+<p class="text-on-surface-variant text-body-md line-clamp-1">Blue lanyard. Belongs to someone in the HR Dept.</p>
+<div class="mt-4 flex items-center justify-between">
+<span class="text-error font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">priority_high</span> High Priority
+                                    </span>
+<button class="text-primary font-title-md flex items-center gap-1 hover:underline">
+                                        View Details <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Verified Colleague Claims -->
+<div class="glass-card rounded-2xl p-6 shadow-sm shadow-primary/5">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">verified</span>
+                        Verified Colleague Claims
+                    </h3>
+<div class="space-y-3">
+<!-- Claim Row 1 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/20">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center font-bold text-on-secondary-container">MK</div>
+<div>
+<p class="font-title-md text-on-surface">Mahfuz Khan <span class="text-on-surface-variant font-normal">claims</span> Car Keys</p>
+<p class="text-label-sm text-outline">Verified via Office RFID matching</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 rounded-full bg-secondary/10 text-secondary font-label-sm">Pending Handover</span>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+</div>
+<!-- Claim Row 2 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-low rounded-xl border border-outline-variant/20">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center font-bold text-on-primary-container">RH</div>
+<div>
+<p class="font-title-md text-on-surface">Riya Haque <span class="text-on-surface-variant font-normal">claims</span> Kindle Paperwhite</p>
+<p class="text-label-sm text-outline">Serial number verified by IT</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 rounded-full bg-tertiary/10 text-tertiary font-label-sm">Completed</span>
+<button class="material-symbols-outlined text-on-surface-variant">more_vert</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Column -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-6">
+<!-- Office Security Desk Integration -->
+<div class="bg-primary text-on-primary rounded-2xl p-6 shadow-xl shadow-primary/20 relative overflow-hidden">
+<div class="relative z-10">
+<h3 class="font-title-lg text-title-lg mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined">security</span>
+                            Security Integration
+                        </h3>
+<p class="text-on-primary-container font-body-md opacity-90 mb-6">Connected to Ground Floor Front Desk.</p>
+<div class="space-y-4">
+<div class="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-lg">Active Desk Guard</span>
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed animate-pulse"></span>
+</div>
+<p class="font-title-md">Asif Rahman</p>
+<p class="text-label-sm opacity-70">Ext: 4022 (Reception)</p>
+</div>
+<button class="w-full py-3 bg-on-primary-container text-primary font-bold rounded-xl hover:bg-white transition-colors">
+                                Contact Security Desk
+                            </button>
+</div>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-3xl"></div>
+</div>
+<!-- Office Map / Hotspots -->
+<div class="glass-card rounded-2xl p-6 border border-outline-variant/30">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-4">Location Heatmap</h3>
+<div class="aspect-square bg-surface-container rounded-xl relative overflow-hidden border border-outline-variant/20">
+<!-- Simulated Map View -->
+<div class="absolute inset-0 p-4">
+<div class="w-full h-full border-2 border-dashed border-outline-variant/40 rounded flex items-center justify-center">
+<span class="text-outline-variant font-label-lg uppercase tracking-widest">Office Floor Plan</span>
+</div>
+<!-- Markers -->
+<div class="absolute top-1/4 left-1/3 group cursor-pointer">
+<div class="w-4 h-4 bg-error rounded-full animate-ping absolute inset-0 opacity-50"></div>
+<div class="w-4 h-4 bg-error rounded-full relative shadow-lg"></div>
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-2 py-1 rounded text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Cafeteria (3 items)</div>
+</div>
+<div class="absolute bottom-1/3 right-1/4 group cursor-pointer">
+<div class="w-4 h-4 bg-primary rounded-full relative shadow-lg"></div>
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-2 py-1 rounded text-[10px] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Server Room (1 item)</div>
+</div>
+</div>
+<img class="w-full h-full object-cover opacity-20" data-alt="A clean, minimalist 2D architectural blueprint or floor plan of a modern office space. The map is rendered in soft greys and blues with subtle shading. Highlights indicate common areas like meeting rooms, the cafeteria, and workstations. The style is professional, data-centric, and integrates seamlessly into a corporate dashboard UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGZcQlmKbBkv96EK5GRWsWz7-1zkSTAugScsNlWzdvkHqnfezzHNEQUrlwSaVmS0c7pdNHuuVWGrBNlBTnNpaENrWk8ZGf8tJtpSNxFEo8Dy4YQzgFHKo8ZCTHIVDywWUG0mtWnNP5KNXNq1rpRLI3QivgVsZCTcg5KH1G6Bl5stoQmabiIzOUX9rrgxdL0UwYz6NhCo_Y2IBhmfbZTm9bjTr9riostgWALGTdDLO1TGYREhEH41V0yw"/>
+</div>
+<div class="mt-4 space-y-2">
+<div class="flex items-center justify-between">
+<span class="text-body-md text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-error"></span> Cafeteria
+                            </span>
+<span class="font-bold text-on-surface">12 reports</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-body-md text-on-surface-variant flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span> Meeting Rooms
+                            </span>
+<span class="font-bold text-on-surface">5 reports</span>
+</div>
+</div>
+</div>
+<!-- Stats Chip Cloud -->
+<div class="glass-card rounded-2xl p-6 border border-outline-variant/30">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-4">Categories</h3>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-lg">Electronics (8)</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-lg">Wallets (2)</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-lg">ID Cards (14)</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-lg">Keys (6)</span>
+<span class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-lg">Apparel (3)</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<button class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-primary scale-125">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</button>
+</nav>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-24 right-6 md:bottom-8 md:right-8 w-14 h-14 md:w-16 md:h-16 rounded-3xl bg-gradient-to-br from-primary to-secondary text-white shadow-2xl shadow-primary/40 flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-40">
+<span class="material-symbols-outlined text-[32px]">report</span>
+</button>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('.group').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Subtle lift or feedback could go here if needed
+            });
+        });
+
+        // Search logic placeholder
+        console.log("Office Dashboard Initialized: Connected to Security Desk RFID API (Mock)");
+    </script>
+</body></html>

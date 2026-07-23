@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lost & Found BD - Messages</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .unread-dot {
+            box-shadow: 0 0 12px rgba(0, 74, 198, 0.4);
+        }
+        .glass-header {
+            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e0e3e5;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#00687a",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-dim": "#d8dadc",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "on-primary": "#ffffff",
+                        "surface-tint": "#0053db",
+                        "on-surface-variant": "#434655",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-low": "#f2f4f6",
+                        "primary-fixed": "#dbe1ff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#001f26",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#191c1e",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-secondary": "#ffffff",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-primary-container": "#eeefff",
+                        "surface": "#f7f9fb",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container": "#eceef0",
+                        "tertiary": "#006056",
+                        "on-secondary-container": "#006172",
+                        "outline": "#737686",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "primary": "#004ac6",
+                        "inverse-primary": "#b4c5ff",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "tertiary-container": "#007b6e",
+                        "on-tertiary-container": "#b1fff1",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#2563eb",
+                        "on-surface": "#191c1e",
+                        "surface-container-high": "#e6e8ea",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#acedff",
+                        "on-tertiary-fixed": "#00201c",
+                        "background": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c3c6d7",
+                        "inverse-surface": "#2d3133",
+                        "secondary-container": "#57dffe",
+                        "on-primary-fixed": "#00174b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "gutter": "16px",
+                        "unit": "8px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "md": "16px",
+                        "xl": "32px",
+                        "margin-tablet": "24px",
+                        "xs": "4px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "title-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-lg overflow-x-hidden min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary dark:text-primary-fixed">Lost & Found BD</h1>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a young Bangladeshi man with a friendly smile, set against a minimalist light grey background. The lighting is soft and even, highlighting modern urban professional style. The aesthetic is clean, high-fidelity, and consistent with a premium startup brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuByU4nH8NFUp2Ml71iblai8qel1g8EUabHudR6pW4KnxAYbV3YEx7Ducclz_GklQ1qYbwPh5WS4h2bEZjrcRf3Yt5zxd-lpnNdi4qjkkmRR4WaEfydsNmgBQoXok0kHX9I5M_ue66h5oyVGtJfOlw2V3LxwU1rxmYI4zkgvIv1PixY1hIXGqb-hmM0NyWvj56wlIAnaneCSd7dB95mlPLN23ykRrq-ltqonm-1006aCiutPy1SnfozbGQ"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="pt-20 pb-24 px-margin-mobile max-w-2xl mx-auto">
+<!-- Search Section -->
+<div class="mb-lg">
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-surface-container-low border-none rounded-xl font-body-lg text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary/50 transition-all shadow-sm" placeholder="Search conversations..." type="text"/>
+</div>
+</div>
+<!-- Chat List Header -->
+<div class="flex items-center justify-between mb-md px-1">
+<h2 class="font-title-lg text-title-lg text-on-surface">Recent Messages</h2>
+<span class="font-label-lg text-label-lg bg-primary-container/20 text-primary px-3 py-1 rounded-full">4 Unread</span>
+</div>
+<!-- Conversation List -->
+<div class="space-y-sm">
+<!-- Chat Item: Unread -->
+<div class="flex items-center gap-md p-md bg-white rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]">
+<div class="relative flex-shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Close up portrait of a young woman with a calm expression, wearing a vibrant teal scarf. The background is a soft-focus urban park setting in Dhaka, bathed in warm afternoon sunlight. High-quality photography style with shallow depth of field and premium color grading." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY_XfLgEmOXhX9EOtUzVs3uSzxvHh0VRpb4kkt0k7Y4d3f2AB1drgsHrpjbPu_LPn-2N2Nzu6xQRPustlPVkh76FO5BxPriyzsrTlmxmGVwN_MX004sfvBjk6U_FTjldTqQ6BG-nF2FmpRUX_B_f4Uixtzw7HamoC8e9Skm6thuakOHWMZxjy_EQTYW1ROSogHoQ5wDT55hBtklD8R0-uYqy7Q3nRVg_A5hcVLxsC0J4BNk4sn_i44YQ"/>
+</div>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-primary rounded-full border-2 border-white unread-dot"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-xs">
+<div class="flex items-center gap-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Nusrat Jahan</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">14:20</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-body-md text-body-md text-on-surface font-bold truncate">I think I found your lost keys near the Banani Lake...</p>
+</div>
+</div>
+</div>
+<!-- Chat Item: Read -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest/50 rounded-xl hover:bg-white hover:shadow-sm transition-all cursor-pointer group">
+<div class="relative flex-shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A profile photo of a middle-aged man with glasses, looking professional and trustworthy. Minimalist office background with soft blue tones. The lighting is bright and modern, suitable for a secure community-based lost and found platform interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-rEgDC7Z34OIXGdPpd2yQfrP2aXRH1NUh12cJwsjgnsh5Tm84teU2PQzuca-Hmk5ZDPIooD_z7CMEcevvPE3c8nlBgnhCdWDpP5TxFgPfad8Uys89tDXYlzj9HKsalDSVOEHKzBEmzpgbDVxXk9goXqnRuR8WDYw1_v0UaCshjbxrvAzb895bfXmQnPYDKtdwZ0FfERVpKqQc-6Vd4hD5kC2YJ8FxRO5bR6QOHtrF3MSxLVrbZkpTXw"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-xs">
+<div class="flex items-center gap-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Rakib Ahmed</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Yesterday</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Thank you so much for the help! I really appreciate it.</p>
+<span class="material-symbols-outlined text-outline text-[16px]">done_all</span>
+</div>
+</div>
+</div>
+<!-- Chat Item: Unread -->
+<div class="flex items-center gap-md p-md bg-white rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer group active:scale-[0.98]">
+<div class="relative flex-shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="A portrait of a cheerful young adult man with headphones around his neck, styled in modern casual attire. Background is a clean, minimalist studio set with soft blue and white gradients. Premium digital interface photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD38pD7WjG3dRC_0AJXuYKpPd9cvagPXq6qPSlc8y6H5TfDK-jyfrWssptxIe32FkJtBRFy1V_RsiPf7ev_WqswBH6Oylj8e_5Coz6Th9Dyvq6kHSDd5GyJsw_AamGyliXxZdddS4qq48rHS8t5IKDjJ2S5sRx67ouSuLw5B-MvYwTOfXEuJdWanqc77BVwfNks6SDgX7dFemutQJtXt-4CzI2jIMsFCw5PiiJtVpxrmDdUezMHbV4q2w"/>
+</div>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-primary rounded-full border-2 border-white unread-dot"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-xs">
+<div class="flex items-center gap-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Samiul Haque</span>
+<span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">10:05</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-body-md text-body-md text-on-surface font-bold truncate">Are you available for a quick call regarding the wallet?</p>
+</div>
+</div>
+</div>
+<!-- Chat Item: Read -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest/50 rounded-xl hover:bg-white hover:shadow-sm transition-all cursor-pointer group">
+<div class="relative flex-shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Close up profile photo of a young woman smiling, with a high-end editorial feel. Soft lighting and a neutral, airy background. Professional and approachable look for a member of a trusted community network." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJjUgQkqx6_Q0NrF92DYVHVNRYo6g1HW8XSIMi8HOA2od0oBqrQI06zUY4jHxWFMw09jSOsoe2wfgYwWxDBcTd758fz4Y9zajnQdoZQIeOjite-Q3XZLb8gDnx2QoftqBqHu7x6-a7AXvHYxikaQksNGwkxWN3Kf04uCKS3qdcOj2e56vUvzOsuqJcBfUW_nAElDCUZb4wekme-i-KiFcYVbekbcgbg2J2PeNJfT5TQy_k6MvRmHgyNg"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-xs">
+<div class="flex items-center gap-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Farah Khan</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Monday</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-body-md text-body-md text-on-surface-variant truncate">Found it! It was under the bench at the metro station.</p>
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Chat Item: Read -->
+<div class="flex items-center gap-md p-md bg-surface-container-lowest/50 rounded-xl hover:bg-white hover:shadow-sm transition-all cursor-pointer group">
+<div class="relative flex-shrink-0">
+<div class="w-14 h-14 rounded-full overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Portrait of a friendly elderly man with a warm smile, representing a helpful community member. High-quality lighting, bright and clear aesthetics with a slight touch of blue in the shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDAd1Ej02Yerjm4zgxyiFlpPl1TmbLEuDYfeOTOApKJu4H-B701gdOfpkxf84Ff1woUyUP3hXj_O3gOxU4HbDE3GH61VGyf6QzAWCJ4qnRt6i2ooYVepkoA7ce1isNetQdsTt4Z9pCKZrxeQxfxgPGW9HIW7ToLWKVs69FiFvxDjpAOxFglJl2DASO1RwxF9q6WkbnetTO7K3UTrZ1AOtAZXgY7ae2EtHXxsKGzth9VWAp6KIN628-atw"/>
+</div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-xs">
+<div class="flex items-center gap-1">
+<span class="font-title-md text-title-md text-on-surface truncate">Uncle Harun</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Sunday</span>
+</div>
+<div class="flex justify-between items-center">
+<p class="font-body-md text-body-md text-on-surface-variant truncate">The dog is safe with me. You can pick him up anytime.</p>
+<span class="material-symbols-outlined text-outline text-[16px]">done_all</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-primary-container text-white shadow-xl shadow-primary/20 flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-50">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">edit_square</span>
+</button>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 dark:bg-surface-container-high/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/30 dark:bg-primary-container text-primary dark:text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-opacity" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple search filtering logic
+        const searchInput = document.querySelector('input[type="text"]');
+        const chatItems = document.querySelectorAll('.space-y-sm > div');
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            chatItems.forEach(item => {
+                const name = item.querySelector('.font-title-md').textContent.toLowerCase();
+                const snippet = item.querySelector('.font-body-md').textContent.toLowerCase();
+                if (name.includes(term) || snippet.includes(term)) {
+                    item.style.display = 'flex';
+                    item.style.opacity = '1';
+                } else {
+                    item.style.display = 'none';
+                    item.style.opacity = '0';
+                }
+            });
+        });
+
+        // Add micro-interactions
+        chatItems.forEach(item => {
+            item.addEventListener('touchstart', () => {
+                item.style.transform = 'scale(0.98)';
+            });
+            item.addEventListener('touchend', () => {
+                item.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body></html>

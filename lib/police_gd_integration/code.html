@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Police GD Integration | Lost & Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .police-gradient {
+            background: linear-gradient(135deg, #004ac6 0%, #00687a 100%);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 3s infinite ease-in-out;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed-dim": "#b4c5ff",
+                    "background": "#f7f9fb",
+                    "primary-container": "#2563eb",
+                    "on-secondary-container": "#006172",
+                    "on-primary-fixed-variant": "#003ea8",
+                    "secondary": "#00687a",
+                    "secondary-fixed-dim": "#4cd7f6",
+                    "on-secondary-fixed": "#001f26",
+                    "on-tertiary-container": "#b1fff1",
+                    "surface-variant": "#e0e3e5",
+                    "outline-variant": "#c3c6d7",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "inverse-surface": "#2d3133",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#00174b",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#004e5c",
+                    "on-background": "#191c1e",
+                    "inverse-primary": "#b4c5ff",
+                    "surface-container": "#eceef0",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "secondary-container": "#57dffe",
+                    "surface": "#f7f9fb",
+                    "on-primary-container": "#eeefff",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "surface-dim": "#d8dadc",
+                    "surface-container-high": "#e6e8ea",
+                    "primary-fixed": "#dbe1ff",
+                    "on-tertiary-fixed": "#00201c",
+                    "tertiary-fixed": "#71f8e4",
+                    "on-surface": "#191c1e",
+                    "surface-container-low": "#f2f4f6",
+                    "on-error-container": "#93000a",
+                    "surface-bright": "#f7f9fb",
+                    "tertiary-container": "#007b6e",
+                    "tertiary": "#006056",
+                    "primary": "#004ac6",
+                    "outline": "#737686",
+                    "error": "#ba1a1a",
+                    "secondary-fixed": "#acedff",
+                    "on-surface-variant": "#434655",
+                    "surface-tint": "#0053db"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "2xl": "48px",
+                    "lg": "24px",
+                    "margin-tablet": "24px",
+                    "unit": "8px",
+                    "md": "16px",
+                    "sm": "8px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "xs": "4px",
+                    "xl": "32px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "body-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16 md:px-margin-tablet">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">arrow_back</button>
+<h1 class="font-title-lg text-title-lg text-primary font-bold">Police GD Integration</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center gap-2 px-3 py-1 bg-tertiary-container/10 rounded-full">
+<span class="w-2 h-2 bg-tertiary rounded-full animate-pulse"></span>
+<span class="text-label-lg font-label-lg text-tertiary">Police Portal Connected</span>
+</div>
+<div class="w-10 h-10 rounded-full border-2 border-primary/20 p-0.5">
+<img class="w-full h-full rounded-full object-cover" data-alt="A high-quality professional portrait of a young Bangladeshi male professional, smiling confidently, set against a blurred modern office background with soft daylighting. The style is clean and minimalist, reflecting a premium verified user profile aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEAh_YfLxb0KLPPzMWA8DjK5ARg62uWSfVLjfXn_SKANPdv4bJsU-UxQ0kdFJmx9aNM8c2hNh5oVmOib1Qy7c-RGwllBPqXRo0v8etsgoxFqKfus5oP3ev2pJKtyxTCgfmSrwicMCOLEgUNQpuX-V-P_FK3y1Kj5tAHY2WyUtCByEFjLk8lXwdidzoCWecUE1dCZAxO4v5pzvs-T6jBjcFg-MkhqG_PSS6lNjYERD0wJoLgZosH49KjA"/>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile max-w-4xl mx-auto space-y-lg">
+<!-- Integration Status Hero -->
+<section class="relative overflow-hidden rounded-2xl police-gradient p-lg text-on-primary shadow-xl shadow-primary/20">
+<div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-md">
+<div class="space-y-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="font-label-lg text-label-lg uppercase tracking-wider text-tertiary-fixed">Official Integration</span>
+</div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg">Bangladesh Police Online GD</h2>
+<p class="text-body-lg font-body-lg opacity-90 max-w-md">Legally report your lost items directly to the concerned Thana through our secure digital gateway.</p>
+</div>
+<div class="flex flex-col items-center justify-center bg-white/10 backdrop-blur-md rounded-xl p-md border border-white/20 min-w-[160px]">
+<span class="text-label-sm font-label-sm opacity-80 mb-1">SYNC STATUS</span>
+<span class="text-title-md font-title-md text-tertiary-fixed">Connected</span>
+<span class="text-xs opacity-60 mt-2">Ref: BD-POL-9921</span>
+</div>
+</div>
+<!-- Decorative background element -->
+<div class="absolute -right-16 -bottom-16 opacity-10 scale-150">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'wght' 200;">policy</span>
+</div>
+</section>
+<!-- Bento Form Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+<!-- Left Column: Auto-sync Data -->
+<div class="md:col-span-2 space-y-md">
+<div class="glass-card rounded-2xl p-lg shadow-sm">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-title-md text-title-md flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">description</span>
+                            GD Application Form
+                        </h3>
+<span class="bg-primary/10 text-primary text-[10px] font-bold px-2 py-1 rounded uppercase">Form #22A</span>
+</div>
+<form class="space-y-lg">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant">Thana (Police Station)</label>
+<select class="w-full bg-surface-container-low border-none rounded-xl h-12 px-md focus:ring-2 focus:ring-primary text-body-md transition-all">
+<option>Select Thana</option>
+<option selected="">Ramna Model Thana, Dhaka</option>
+<option>Gulshan Thana, Dhaka</option>
+<option>Dhanmondi Thana, Dhaka</option>
+<option>Uttara Model Thana, Dhaka</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant">Item Category</label>
+<div class="bg-surface-container border border-primary/10 rounded-xl h-12 px-md flex items-center text-primary font-medium">
+<span class="material-symbols-outlined text-sm mr-2" style="font-variation-settings: 'FILL' 1;">laptop_mac</span>
+                                    Electronics / Laptop
+                                </div>
+</div>
+</div>
+<div class="space-y-2">
+<label class="text-label-lg font-label-lg text-on-surface-variant">Incident Description (Synced from Report)</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-xl p-md focus:ring-2 focus:ring-primary text-body-md" readonly="" rows="4">I lost my Silver MacBook Pro (14-inch, M2) near the Dhaka University TSC area around 4:30 PM on October 24th. The laptop was inside a black leather bag. Serial Number: C02XG1... </textarea>
+<p class="text-[11px] text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">sync</span>
+                                Auto-synced from your app report #LF-10293
+                            </p>
+</div>
+<div class="space-y-4">
+<h4 class="text-label-lg font-label-lg text-on-surface-variant border-b border-outline-variant/30 pb-2">Verification Details</h4>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="space-y-1">
+<span class="text-xs text-on-surface-variant uppercase">Full Name</span>
+<p class="font-title-md">Sabbir Ahmed</p>
+</div>
+<div class="space-y-1">
+<span class="text-xs text-on-surface-variant uppercase">NID Number</span>
+<p class="font-title-md">8273 **** 1029</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col md:flex-row gap-md pt-4">
+<button class="flex-1 police-gradient text-on-primary font-title-md py-4 rounded-xl shadow-lg shadow-primary/20 flex items-center justify-center gap-2 hover:opacity-90 transition-opacity active:scale-95">
+<span class="material-symbols-outlined">send</span>
+                                Sync with Thana
+                            </button>
+<button class="flex-1 bg-white border border-primary text-primary font-title-md py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-primary/5 transition-colors active:scale-95">
+<span class="material-symbols-outlined">download</span>
+                                Download Draft
+                            </button>
+</div>
+</form>
+</div>
+</div>
+<!-- Right Column: Status & Preview -->
+<div class="space-y-md">
+<!-- Digital GD Preview -->
+<div class="glass-card rounded-2xl p-md border-l-4 border-primary">
+<h4 class="text-label-sm font-label-sm text-primary uppercase tracking-widest mb-md">Live Preview</h4>
+<div class="bg-white rounded-lg p-md shadow-inner border border-outline-variant/20 space-y-3">
+<div class="flex justify-center mb-2">
+<img class="h-12 w-auto grayscale opacity-80" data-alt="A professional digital emblem of the Bangladesh Police, featuring a minimalist heraldic crest with a balanced composition. The visual style is clean, modern, and formal, utilizing deep navy blue and gold accents, presented as a high-resolution icon on a white document header background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5yhF__WoB6oLW3zGpZn0k7v4TWkqqTTIafBEVSOpiTzPW4f7IGXRuOBM06guD4NpWEf-V5yTLykONlLOzDdOU5jYoIGa-ZDDQFyEc_R3MXPVFVAwWY0bIQJoiIboOlB9sa7SNlU1d4f4OEGofBLEz91r4B2kVEwqsQglQsj4-IFuZacO-l4R6U-TWXWk2ibNgZ4RWrRPgR6soPu4pInQyGmGWPeqliYWhu7nI3dERJWz1obp1nnrNUQ"/>
+</div>
+<div class="h-2 w-3/4 bg-surface-container-highest rounded"></div>
+<div class="h-2 w-full bg-surface-container-highest rounded"></div>
+<div class="h-2 w-1/2 bg-surface-container-highest rounded"></div>
+<div class="pt-4 border-t border-dashed border-outline-variant">
+<div class="flex justify-between items-center">
+<div class="h-8 w-20 bg-surface-container-highest rounded-sm"></div>
+<span class="material-symbols-outlined text-outline-variant text-4xl">qr_code_2</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Guidance Card -->
+<div class="bg-secondary-container/20 rounded-2xl p-md space-y-3">
+<h4 class="font-title-md text-on-secondary-container flex items-center gap-2">
+<span class="material-symbols-outlined">info</span>
+                        Legal Note
+                    </h4>
+<p class="text-body-md text-on-secondary-container/80">
+                        This digital GD is a valid legal document under the Digital Security Act. Ensure all information is accurate before syncing with the Thana.
+                    </p>
+<ul class="space-y-2 pt-2">
+<li class="flex items-start gap-2 text-xs text-on-secondary-container">
+<span class="material-symbols-outlined text-xs mt-0.5">check_circle</span>
+                            Instantly verifiable by Police
+                        </li>
+<li class="flex items-start gap-2 text-xs text-on-secondary-container">
+<span class="material-symbols-outlined text-xs mt-0.5">check_circle</span>
+                            Encrypted data transmission
+                        </li>
+</ul>
+</div>
+<!-- Quick Actions -->
+<div class="glass-card rounded-2xl p-md space-y-md">
+<button class="w-full flex items-center justify-between p-3 hover:bg-surface-container-low rounded-xl transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">history</span>
+<span class="font-title-md text-on-surface">GD History</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 hover:bg-surface-container-low rounded-xl transition-colors group">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">contact_support</span>
+<span class="font-title-md text-on-surface">Thana Contact</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)] md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<!-- Success Toast (Hidden by default) -->
+<div class="fixed bottom-24 left-1/2 -translate-x-1/2 z-[100] transform translate-y-20 opacity-0 transition-all duration-500 ease-out pointer-events-none" id="toast">
+<div class="bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-full shadow-2xl flex items-center gap-3">
+<span class="material-symbols-outlined text-tertiary">check_circle</span>
+<span class="font-title-md">GD Successfully Synced</span>
+</div>
+</div>
+<script>
+        // Micro-interaction for form submission
+        const syncBtn = document.querySelector('.police-gradient');
+        const toast = document.getElementById('toast');
+
+        syncBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            syncBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing...';
+            syncBtn.classList.add('opacity-80', 'pointer-events-none');
+            
+            setTimeout(() => {
+                syncBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Synced with Thana';
+                syncBtn.classList.remove('police-gradient');
+                syncBtn.classList.add('bg-tertiary');
+                
+                // Show toast
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                }, 3000);
+            }, 2000);
+        });
+
+        // Background subtle parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.01;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.01;
+            document.querySelector('main').style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+    </script>
+</body></html>

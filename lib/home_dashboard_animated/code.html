@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lost &amp; Found BD - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #004ac6 0%, #00687a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pill-gradient {
+            background: linear-gradient(135deg, #2563eb 0%, #00687a 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#acedff",
+                        "primary-container": "#2563eb",
+                        "on-background": "#191c1e",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "secondary": "#00687a",
+                        "outline": "#737686",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-dim": "#d8dadc",
+                        "inverse-surface": "#2d3133",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#007b6e",
+                        "on-tertiary-container": "#b1fff1",
+                        "surface-container-high": "#e6e8ea",
+                        "on-primary-container": "#eeefff",
+                        "surface-tint": "#0053db",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#c3c6d7",
+                        "surface-container-highest": "#e0e3e5",
+                        "primary": "#004ac6",
+                        "surface-container": "#eceef0",
+                        "on-secondary-container": "#006172",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "secondary-container": "#57dffe",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-surface-variant": "#434655",
+                        "inverse-on-surface": "#eff1f3",
+                        "tertiary": "#006056",
+                        "on-primary-fixed": "#00174b",
+                        "on-secondary-fixed": "#001f26",
+                        "tertiary-fixed": "#71f8e4",
+                        "surface-container-lowest": "#ffffff",
+                        "inverse-primary": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "background": "#f7f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "surface": "#f7f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "3xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "margin-tablet": "24px",
+                        "gutter": "16px",
+                        "2xl": "48px",
+                        "sm": "8px",
+                        "unit": "8px",
+                        "xl": "32px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "title-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md mb-24">
+<!-- WebGL Background -->
+<canvas id="bg-canvas"></canvas>
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/40 dark:bg-surface-dim/40 backdrop-blur-2xl border-b border-white/30 shadow-sm shadow-primary/5 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-primary scale-95 active:scale-90 transition-transform">menu</button>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Lost &amp; Found BD</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:opacity-80 transition-opacity">notifications</button>
+<div class="w-8 h-8 rounded-full bg-primary-fixed overflow-hidden border border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional close-up portrait of a young South Asian man with a friendly expression, neatly groomed hair, and wearing a crisp light blue shirt, set against a blurred modern office background with soft daylight filtering through." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuLV2alANbQOoq4LcijrvYwrGKAg2_9AekTt_p8kDLNXjngOROk0bqamDiXI9CCSSk4tGEMV2rMbDyKkMvkEnRvhu2_vlzctD9ZhkuHpGILdQKX563G9w8l3JGgQmmjCLWw4w46AsRY9YbPZ9eWYco08UyNIaAIuffMKI0s5lnBLRdElYhzaJ2NE6jw-gSxmLpJwRI_Do68T2U0jzJN4KsyLvRyhCf7ZcD-JAgadPppQskZXYjooabtQ"/>
+</div>
+</div>
+</header>
+<main class="mt-20 px-margin-mobile flex flex-col gap-lg max-w-5xl mx-auto relative z-10">
+<!-- Hero Search Section -->
+<section class="relative overflow-hidden rounded-3xl p-6 bg-primary-container/85 backdrop-blur-xl text-on-primary-container shadow-2xl shadow-primary/10 border border-white/20">
+<div class="relative z-10 flex flex-col gap-4">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold">Find what matters most</h1>
+<div class="relative flex flex-col sm:flex-row gap-3">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">search</span>
+<input class="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/90 backdrop-blur-sm border-none focus:ring-2 focus:ring-secondary text-on-surface" placeholder="Search for keys, pets, or wallets..." type="text"/>
+</div>
+<button class="pill-gradient px-6 py-4 rounded-2xl text-white font-title-md flex items-center justify-center gap-2 shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-symbols-outlined">auto_awesome</span>
+                        AI Smart Search
+                    </button>
+</div>
+</div>
+</section>
+<!-- Category Chips -->
+<section class="flex gap-3 overflow-x-auto hide-scrollbar py-2">
+<div class="flex-shrink-0 px-5 py-2.5 rounded-full bg-secondary-container/60 backdrop-blur-md text-on-secondary-container font-label-lg flex items-center gap-2 shadow-sm border border-white/30">
+<span class="material-symbols-outlined text-md">account_balance_wallet</span>
+                Wallets
+            </div>
+<div class="flex-shrink-0 px-5 py-2.5 rounded-full bg-white/40 backdrop-blur-md text-on-surface-variant font-label-lg flex items-center gap-2 border border-white/20">
+<span class="material-symbols-outlined text-md">devices</span>
+                Electronics
+            </div>
+<div class="flex-shrink-0 px-5 py-2.5 rounded-full bg-white/40 backdrop-blur-md text-on-surface-variant font-label-lg flex items-center gap-2 border border-white/20">
+<span class="material-symbols-outlined text-md">pets</span>
+                Pets
+            </div>
+<div class="flex-shrink-0 px-5 py-2.5 rounded-full bg-white/40 backdrop-blur-md text-on-surface-variant font-label-lg flex items-center gap-2 border border-white/20">
+<span class="material-symbols-outlined text-md">description</span>
+                Documents
+            </div>
+<div class="flex-shrink-0 px-5 py-2.5 rounded-full bg-white/40 backdrop-blur-md text-on-surface-variant font-label-lg flex items-center gap-2 border border-white/20">
+<span class="material-symbols-outlined text-md">more_horiz</span>
+                Others
+            </div>
+</section>
+<!-- AI Match Banner -->
+<section class="glass-card rounded-2xl p-5 flex items-center gap-4 relative overflow-hidden group cursor-pointer shadow-sm hover:shadow-lg transition-shadow">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-12 h-12 rounded-xl bg-primary flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div class="flex-grow">
+<h3 class="font-title-md text-title-md text-primary">AI Match Found!</h3>
+<p class="text-body-md text-on-surface-variant">A black leather wallet found in Dhanmondi matches your report.</p>
+</div>
+<span class="material-symbols-outlined text-primary">chevron_right</span>
+</section>
+<!-- Stats Section (Bento Grid) -->
+<section class="grid grid-cols-2 gap-4">
+<div class="glass-card p-5 rounded-3xl flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Items Recovered</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-secondary">2,481</span>
+<div class="flex items-center gap-1 text-tertiary font-label-sm">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>+12% this month</span>
+</div>
+</div>
+<div class="glass-card p-5 rounded-3xl flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Reports</span>
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">156</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm">
+<span class="material-symbols-outlined text-sm">schedule</span>
+<span>Last update 5m ago</span>
+</div>
+</div>
+</section>
+<!-- Items Carousel Sections -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-title-lg text-title-lg font-bold">Nearby Lost Items</h2>
+<button class="text-primary font-label-lg">See All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-4">
+<!-- Card 1 -->
+<div class="flex-shrink-0 w-64 glass-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-40 relative">
+<img class="w-full h-full object-cover" data-alt="A professional high-resolution photo of a premium silver smartphone with a cracked screen lying on a textured grey concrete sidewalk. The lighting is dramatic, capturing the metallic sheen and the sharp details of the glass cracks in a modern, slightly moody urban aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA0XWUHtz_3NiSx-IF9sQq6qRX95Dn_ULdhNAQDwoa3UEGoB6uwfcvudOxlP152GdX9s0MpBqetew5wbi1ENrXU7dVQ9bvcV_iREFlYl2Dvozg9KuW9CLSBGW4lvOmEoSNAKNyzwXIr1RKrochWslyl9SF3bHAapUFK8Dt__4Tb1jhqJpPR1Rj2VXxGQ-aa4fko12pE8ZSK-c7FzewzbewOzrzkWzYCQ-l5isSG76nlGQ28nA0lZ4e_tg"/>
+<div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-error text-white font-label-sm">Lost</div>
+</div>
+<div class="p-4 flex flex-col gap-1">
+<h4 class="font-title-md text-title-md truncate">iPhone 14 Pro</h4>
+<div class="flex items-center gap-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs">location_on</span>
+<span>Banani, Road 11</span>
+</div>
+<p class="text-on-surface-variant text-xs mt-1">Reported 2 hours ago</p>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="flex-shrink-0 w-64 glass-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-40 relative">
+<img class="w-full h-full object-cover" data-alt="A high-quality studio photograph of a bunch of metallic keys with a distinctive blue leather keychain and a small silver tag, resting on a polished dark wood table. The background is softly blurred with warm, ambient lighting, creating a high-end editorial feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLusn68-OvjGGsDWTULdnmqUu0IRDIA62D9KYYHGVp3n3GHVZDGdRNj1o45r3AGq_9zZQdvWIjdUUrWc6RgRae8D1JfPgEfmrLQWQNmmL9mDVGxPndW-jeAM1hhiOgokwSlFxgxWoSG67NO6By6sMeN_CoV6RzppExkINNB2aHaIPb_OgxfnbrD6DoCHL56xZH-qh4T7crg8-zS9pcxwA-idn31qYpB4MzQ9WQdwiVzX6H28NvaIevLg"/>
+<div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-error text-white font-label-sm">Lost</div>
+</div>
+<div class="p-4 flex flex-col gap-1">
+<h4 class="font-title-md text-title-md truncate">House Keys Cluster</h4>
+<div class="flex items-center gap-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs">location_on</span>
+<span>Uttara Sector 4</span>
+</div>
+<p class="text-on-surface-variant text-xs mt-1">Reported 5 hours ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Map Preview Section -->
+<section class="glass-card rounded-3xl overflow-hidden shadow-xl">
+<div class="p-5 flex justify-between items-center border-b border-white/20">
+<div>
+<h2 class="font-title-lg text-title-lg font-bold">Nearby Map</h2>
+<p class="text-body-md text-on-surface-variant">Live reports around you</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center text-primary shadow-sm border border-white/30">
+<span class="material-symbols-outlined">my_location</span>
+</div>
+</div>
+<div class="h-64 relative bg-surface-container/50">
+<img class="w-full h-full object-cover opacity-80" data-alt="A stylized, minimalist map illustration of Dhaka city, Bangladesh, showing simplified street lines and major landmarks in a modern primary blue and light grey color palette. Several soft-glowing blue and red map pins are scattered across the urban landscape to indicate locations of lost and found items." data-location="Dhaka, Bangladesh" src="https://lh3.googleusercontent.com/aida-public/AB6AXuABbpat3x_OiTXvb8fa6GSsA1LgoGtGs9NT8v7qFtzkCHt6vMi0ZbLktrjjKrcQ7joontPdVsBVBNSD5HYuX_iFqUNNtr-6XmQYsc8Ta2Nm0pDcf6QoQZmhD_cbixH7xyBhheiSmsxsvCiiUnyXBz2P5N25JQ04PyBSXG7Y8R2E-RJbIkrlYkGP7mtxtDGGo4t3_2wqvXqwRHmmpzQXYnB8YJYrnerQKZKUT8Slm6nR6lKWuN7N5g0LRg"/>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-32 h-32 bg-primary/10 rounded-full animate-pulse border border-primary/20 flex items-center justify-center">
+<div class="w-4 h-4 bg-primary rounded-full shadow-[0_0_15px_rgba(0,74,198,0.5)]"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Found Items Section -->
+<section>
+<div class="flex justify-between items-center mb-4">
+<h2 class="font-title-lg text-title-lg font-bold">Recent Found Items</h2>
+<button class="text-primary font-label-lg">See All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Found Card 1 -->
+<div class="glass-card flex gap-4 p-4 rounded-2xl group cursor-pointer hover:shadow-lg transition-all border-l-4 border-secondary">
+<div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist photograph of a high-quality brown leather bifold wallet lying open on a white marble surface. The textures of the leather and the subtle reflections on the marble are captured in soft, high-key lighting, maintaining a premium and professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4cKrXDhNkmBRQElbOpdZNO6qkfuZIcQgeOjW5-RJVFvlPE65QfDsa5JVK7CWfXbsriFlAQoW7jGVUj2-84rNnPtpQMbyFKL6n164tJzYQP9KDM6WGerScBbPEeFWTcd0_7vNXZ_CEQX-MiiGJBbv_Arul10QQOxx0dtuvmCjIQMcNbi-NPA6PDvumBvJiOYheAaptTpvCwiGXxTT8nomjGbd_8tM-DcYkbpNtnyd_nC68pkG2fBA0Lw"/>
+</div>
+<div class="flex-grow flex flex-col justify-center gap-1">
+<h4 class="font-title-md text-title-md">Brown Leather Wallet</h4>
+<div class="flex items-center gap-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs">location_on</span>
+<span>Gulshan-2, Circle</span>
+</div>
+</div>
+<div class="flex items-center">
+<div class="px-3 py-1 rounded-full bg-secondary-container/80 backdrop-blur-sm text-on-secondary-container font-label-sm border border-white/20">Found</div>
+</div>
+</div>
+<!-- Found Card 2 -->
+<div class="glass-card flex gap-4 p-4 rounded-2xl group cursor-pointer hover:shadow-lg transition-all border-l-4 border-secondary">
+<div class="w-20 h-20 rounded-xl overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A professional close-up shot of a pair of modern white noise-cancelling headphones resting on a sleek black laptop. The lighting is cool-toned and crisp, highlighting the smooth plastic finish of the headphones and the dark metallic surface beneath them." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtQ4TW_GKt4mz-0vDMYFmnYxl-OTHInEX6cw2mRpNOmOhXi14xRtRe9i5dc_er8hPlzj9ZL7owBDueH3C1bG_eMeU6BXeTbiIXMgY7ckIVd4ifcwegBD_pt2F7DLEAYJX8UGiAk1jL1paG942IMgq3nTEOWzHDA_NGOc0qwWVKuDhBJQvlVFty8HM-9nS-dSp0AxARYThr1LwCzozOESLyprMKHel1agK8UxGX8nX_PrqpIy8-ACmdqw"/>
+</div>
+<div class="flex-grow flex flex-col justify-center gap-1">
+<h4 class="font-title-md text-title-md">Sony Headphones</h4>
+<div class="flex items-center gap-1 text-on-surface-variant text-sm">
+<span class="material-symbols-outlined text-xs">location_on</span>
+<span>Shahjalal Airport</span>
+</div>
+</div>
+<div class="flex items-center">
+<div class="px-3 py-1 rounded-full bg-secondary-container/80 backdrop-blur-sm text-on-secondary-container font-label-sm border border-white/20">Found</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 w-16 h-16 rounded-3xl pill-gradient text-white flex items-center justify-center shadow-2xl shadow-primary/40 z-40 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-white/30 dark:bg-surface-container-high/30 backdrop-blur-2xl rounded-t-xl border-t border-white/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<a class="flex flex-col items-center justify-center bg-primary-container/80 text-on-primary-container rounded-xl px-3 py-1 scale-110 duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-label-sm text-label-sm">Create</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm">Alerts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant hover:bg-white/10 transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // WebGL Background Implementation
+        const canvas = document.getElementById('bg-canvas');
+        const gl = canvas.getContext('webgl');
+
+        const vertexSource = `
+            attribute vec2 position;
+            void main() {
+                gl_Position = vec4(position, 0.0, 1.0);
+            }
+        `;
+
+        const fragmentSource = `
+            precision highp float;
+            uniform float u_time;
+            uniform vec2 u_resolution;
+            uniform vec2 u_mouse;
+
+            float noise(vec2 p) {
+                return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+            }
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+                vec2 m = u_mouse / u_resolution.xy;
+                
+                float t = u_time * 0.4;
+                
+                vec2 p1 = vec2(0.5 + 0.3 * cos(t), 0.5 + 0.3 * sin(t));
+                vec2 p2 = vec2(0.5 + 0.3 * sin(t * 0.7), 0.5 + 0.3 * cos(t * 1.3));
+                vec2 p3 = vec2(m.x, m.y);
+                
+                float d1 = length(uv - p1);
+                float d2 = length(uv - p2);
+                float d3 = length(uv - p3);
+                
+                vec3 color1 = vec3(0.145, 0.388, 0.921); // Primary Blue
+                vec3 color2 = vec3(0.023, 0.713, 0.831); // Secondary Cyan
+                vec3 color3 = vec3(0.972, 0.980, 0.984); // Surface/Background
+                
+                float influence1 = smoothstep(0.8, 0.0, d1);
+                float influence2 = smoothstep(0.6, 0.0, d2);
+                float influence3 = smoothstep(0.4, 0.0, d3) * 0.3;
+                
+                vec3 finalColor = color3;
+                finalColor = mix(finalColor, color1, influence1 * 0.15);
+                finalColor = mix(finalColor, color2, influence2 * 0.1);
+                finalColor = mix(finalColor, color1, influence3);
+                
+                float grain = (noise(uv * 512.0 + u_time) - 0.5) * 0.02;
+                finalColor += grain;
+                
+                gl_FragColor = vec4(finalColor, 1.0);
+            }
+        `;
+
+        function createShader(gl, type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            return shader;
+        }
+
+        const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexSource);
+        const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fragmentSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vertexShader);
+        gl.attachShader(program, fragmentShader);
+        gl.linkProgram(program);
+        gl.useProgram(program);
+
+        const buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+
+        const positionLocation = gl.getAttribLocation(program, "position");
+        gl.enableVertexAttribArray(positionLocation);
+        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        const uTime = gl.getUniformLocation(program, "u_time");
+        const uRes = gl.getUniformLocation(program, "u_resolution");
+        const uMouse = gl.getUniformLocation(program, "u_mouse");
+
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = window.innerHeight - e.clientY;
+        });
+
+        function render(time) {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.uniform1f(uTime, time * 0.001);
+            gl.uniform2f(uRes, canvas.width, canvas.height);
+            gl.uniform2f(uMouse, mouseX, mouseY);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(render);
+        }
+        requestAnimationFrame(render);
+
+        // Simple micro-interaction for active state scaling
+        document.querySelectorAll('nav a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                document.querySelectorAll('nav a').forEach(nav => {
+                    nav.classList.remove('bg-primary-container/80', 'text-on-primary-container', 'scale-110');
+                    nav.classList.add('text-on-surface-variant');
+                    const icon = nav.querySelector('.material-symbols-outlined');
+                    if(icon) icon.style.fontVariationSettings = "'FILL' 0";
+                });
+                this.classList.add('bg-primary-container/80', 'text-on-primary-container', 'scale-110');
+                this.classList.remove('text-on-surface-variant');
+                const activeIcon = this.querySelector('.material-symbols-outlined');
+                if(activeIcon) activeIcon.style.fontVariationSettings = "'FILL' 1";
+            });
+        });
+
+        // Add entrance animation
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('main > section');
+            sections.forEach((section, index) => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(15px)';
+                section.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+                setTimeout(() => {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 80);
+            });
+        });
+    </script>
+</body></html>

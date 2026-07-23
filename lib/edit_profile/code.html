@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Edit Profile - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#00174b",
+                        "secondary-fixed-dim": "#4cd7f6",
+                        "primary-container": "#2563eb",
+                        "on-surface-variant": "#434655",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#71f8e4",
+                        "secondary": "#00687a",
+                        "inverse-surface": "#2d3133",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#006172",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-secondary-fixed-variant": "#004e5c",
+                        "on-primary-container": "#eeefff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-tertiary-container": "#b1fff1",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#191c1e",
+                        "surface-tint": "#0053db",
+                        "surface": "#f7f9fb",
+                        "background": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "outline": "#737686",
+                        "secondary-container": "#57dffe",
+                        "tertiary": "#006056",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "surface-bright": "#f7f9fb",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "surface-container": "#eceef0",
+                        "primary-fixed": "#dbe1ff",
+                        "inverse-primary": "#b4c5ff",
+                        "surface-container-highest": "#e0e3e5",
+                        "tertiary-container": "#007b6e",
+                        "on-secondary-fixed": "#001f26",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed": "#acedff",
+                        "surface-variant": "#e0e3e5",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "on-error-container": "#93000a",
+                        "primary": "#004ac6",
+                        "outline-variant": "#c3c6d7",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "2xl": "48px",
+                        "md": "16px",
+                        "margin-tablet": "24px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "xl": "32px",
+                        "unit": "8px",
+                        "sm": "8px",
+                        "lg": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "headline-lg-mobile": ["Inter"],
+                        "title-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                        "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-field-focus:focus-within {
+            border-color: #004ac6;
+            box-shadow: 0 0 0 1px #004ac6;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, #f1f5f9 25%, #f8fafc 50%, #f1f5f9 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-lg text-on-surface min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/20 shadow-sm shadow-primary/10 flex justify-between items-center px-margin-mobile h-16">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:opacity-80 transition-opacity active:scale-90 flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary">Edit Profile</h1>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-lg text-label-lg shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all">
+            Save
+        </button>
+</header>
+<main class="pt-24 pb-32 px-margin-mobile max-w-2xl mx-auto space-y-8">
+<!-- Profile Photo Section -->
+<section class="flex flex-col items-center justify-center py-4">
+<div class="relative group cursor-pointer">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-xl">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a young Bangladeshi man with a friendly expression, set against a minimalist clean grey background. The lighting is soft and high-key, emphasizing a premium and trustworthy digital presence. The style is modern and editorial, with a focus on high resolution and clarity, fitting for a verified member of a professional platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCh0_eATYwUn4P_3nX2wYnkp9OclfpBIyyQCd-T81ynFC-U89ePqXqeP3MSFKpPq45nXuMXRa99iAJtqJZqFncj05TlMEpsoYxNVLpSRcmaw9TUzU2HPq5VQdhl6yRByaTWdp1JiAvFZCw7YjAWnIcs4YaoeBkWi980QVpFoxt9sRUXiP3QbipBQuTePp9fab2AUzBpYVHDHw5tHX3_Spp-2gLrirC2RyR0bhi-4e4V-CJX_TT1DsNX-Q"/>
+</div>
+<div class="absolute inset-0 bg-primary/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<div class="bg-primary text-on-primary p-3 rounded-full shadow-lg">
+<span class="material-symbols-outlined">photo_camera</span>
+</div>
+</div>
+<div class="absolute bottom-1 right-1 bg-surface-container-highest p-2 rounded-full border-2 border-white shadow-md">
+<span class="material-symbols-outlined text-primary scale-75" style="font-variation-settings: 'FILL' 1;">edit</span>
+</div>
+</div>
+<p class="mt-4 font-label-sm text-label-sm text-outline uppercase tracking-wider">Change Profile Photo</p>
+</section>
+<!-- Form Fields -->
+<form class="space-y-6">
+<!-- Full Name -->
+<div class="space-y-sm">
+<label class="block font-label-lg text-label-lg text-on-surface-variant px-1">Full Name</label>
+<div class="relative flex items-center bg-surface-container-low rounded-xl px-4 py-1 border border-transparent transition-all duration-200 active-field-focus">
+<span class="material-symbols-outlined text-outline mr-3">person</span>
+<input class="w-full bg-transparent border-none focus:ring-0 py-3 font-body-lg text-body-lg text-on-surface" placeholder="Enter your full name" type="text" value="Sabbir Ahmed"/>
+</div>
+</div>
+<!-- Email (Verified) -->
+<div class="space-y-sm">
+<label class="block font-label-lg text-label-lg text-on-surface-variant px-1">Email Address</label>
+<div class="relative flex items-center bg-surface-container-low rounded-xl px-4 py-1 border border-transparent transition-all duration-200 active-field-focus">
+<span class="material-symbols-outlined text-outline mr-3">mail</span>
+<input class="w-full bg-transparent border-none focus:ring-0 py-3 font-body-lg text-body-lg text-on-surface" placeholder="Enter email" type="email" value="sabbir.ahmed@example.com"/>
+<div class="flex items-center gap-1 bg-tertiary-container/20 px-3 py-1 rounded-full">
+<span class="material-symbols-outlined text-tertiary text-[18px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[12px] font-bold text-tertiary uppercase">Verified</span>
+</div>
+</div>
+</div>
+<!-- Phone Number -->
+<div class="space-y-sm">
+<label class="block font-label-lg text-label-lg text-on-surface-variant px-1">Phone Number</label>
+<div class="relative flex items-center bg-surface-container-low rounded-xl px-4 py-1 border border-transparent transition-all duration-200 active-field-focus">
+<span class="material-symbols-outlined text-outline mr-3">call</span>
+<span class="font-body-lg text-on-surface-variant mr-1">+880</span>
+<input class="w-full bg-transparent border-none focus:ring-0 py-3 font-body-lg text-body-lg text-on-surface" placeholder="Phone number" type="tel" value="1712345678"/>
+</div>
+</div>
+<!-- City (Location) -->
+<div class="space-y-sm">
+<label class="block font-label-lg text-label-lg text-on-surface-variant px-1">City</label>
+<div class="relative flex items-center bg-surface-container-low rounded-xl px-4 py-1 border border-transparent transition-all duration-200 active-field-focus">
+<span class="material-symbols-outlined text-outline mr-3">location_on</span>
+<select class="w-full bg-transparent border-none focus:ring-0 py-3 font-body-lg text-body-lg text-on-surface appearance-none cursor-pointer">
+<option selected="" value="Dhaka">Dhaka</option>
+<option value="Chittagong">Chittagong</option>
+<option value="Sylhet">Sylhet</option>
+<option value="Rajshahi">Rajshahi</option>
+<option value="Khulna">Khulna</option>
+</select>
+<span class="material-symbols-outlined text-outline absolute right-4 pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Danger Zone - Soft Aesthetic -->
+<div class="pt-8 space-y-4">
+<div class="h-px bg-outline-variant w-full"></div>
+<button class="w-full py-4 text-error font-title-md text-title-md flex items-center justify-center gap-2 hover:bg-error-container/10 rounded-xl transition-colors" type="button">
+<span class="material-symbols-outlined">delete_outline</span>
+                    Deactivate Account
+                </button>
+</div>
+</form>
+</main>
+<!-- Bottom Nav Bar (Profile Tab Active) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 pt-2 bg-surface-container/70 backdrop-blur-2xl rounded-t-xl shadow-[0_-4px_20px_rgba(0,74,198,0.1)]">
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">search</span>
+<span class="font-label-sm text-label-sm mt-1">Search</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full w-12 h-12 shadow-lg -mt-8 scale-110 duration-300">
+<span class="material-symbols-outlined">add_circle</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm mt-1">Alerts</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-primary-container/30 text-primary rounded-xl px-3 py-1 scale-110 duration-300 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm mt-0.5">Profile</span>
+</div>
+</nav>
+<script>
+        // Micro-interaction for input fields
+        const inputs = document.querySelectorAll('input, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('shadow-md');
+                input.previousElementSibling.classList.replace('text-outline', 'text-primary');
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.classList.remove('shadow-md');
+                input.previousElementSibling.classList.replace('text-primary', 'text-outline');
+            });
+        });
+
+        // Save button feedback
+        const saveBtn = document.querySelector('header button.bg-primary');
+        saveBtn.addEventListener('click', () => {
+            saveBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span>';
+            setTimeout(() => {
+                saveBtn.innerHTML = 'Save';
+                // Simple toast simulation
+                const toast = document.createElement('div');
+                toast.className = 'fixed bottom-24 left-1/2 -translate-x-1/2 bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-full shadow-2xl z-[100] font-label-lg flex items-center gap-2 transition-all duration-500 opacity-0 transform translate-y-4';
+                toast.innerHTML = '<span class="material-symbols-outlined text-secondary-fixed">check_circle</span> Profile updated successfully';
+                document.body.appendChild(toast);
+                
+                requestAnimationFrame(() => {
+                    toast.classList.remove('opacity-0', 'translate-y-4');
+                });
+
+                setTimeout(() => {
+                    toast.classList.add('opacity-0', 'translate-y-4');
+                    setTimeout(() => toast.remove(), 500);
+                }, 3000);
+            }, 1000);
+        });
+    </script>
+</body></html>

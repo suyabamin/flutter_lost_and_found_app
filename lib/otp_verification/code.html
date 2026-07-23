@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OTP Verification - Lost &amp; Found BD</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom focus ring for OTP inputs */
+        .otp-input:focus {
+            box-shadow: 0 0 0 2px rgba(0, 74, 198, 0.2);
+            border-color: #004ac6;
+        }
+        /* Hide arrows in number inputs */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#f7f9fb",
+                      "on-error-container": "#93000a",
+                      "surface-container-high": "#e6e8ea",
+                      "on-secondary-fixed": "#001f26",
+                      "secondary-fixed": "#acedff",
+                      "on-primary-fixed-variant": "#003ea8",
+                      "on-secondary-fixed-variant": "#004e5c",
+                      "secondary": "#00687a",
+                      "on-tertiary-fixed": "#00201c",
+                      "tertiary-fixed": "#71f8e4",
+                      "secondary-container": "#57dffe",
+                      "primary-fixed": "#dbe1ff",
+                      "error-container": "#ffdad6",
+                      "surface-dim": "#d8dadc",
+                      "on-error": "#ffffff",
+                      "surface-container": "#eceef0",
+                      "primary-container": "#2563eb",
+                      "on-surface": "#191c1e",
+                      "error": "#ba1a1a",
+                      "on-secondary": "#ffffff",
+                      "surface-bright": "#f7f9fb",
+                      "inverse-primary": "#b4c5ff",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#4fdbc8",
+                      "surface-variant": "#e0e3e5",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#0053db",
+                      "on-primary-container": "#eeefff",
+                      "surface-container-low": "#f2f4f6",
+                      "outline": "#737686",
+                      "secondary-fixed-dim": "#4cd7f6",
+                      "on-primary-fixed": "#00174b",
+                      "tertiary": "#006056",
+                      "tertiary-container": "#007b6e",
+                      "on-tertiary": "#ffffff",
+                      "inverse-on-surface": "#eff1f3",
+                      "outline-variant": "#c3c6d7",
+                      "on-secondary-container": "#006172",
+                      "on-tertiary-fixed-variant": "#005048",
+                      "on-surface-variant": "#434655",
+                      "background": "#f7f9fb",
+                      "on-tertiary-container": "#b1fff1",
+                      "on-background": "#191c1e",
+                      "surface-container-highest": "#e0e3e5",
+                      "inverse-surface": "#2d3133",
+                      "primary": "#004ac6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "8px",
+                      "2xl": "48px",
+                      "xl": "32px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px",
+                      "xs": "4px",
+                      "md": "16px",
+                      "unit": "8px",
+                      "lg": "24px",
+                      "margin-tablet": "24px"
+              },
+              "fontFamily": {
+                      "title-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "title-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "letterSpacing": "-0.25px", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container overflow-hidden h-screen flex flex-col">
+<!-- Subtle WebGL Background Simulation (Animated Shader) -->
+
+<!-- Navigation Area (Linear/Transactional Suppression of SideNav/BottomNav per rules) -->
+<header class="relative z-10 flex items-center h-16 px-margin-mobile md:px-margin-tablet">
+<button aria-label="Go back" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container transition-colors active:scale-95">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="relative z-10 flex-grow flex items-center justify-center px-margin-mobile">
+<div class="w-full max-w-md">
+<!-- Branding/Identity -->
+<div class="text-center mb-xl">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary-container/10 mb-md shadow-sm shadow-primary/5">
+<span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary tracking-tight">Verify OTP</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-sm px-4">
+                    We've sent a 6-digit verification code to <br/>
+<span class="font-semibold text-on-surface">sa***@gmail.com</span>
+</p>
+</div>
+<!-- OTP Input Section -->
+<div class="glass-card rounded-2xl p-lg shadow-xl shadow-primary/10">
+<form class="space-y-xl" id="otp-form">
+<div class="flex justify-between gap-2 md:gap-sm" id="otp-inputs">
+<input autofocus="" class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-title-lg font-title-lg rounded-xl border-outline-variant bg-surface-container-low text-primary focus:ring-2 focus:ring-primary focus:border-primary transition-all" maxlength="1" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-title-lg font-title-lg rounded-xl border-outline-variant bg-surface-container-low text-primary focus:ring-2 focus:ring-primary focus:border-primary transition-all" maxlength="1" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-title-lg font-title-lg rounded-xl border-outline-variant bg-surface-container-low text-primary focus:ring-2 focus:ring-primary focus:border-primary transition-all" maxlength="1" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-title-lg font-title-lg rounded-xl border-outline-variant bg-surface-container-low text-primary focus:ring-2 focus:ring-primary focus:border-primary transition-all" maxlength="1" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-title-lg font-title-lg rounded-xl border-outline-variant bg-surface-container-low text-primary focus:ring-2 focus:ring-primary focus:border-primary transition-all" maxlength="1" type="text"/>
+<input class="otp-input w-12 h-14 md:w-14 md:h-16 text-center text-title-lg font-title-lg rounded-xl border-outline-variant bg-surface-container-low text-primary focus:ring-2 focus:ring-primary focus:border-primary transition-all" maxlength="1" type="text"/>
+</div>
+<div class="space-y-md">
+<button class="w-full h-14 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-full font-title-md text-title-md shadow-lg shadow-primary/20 active:scale-[0.98] transition-transform flex items-center justify-center gap-2 group" type="submit">
+<span>Verify Code</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<div class="flex flex-col items-center gap-sm pt-sm">
+<p class="font-body-md text-body-md text-on-surface-variant">Didn't receive the code?</p>
+<button class="flex items-center gap-1 font-label-lg text-label-lg text-primary disabled:text-outline-variant disabled:cursor-not-allowed group transition-all" disabled="" id="resend-btn" type="button">
+<span id="resend-timer-text">Resend in </span>
+<span class="font-bold" id="timer">00:59</span>
+</button>
+</div>
+</div>
+</form>
+</div>
+<!-- Footer Meta -->
+<div class="mt-xl text-center">
+<p class="font-label-sm text-label-sm text-outline uppercase tracking-widest opacity-60">Secure Verification • Lost &amp; Found BD</p>
+</div>
+</div>
+</main>
+<!-- Visual Decor: Abstract Floating Glass Shape -->
+<div class="fixed -bottom-24 -left-24 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="fixed -top-24 -right-24 w-80 h-80 bg-secondary/10 rounded-full blur-3xl pointer-events-none"></div>
+<script>
+        // OTP Input Logic
+        const inputs = document.querySelectorAll('.otp-input');
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length > 0 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // Allow only numbers
+            input.addEventListener('keypress', (e) => {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Timer Logic
+        let timeLeft = 59;
+        const timerElement = document.getElementById('timer');
+        const resendBtn = document.getElementById('resend-btn');
+        const resendText = document.getElementById('resend-timer-text');
+
+        const countdown = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                timerElement.innerText = "";
+                resendText.innerText = "Resend OTP";
+                resendBtn.disabled = false;
+                resendBtn.classList.add('hover:opacity-80');
+            } else {
+                let m = Math.floor(timeLeft / 60);
+                let s = timeLeft % 60;
+                timerElement.innerText = `${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+            }
+            timeLeft -= 1;
+        }, 1000);
+
+        // Form Submit Simulation
+        document.getElementById('otp-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const otp = Array.from(inputs).map(i => i.value).join('');
+            if(otp.length === 6) {
+                const btn = e.target.querySelector('button[type="submit"]');
+                btn.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Verifying...';
+                btn.classList.add('opacity-80', 'pointer-events-none');
+                
+                setTimeout(() => {
+                    alert('OTP Verified Successfully! Welcome back to Lost & Found BD.');
+                    btn.innerHTML = '<span>Verify Code</span><span class="material-symbols-outlined">arrow_forward</span>';
+                    btn.classList.remove('opacity-80', 'pointer-events-none');
+                }, 1500);
+            } else {
+                // Shake effect on error
+                const card = document.querySelector('.glass-card');
+                card.classList.add('animate-shake');
+                setTimeout(() => card.classList.remove('animate-shake'), 400);
+            }
+        });
+    </script>
+<style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        .animate-shake {
+            animation: shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+            border-color: #ba1a1a !important;
+        }
+    </style>
+</body></html>

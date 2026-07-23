@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -24,14 +25,47 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
 
   String _type = 'lost';
   String _category = 'Electronics';
-  final List<File> _images = [];
+  final List<XFile> _pickedXFiles = [];
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descController.dispose();
+    _locationController.dispose();
+    _rewardController.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      setState(() => _images.add(File(picked.path)));
+    try {
+      final picker = ImagePicker();
+      final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+      if (picked != null) {
+        setState(() => _pickedXFiles.add(picked));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not pick image: $e')),
+        );
+      }
     }
+  }
+
+  void _proceedToPreview() {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final postData = {
+      'title': _titleController.text.trim(),
+      'description': _descController.text.trim(),
+      'category': _category,
+      'type': _type,
+      'location': _locationController.text.trim(),
+      'rewardAmount': double.tryParse(_rewardController.text.trim()) ?? 0.0,
+      'pickedFiles': _pickedXFiles,
+    };
+
+    context.push('/preview-report', extra: postData);
   }
 
   @override
@@ -99,7 +133,7 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                     const SizedBox(height: 14),
 
                     DropdownButtonFormField<String>(
-                      value: _category,
+                      initialValue: _category,
                       decoration: const InputDecoration(labelText: 'Category'),
                       items: ['Electronics', 'Wallets', 'Documents', 'Keys', 'Pets', 'Clothing', 'Others']
                           .map((c) => DropdownMenuItem(value: c, child: Text(c)))
@@ -149,10 +183,10 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                 height: 90,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: _images.length + 1,
+                  itemCount: _pickedXFiles.length + 1,
                   separatorBuilder: (_, __) => const SizedBox(width: 10),
                   itemBuilder: (context, index) {
-                    if (index == _images.length) {
+                    if (index == _pickedXFiles.length) {
                       return InkWell(
                         onTap: _pickImage,
                         borderRadius: BorderRadius.circular(16),
@@ -174,9 +208,13 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                         ),
                       );
                     }
+
+                    final xfile = _pickedXFiles[index];
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.file(_images[index], width: 90, height: 90, fit: BoxFit.cover),
+                      child: kIsWeb
+                          ? Image.network(xfile.path, width: 90, height: 90, fit: BoxFit.cover)
+                          : Image.file(File(xfile.path), width: 90, height: 90, fit: BoxFit.cover),
                     );
                   },
                 ),
@@ -186,11 +224,7 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
               PrimaryButton(
                 text: 'Preview & Publish Report',
                 icon: Icons.arrow_forward_rounded,
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    context.push('/preview-report');
-                  }
-                },
+                onPressed: _proceedToPreview,
               ),
             ],
           ),

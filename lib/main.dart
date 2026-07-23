@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/config/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/providers/providers.dart';
@@ -8,6 +9,11 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Load environment variables for Cloudinary
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (_) {}
 
   // Initialize Firebase
   await Firebase.initializeApp(

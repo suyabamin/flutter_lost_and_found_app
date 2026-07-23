@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/stat_card.dart';
 import '../../core/widgets/category_chip.dart';
-import '../../core/widgets/primary_button.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
 
@@ -22,8 +22,8 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
 
   final List<String> _categories = [
     'All',
-    'Wallets',
     'Electronics',
+    'Wallets',
     'Pets',
     'Documents',
     'Clothing',
@@ -64,9 +64,34 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none_rounded),
-            onPressed: () => context.push('/notifications'),
+          StreamBuilder<List<Map<String, dynamic>>>(
+            stream: ref.watch(firestoreServiceProvider).streamNotifications(FirebaseAuth.instance.currentUser?.uid ?? 'guest'),
+            builder: (context, snapshot) {
+              final list = snapshot.data ?? [];
+              final hasUnread = list.any((n) => n['isRead'] == false || n['isRead'] == null);
+
+              return IconButton(
+                icon: Stack(
+                  children: [
+                    const Icon(Icons.notifications_none_rounded),
+                    if (hasUnread && list.isNotEmpty)
+                      Positioned(
+                        right: 2,
+                        top: 2,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                onPressed: () => context.push('/notifications'),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.dashboard_customize_outlined),
@@ -130,7 +155,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                           },
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(width: 8),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -234,13 +259,13 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
             ),
             const SizedBox(height: 24),
 
-            // Nearby Lost Items Section
+            // Recent Reported Items Section
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Nearby Lost Items',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  selectedCategory == 'All' ? 'Recent Reported Feed' : '$selectedCategory Items',
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 TextButton(
                   onPressed: () => context.push('/search-results'),
@@ -252,25 +277,31 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
 
             postsAsync.when(
               data: (posts) {
-                final lostPosts = posts.where((p) => p.type == 'lost').toList();
-                if (lostPosts.isEmpty) {
+                if (posts.isEmpty) {
                   return GlassContainer(
-                    child: const Center(
+                    child: Center(
                       child: Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Text('No lost items reported yet in this category.'),
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'No items reported in "$selectedCategory" category yet.\nTap "Report Item" to post the first one!',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: AppColors.onSurfaceVariant),
+                        ),
                       ),
                     ),
                   );
                 }
+
                 return SizedBox(
-                  height: 210,
+                  height: 220,
                   child: ListView.separated(
                     scrollDirection: Axis.horizontal,
-                    itemCount: lostPosts.length,
+                    itemCount: posts.length,
                     separatorBuilder: (_, __) => const SizedBox(width: 14),
                     itemBuilder: (context, index) {
-                      final item = lostPosts[index];
+                      final item = posts[index];
+                      final isLost = item.type == 'lost';
+
                       return GestureDetector(
                         onTap: () => context.push('/item-details/${item.id}'),
                         child: Container(
@@ -284,7 +315,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                height: 110,
+                                height: 115,
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
                                   color: Colors.grey.shade200,
@@ -303,12 +334,12 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         decoration: BoxDecoration(
-                                          color: AppColors.error,
+                                          color: isLost ? AppColors.error : AppColors.secondary,
                                           borderRadius: BorderRadius.circular(12),
                                         ),
-                                        child: const Text(
-                                          'Lost',
-                                          style: TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                        child: Text(
+                                          isLost ? 'LOST' : 'FOUND',
+                                          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                     ),
@@ -353,7 +384,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Text('Error loading posts: $err'),
+              error: (err, stack) => Center(child: Text('Notice: $err', style: const TextStyle(color: AppColors.outline))),
             ),
             const SizedBox(height: 24),
 

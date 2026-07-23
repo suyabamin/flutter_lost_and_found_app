@@ -1,8 +1,29 @@
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  AuthService() {
+    _initPersistence();
+  }
+
+  Future<void> _initPersistence() async {
+    if (kIsWeb) {
+      try {
+        await _auth.setPersistence(Persistence.LOCAL);
+      } catch (_) {
+        try {
+          await _auth.setPersistence(Persistence.SESSION);
+        } catch (_) {
+          try {
+            await _auth.setPersistence(Persistence.NONE);
+          } catch (_) {}
+        }
+      }
+    }
+  }
 
   User? get currentUser => _auth.currentUser;
 
@@ -22,6 +43,18 @@ class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseError(e);
+    } catch (e) {
+      // Handle browser IndexedDB storage error
+      if (kIsWeb && e.toString().contains('indexedDB')) {
+        try {
+          await _auth.setPersistence(Persistence.NONE);
+          return await _auth.createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+        } catch (_) {}
+      }
+      throw 'রেজিস্ট্রেশন করতে সমস্যা হচ্ছে। কিছুক্ষণ পরে চেষ্টা করুন।';
     }
   }
 
@@ -39,6 +72,17 @@ class AuthService {
       );
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseError(e);
+    } catch (e) {
+      if (kIsWeb && e.toString().contains('indexedDB')) {
+        try {
+          await _auth.setPersistence(Persistence.NONE);
+          return await _auth.signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          );
+        } catch (_) {}
+      }
+      throw 'লগইন করতে সমস্যা হচ্ছে। তথ্য পরীক্ষা করুন।';
     }
   }
 

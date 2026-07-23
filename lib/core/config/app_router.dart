@@ -22,6 +22,8 @@ import '../../features/posts/create_lost_post_step_1_screen.dart';
 import '../../features/posts/preview_publish_report_screen.dart';
 import '../../features/posts/item_details_screen.dart';
 import '../../features/posts/my_posts_screen.dart';
+import '../../features/posts/submit_claim_screen.dart';
+import '../../features/posts/claim_details_screen.dart';
 
 import '../../features/maps/google_map_view_screen.dart';
 import '../../features/maps/select_location_screen.dart';
@@ -81,12 +83,29 @@ final appRouter = GoRouter(
     GoRoute(path: '/ai-matches-animated', builder: (context, state) => const AiMatchResultsAnimatedScreen()),
     
     GoRoute(path: '/create-post-step1', builder: (context, state) => const CreateLostPostStep1Screen()),
-    GoRoute(path: '/preview-report', builder: (context, state) => const PreviewPublishReportScreen()),
+    GoRoute(
+      path: '/preview-report',
+      builder: (context, state) => PreviewPublishReportScreen(postData: state.extra as Map<String, dynamic>?),
+    ),
     GoRoute(
       path: '/item-details/:id',
       builder: (context, state) {
         final id = state.pathParameters['id'] ?? '1';
         return ItemDetailsScreen(id: id);
+      },
+    ),
+    GoRoute(
+      path: '/submit-claim/:postId',
+      builder: (context, state) {
+        final postId = state.pathParameters['postId'] ?? '1';
+        return SubmitClaimScreen(postId: postId);
+      },
+    ),
+    GoRoute(
+      path: '/claim-details/:claimId',
+      builder: (context, state) {
+        final claimId = state.pathParameters['claimId'] ?? '1';
+        return ClaimDetailsScreen(claimId: claimId);
       },
     ),
     GoRoute(path: '/my-posts', builder: (context, state) => const MyPostsScreen()),

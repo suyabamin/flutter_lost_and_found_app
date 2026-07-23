@@ -6,9 +6,12 @@ import '../services/firestore_service.dart';
 import '../models/user_model.dart';
 import '../models/post_model.dart';
 
+import '../services/cloudinary_service.dart';
+
 // Services
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 final firestoreServiceProvider = Provider<FirestoreService>((ref) => FirestoreService());
+final cloudinaryServiceProvider = Provider<CloudinaryService>((ref) => CloudinaryService());
 
 // Auth State Provider
 final authStateProvider = StreamProvider<User?>((ref) {

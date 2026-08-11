@@ -6,8 +6,16 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/stat_card.dart';
 import '../../core/widgets/category_chip.dart';
-import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/models/post_model.dart';
+import '../../core/widgets/app_image.dart';
+import '../../core/services/firestore_service.dart';
+
+
+// All posts (unfiltered) provider — used for dashboard stats & AI match banner
+final allPostsStreamProvider = StreamProvider<List<PostModel>>((ref) {
+  return ref.watch(firestoreServiceProvider).streamPosts();
+});
 
 class HomeDashboardScreen extends ConsumerStatefulWidget {
   const HomeDashboardScreen({super.key});
@@ -42,6 +50,8 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final postsAsync = ref.watch(postsStreamProvider);
+    // Watch all posts (unfiltered) for stats and AI match
+    final allPostsAsync = ref.watch(allPostsStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +79,6 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
             builder: (context, snapshot) {
               final list = snapshot.data ?? [];
               final hasUnread = list.any((n) => n['isRead'] == false || n['isRead'] == null);
-
               return IconButton(
                 icon: Stack(
                   children: [
@@ -197,69 +206,46 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
             ),
             const SizedBox(height: 20),
 
-            // AI Match Banner
+            // Live AI Match Banner
+            _AiMatchBanner(allPostsAsync: allPostsAsync),
+
+            // Live Stats Grid
+            _LiveStatsRow(allPostsAsync: allPostsAsync),
+            const SizedBox(height: 24),
+
+            // Map Preview Card
             GlassContainer(
-              onTap: () => context.push('/ai-matches'),
+              onTap: () => context.push('/map-view'),
               borderRadius: 20,
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppColors.primary,
+                      color: AppColors.secondaryContainer,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 24),
+                    child: const Icon(Icons.map_rounded, color: AppColors.secondary, size: 28),
                   ),
                   const SizedBox(width: 14),
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'AI Match Found! (94% Match)',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppColors.primary),
-                        ),
+                      children: [
+                        Text('Interactive Search Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         SizedBox(height: 2),
-                        Text(
-                          'A black leather wallet found in Dhanmondi matches your report.',
-                          style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
-                        ),
+                        Text('View nearby item markers & search circle on map', style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right_rounded, color: AppColors.primary),
+                  const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColors.outline),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
-            // Stats Grid
-            Row(
-              children: const [
-                Expanded(
-                  child: StatCard(
-                    title: 'Items Recovered',
-                    value: '2,481',
-                    icon: Icons.trending_up_rounded,
-                    iconColor: AppColors.secondary,
-                  ),
-                ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: StatCard(
-                    title: 'Active Reports',
-                    value: '156',
-                    icon: Icons.schedule_rounded,
-                    iconColor: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 24),
 
-            // Recent Reported Items Section
+            // Recent Feed Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -273,152 +259,203 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
 
+            // Posts Feed
             postsAsync.when(
               data: (posts) {
-                if (posts.isEmpty) {
+                final filtered = selectedCategory == 'All'
+                    ? posts
+                    : posts.where((p) {
+                        final cat = p.category.toLowerCase().trim();
+                        final sel = selectedCategory.toLowerCase().trim();
+                        return cat == sel || (sel.startsWith('other') && cat.startsWith('other'));
+                      }).toList();
+
+                if (filtered.isEmpty) {
                   return GlassContainer(
                     child: Center(
                       child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Text(
-                          'No items reported in "$selectedCategory" category yet.\nTap "Report Item" to post the first one!',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: AppColors.onSurfaceVariant),
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.outline),
+                            const SizedBox(height: 10),
+                            Text(
+                              'No $selectedCategory items found.',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   );
                 }
 
-                return SizedBox(
-                  height: 220,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: posts.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 14),
-                    itemBuilder: (context, index) {
-                      final item = posts[index];
-                      final isLost = item.type == 'lost';
+                return GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.70,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                  ),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final item = filtered[index];
+                    final isLost = item.type == 'lost';
 
-                      return GestureDetector(
-                        onTap: () => context.push('/item-details/${item.id}'),
-                        child: Container(
-                          width: 200,
-                          decoration: BoxDecoration(
-                            color: isDark ? AppColors.darkSurface : Colors.white,
-                            borderRadius: BorderRadius.circular(18),
-                            border: Border.all(color: AppColors.outlineVariant.withOpacity(0.5)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                height: 115,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-                                  color: Colors.grey.shade200,
-                                  image: item.images.isNotEmpty
-                                      ? DecorationImage(
-                                          image: NetworkImage(item.images.first),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : null,
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Positioned(
-                                      top: 8,
-                                      left: 8,
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: isLost ? AppColors.error : AppColors.secondary,
-                                          borderRadius: BorderRadius.circular(12),
-                                        ),
-                                        child: Text(
-                                          isLost ? 'LOST' : 'FOUND',
-                                          style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
-                                        ),
+                    return GestureDetector(
+                      onTap: () => context.push('/item-details/${item.id}'),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: isDark ? AppColors.darkSurface : Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.4)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Card Cover Image + Badges
+                            Expanded(
+                              flex: 12,
+                              child: Stack(
+                                children: [
+                                  AppImage(
+                                    url: item.images.isNotEmpty ? item.images.first : '',
+                                    bytes: FirestoreService.getLocalImageBytes(item.id)?.firstOrNull,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                    placeholderSeed: item.id,
+                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                                  ),
+                                  // Status Badge (LOST / FOUND)
+                                  Positioned(
+                                    top: 8,
+                                    left: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: isLost ? AppColors.error : AppColors.secondary,
+                                        borderRadius: BorderRadius.circular(8),
+                                        boxShadow: const [
+                                          BoxShadow(color: Colors.black26, blurRadius: 4),
+                                        ],
+                                      ),
+                                      child: Text(
+                                        isLost ? 'LOST' : 'FOUND',
+                                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  // Category Pill
+                                  Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withValues(alpha: 0.65),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        item.category,
+                                        style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w600),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Padding(
+                            ),
+                            // Card Info Details
+                            Expanded(
+                              flex: 11,
+                              child: Padding(
                                 padding: const EdgeInsets.all(10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      item.title,
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Row(
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Icon(Icons.location_on_outlined, size: 14, color: AppColors.outline),
-                                        const SizedBox(width: 2),
-                                        Expanded(
-                                          child: Text(
-                                            item.location,
-                                            style: const TextStyle(fontSize: 11, color: AppColors.outline),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                                        Text(
+                                          item.title,
+                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, height: 1.2),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.location_on_outlined, size: 12, color: AppColors.outline),
+                                            const SizedBox(width: 2),
+                                            Expanded(
+                                              child: Text(
+                                                item.location,
+                                                style: const TextStyle(fontSize: 10, color: AppColors.outline),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        if (item.rewardAmount > 0)
+                                          Container(
+                                            margin: const EdgeInsets.only(bottom: 4),
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: Colors.orange.withValues(alpha: 0.15),
+                                              borderRadius: BorderRadius.circular(6),
+                                            ),
+                                            child: Text(
+                                              'Reward: ৳${item.rewardAmount.toInt()}',
+                                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                                            ),
                                           ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                'By ${item.userName}',
+                                                style: const TextStyle(fontSize: 10, color: AppColors.outline),
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            const Icon(Icons.chevron_right_rounded, size: 16, color: AppColors.primary),
+                                          ],
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (err, stack) => Center(child: Text('Notice: $err', style: const TextStyle(color: AppColors.outline))),
-            ),
-            const SizedBox(height: 24),
-
-            // Map Preview Card
-            GestureDetector(
-              onTap: () => context.push('/map-view'),
-              child: GlassContainer(
-                borderRadius: 20,
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: AppColors.secondaryContainer,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: const Icon(Icons.map_rounded, color: AppColors.secondary, size: 28),
-                    ),
-                    const SizedBox(width: 14),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text('Live Location Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                          SizedBox(height: 2),
-                          Text('Explore interactive pins of lost & found items near you', style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
-                        ],
-                      ),
-                    ),
-                    const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColors.outline),
-                  ],
-                ),
-              ),
             ),
             const SizedBox(height: 40),
           ],
@@ -444,6 +481,170 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
           NavigationDestination(icon: Icon(Icons.chat_bubble_outline_rounded), selectedIcon: Icon(Icons.chat_bubble_rounded), label: 'Chat'),
           NavigationDestination(icon: Icon(Icons.person_outline_rounded), selectedIcon: Icon(Icons.person_rounded), label: 'Profile'),
         ],
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Live AI Match Banner
+// Shows the highest-score "found" post from Firestore.
+// Hidden when no match exists (similarityScore == 0).
+// ─────────────────────────────────────────────────────────────────
+class _AiMatchBanner extends ConsumerWidget {
+  final AsyncValue<List<PostModel>> allPostsAsync;
+  const _AiMatchBanner({required this.allPostsAsync});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUid = FirebaseAuth.instance.currentUser?.uid;
+
+    return allPostsAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (posts) {
+        // Find the best "found" post that was NOT posted by the current user
+        // and has a similarity score > 0
+        final candidates = posts
+            .where((p) =>
+                p.type == 'found' &&
+                p.userId != currentUid &&
+                p.similarityScore > 0)
+            .toList()
+          ..sort((a, b) => b.similarityScore.compareTo(a.similarityScore));
+
+        // If no real match yet, hide banner entirely
+        if (candidates.isEmpty) return const SizedBox.shrink();
+
+        final best = candidates.first;
+        final pct = (best.similarityScore * 100).toInt().clamp(0, 100);
+
+        return Column(
+          children: [
+            GlassContainer(
+              onTap: () => context.push('/item-details/${best.id}'),
+              borderRadius: 20,
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(Icons.auto_awesome_rounded,
+                        color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'AI Match Found! ($pct% Match)',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                              color: AppColors.primary),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          '"${best.title}" found at ${best.location} matches your report.',
+                          style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.onSurfaceVariant),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right_rounded,
+                      color: AppColors.primary),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Live Stats Row
+// Counts are derived from the live Firestore posts stream.
+// ─────────────────────────────────────────────────────────────────
+class _LiveStatsRow extends ConsumerWidget {
+  final AsyncValue<List<PostModel>> allPostsAsync;
+  const _LiveStatsRow({required this.allPostsAsync});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return allPostsAsync.when(
+      loading: () => Row(
+        children: const [
+          Expanded(child: _StatPlaceholder()),
+          SizedBox(width: 12),
+          Expanded(child: _StatPlaceholder()),
+        ],
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (posts) {
+        final recovered = posts.where((p) => p.status == 'resolved').length;
+        final active = posts.where((p) => p.status == 'active').length;
+
+        String _fmt(int n) {
+          if (n >= 1000) {
+            return '${(n / 1000).toStringAsFixed(1)}k';
+          }
+          return n.toString();
+        }
+
+        return Row(
+          children: [
+            Expanded(
+              child: StatCard(
+                title: 'Items Recovered',
+                value: _fmt(recovered),
+                icon: Icons.trending_up_rounded,
+                iconColor: AppColors.secondary,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: StatCard(
+                title: 'Active Reports',
+                value: _fmt(active),
+                icon: Icons.schedule_rounded,
+                iconColor: AppColors.primary,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _StatPlaceholder extends StatelessWidget {
+  const _StatPlaceholder();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 90,
+      decoration: BoxDecoration(
+        color: AppColors.outlineVariant.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: const Center(
+        child: SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
       ),
     );
   }

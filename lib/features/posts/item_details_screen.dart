@@ -5,9 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
+import '../../core/widgets/app_image.dart';
 import '../../core/models/post_model.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/services/firestore_service.dart';
 
 class ItemDetailsScreen extends ConsumerWidget {
   final String id;
@@ -94,13 +96,12 @@ class ItemDetailsScreen extends ConsumerWidget {
                       const SizedBox(width: 12),
                     ],
                     flexibleSpace: FlexibleSpaceBar(
-                      background: mainImage.startsWith('data:image') || mainImage.startsWith('http')
-                          ? Image.network(
-                              mainImage,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Image.network('https://picsum.photos/seed/$id/600/400', fit: BoxFit.cover),
-                            )
-                          : Image.network('https://picsum.photos/seed/$id/600/400', fit: BoxFit.cover),
+                      background: AppImage(
+                        url: mainImage,
+                        bytes: FirestoreService.getLocalImageBytes(id)?.firstOrNull,
+                        fit: BoxFit.cover,
+                        placeholderSeed: id,
+                      ),
                     ),
                   ),
 

@@ -1,0 +1,23 @@
+﻿rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Lost & Found chat images and post images
+    match /lost_and_found/{allPaths=**} {
+      // Anyone can view images (needed to display in chat bubbles for both participants)
+      allow read: if true;
+
+      // Only authenticated users can upload
+      // Max file size: 10MB, images only
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // Deny everything else
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+  }
+}

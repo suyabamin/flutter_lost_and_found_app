@@ -28,6 +28,14 @@ import '../../features/posts/claim_details_screen.dart';
 import '../../features/maps/google_map_view_screen.dart';
 import '../../features/maps/select_location_screen.dart';
 
+import '../../features/recovery/recovery_completed_screen.dart';
+import '../../features/recovery/reward_payment_screen.dart';
+import '../../features/recovery/reward_success_screen.dart';
+import '../../features/recovery/rating_screen.dart';
+import '../../features/recovery/recovery_history_screen.dart';
+import '../../features/recovery/wallet_screen.dart';
+import '../../features/recovery/leaderboard_screen.dart' as recovery_lb;
+
 import '../../features/chat/chat_list_screen.dart';
 import '../../features/chat/chat_conversation_screen.dart';
 
@@ -37,7 +45,6 @@ import '../../features/profile/edit_profile_screen.dart';
 import '../../features/profile/favorites_screen.dart';
 import '../../features/profile/history_screen.dart';
 import '../../features/profile/rewards_wallet_screen.dart';
-import '../../features/home/leaderboard_screen.dart';
 
 import '../../features/verification/nid_verification_screen.dart';
 import '../../features/verification/police_gd_integration_screen.dart';
@@ -111,7 +118,12 @@ final appRouter = GoRouter(
     GoRoute(path: '/my-posts', builder: (context, state) => const MyPostsScreen()),
     
     GoRoute(path: '/map-view', builder: (context, state) => const GoogleMapViewScreen()),
-    GoRoute(path: '/select-location', builder: (context, state) => const SelectLocationScreen()),
+    GoRoute(
+      path: '/select-location',
+      builder: (context, state) => SelectLocationScreen(
+        initialLocation: state.uri.queryParameters['initial'],
+      ),
+    ),
     
     GoRoute(path: '/chats', builder: (context, state) => const ChatListScreen()),
     GoRoute(
@@ -128,7 +140,39 @@ final appRouter = GoRouter(
     GoRoute(path: '/favorites', builder: (context, state) => const FavoritesScreen()),
     GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
     GoRoute(path: '/rewards', builder: (context, state) => const RewardsWalletScreen()),
-    GoRoute(path: '/leaderboard', builder: (context, state) => const LeaderboardScreen()),
+    GoRoute(path: '/leaderboard', builder: (context, state) => const recovery_lb.LeaderboardScreen()),
+    
+    // Recovery & Payment Routes
+    GoRoute(
+      path: '/recovery-completed/:claimId',
+      builder: (context, state) {
+        final claimId = state.pathParameters['claimId'] ?? '';
+        return RecoveryCompletedScreen(claimId: claimId);
+      },
+    ),
+    GoRoute(
+      path: '/reward-payment/:claimId',
+      builder: (context, state) {
+        final claimId = state.pathParameters['claimId'] ?? '';
+        return RewardPaymentScreen(claimId: claimId);
+      },
+    ),
+    GoRoute(
+      path: '/reward-success/:paymentId',
+      builder: (context, state) {
+        final paymentId = state.pathParameters['paymentId'] ?? '';
+        return RewardSuccessScreen(paymentId: paymentId);
+      },
+    ),
+    GoRoute(
+      path: '/rating/:claimId',
+      builder: (context, state) {
+        final claimId = state.pathParameters['claimId'] ?? '';
+        return RatingScreen(claimId: claimId);
+      },
+    ),
+    GoRoute(path: '/recovery-history', builder: (context, state) => const RecoveryHistoryScreen()),
+    GoRoute(path: '/wallet', builder: (context, state) => const WalletScreen()),
     
     GoRoute(path: '/nid-verification', builder: (context, state) => const NidVerificationScreen()),
     GoRoute(path: '/police-gd', builder: (context, state) => const PoliceGdIntegrationScreen()),

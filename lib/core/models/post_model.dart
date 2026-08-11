@@ -77,7 +77,18 @@ class PostModel {
       status: map['status'] ?? 'active',
       rewardAmount: (map['rewardAmount'] as num?)?.toDouble() ?? 0.0,
       similarityScore: (map['similarityScore'] as num?)?.toDouble() ?? 0.0,
-      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now(),
+      createdAt: _parseDateTime(map['createdAt']),
     );
+  }
+}
+
+DateTime _parseDateTime(dynamic val) {
+  if (val == null) return DateTime.now();
+  if (val is String) return DateTime.tryParse(val) ?? DateTime.now();
+  if (val is int) return DateTime.fromMillisecondsSinceEpoch(val);
+  try {
+    return (val as dynamic).toDate();
+  } catch (_) {
+    return DateTime.now();
   }
 }

@@ -1,14 +1,18 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
+import '../../core/widgets/app_image.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/services/firestore_service.dart';
+import '../home_dashboard/home_dashboard_screen.dart';
+
 
 class PreviewPublishReportScreen extends ConsumerStatefulWidget {
   final Map<String, dynamic>? postData;
@@ -38,14 +42,25 @@ class _PreviewPublishReportScreenState extends ConsumerState<PreviewPublishRepor
       final List<XFile> pickedFiles = (data['pickedFiles'] as List<XFile>?) ?? [];
 
       List<String> imageUrls = [];
+      List<Uint8List> pickedBytes = [];
 
-      // Convert or upload picked images to preserve EXACT photo
+      // Read raw bytes from picked files for local display (bypasses all upload/encoding issues)
+      if (pickedFiles.isNotEmpty) {
+        pickedBytes = await Future.wait(pickedFiles.map((f) => f.readAsBytes()));
+      }
+
+      // Convert or upload picked images for Firestore storage
       if (pickedFiles.isNotEmpty) {
         final cloudinaryService = ref.read(cloudinaryServiceProvider);
         imageUrls = await cloudinaryService.uploadMultipleXFiles(pickedFiles);
       } else {
         imageUrls = ['https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/600/400'];
       }
+
+      final double latitude = (data['latitude'] as num?)?.toDouble() ?? 23.7461;
+      final double longitude = (data['longitude'] as num?)?.toDouble() ?? 90.3742;
+
+      final authUser = FirebaseAuth.instance.currentUser;
 
       final newPost = PostModel(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -54,15 +69,34 @@ class _PreviewPublishReportScreenState extends ConsumerState<PreviewPublishRepor
         category: category,
         type: type,
         location: location,
+        latitude: latitude,
+        longitude: longitude,
         date: 'Just now',
         images: imageUrls,
-        userId: user?.uid ?? 'user_${DateTime.now().millisecondsSinceEpoch}',
-        userName: user?.displayName.isNotEmpty == true ? user!.displayName : 'Anonymous User',
+        userId: user?.uid ?? authUser?.uid ?? 'guest_${DateTime.now().millisecondsSinceEpoch}',
+        userName: (user?.displayName != null && user!.displayName.isNotEmpty)
+            ? user.displayName
+            : ((authUser?.displayName != null && authUser!.displayName!.isNotEmpty)
+                ? authUser.displayName!
+                : 'Anonymous User'),
         rewardAmount: rewardAmount,
       );
 
-      // Save post to Cloud Firestore
+      // Save post to Cloud Firestore & Local Store
       await ref.read(firestoreServiceProvider).createPost(newPost);
+
+      // Store raw image bytes so this device always shows the user's actual photo
+      // (works even when Cloudinary isn't configured or images exceeded Base64 limits)
+      if (pickedBytes.isNotEmpty) {
+        FirestoreService.storeLocalImageBytes(newPost.id, pickedBytes);
+      }
+
+      // Invalidate stream providers so feed & stats refresh instantly
+      ref.invalidate(postsStreamProvider);
+      try {
+        ref.invalidate(allPostsStreamProvider);
+      } catch (_) {}
+
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -105,20 +139,14 @@ class _PreviewPublishReportScreenState extends ConsumerState<PreviewPublishRepor
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               height: 200,
               width: double.infinity,
-              decoration: BoxDecoration(
+              child: AppImage(
+                url: pickedFiles.isNotEmpty ? pickedFiles.first.path : 'https://picsum.photos/seed/iphone14/600/400',
+                fit: BoxFit.cover,
+                placeholderSeed: 'iphone14',
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.grey.shade300,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: pickedFiles.isNotEmpty
-                    ? (kIsWeb
-                        ? Image.network(pickedFiles.first.path, fit: BoxFit.cover)
-                        : Image.file(File(pickedFiles.first.path), fit: BoxFit.cover))
-                    : Image.network('https://picsum.photos/seed/iphone14/600/400', fit: BoxFit.cover),
               ),
             ),
             const SizedBox(height: 20),

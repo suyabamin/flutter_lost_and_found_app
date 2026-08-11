@@ -25,6 +25,8 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
 
   String _type = 'lost';
   String _category = 'Electronics';
+  double? _latitude;
+  double? _longitude;
   final List<XFile> _pickedXFiles = [];
 
   @override
@@ -36,10 +38,36 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
     super.dispose();
   }
 
+  Future<void> _openLocationPicker() async {
+    final currentLoc = _locationController.text.trim();
+    final result = await context.push<dynamic>(
+      '/select-location?initial=${Uri.encodeComponent(currentLoc)}',
+    );
+
+    if (result != null) {
+      if (result is Map) {
+        setState(() {
+          _locationController.text = result['address']?.toString() ?? '';
+          _latitude = (result['lat'] as num?)?.toDouble();
+          _longitude = (result['lng'] as num?)?.toDouble();
+        });
+      } else if (result is String && result.isNotEmpty) {
+        setState(() {
+          _locationController.text = result;
+        });
+      }
+    }
+  }
+
   Future<void> _pickImage() async {
     try {
       final picker = ImagePicker();
-      final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 600,
+        maxHeight: 600,
+        imageQuality: 50,
+      );
       if (picked != null) {
         setState(() => _pickedXFiles.add(picked));
       }
@@ -61,6 +89,8 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
       'category': _category,
       'type': _type,
       'location': _locationController.text.trim(),
+      'latitude': _latitude ?? 23.7461,
+      'longitude': _longitude ?? 90.3742,
       'rewardAmount': double.tryParse(_rewardController.text.trim()) ?? 0.0,
       'pickedFiles': _pickedXFiles,
     };
@@ -158,10 +188,19 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                       prefixIcon: Icons.location_on_outlined,
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.map_rounded, color: AppColors.primary),
-                        onPressed: () => context.push('/select-location'),
+                        onPressed: _openLocationPicker,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 6),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: _openLocationPicker,
+                        icon: const Icon(Icons.pin_drop_rounded, size: 16),
+                        label: const Text('Pick Spot on Live Map / Search Place', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
 
                     if (_type == 'lost')
                       CustomTextField(

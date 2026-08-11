@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
+import '../../core/widgets/app_image.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/services/firestore_service.dart';
 
 class MyPostsScreen extends ConsumerWidget {
   const MyPostsScreen({super.key});
@@ -61,17 +63,15 @@ class MyPostsScreen extends ConsumerWidget {
                       padding: const EdgeInsets.all(14),
                       child: Row(
                         children: [
-                          Container(
-                            width: 70,
-                            height: 70,
-                            decoration: BoxDecoration(
+                          AppImage(
+                              url: item.images.isNotEmpty ? item.images.first : '',
+                              bytes: FirestoreService.getLocalImageBytes(item.id)?.firstOrNull,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                              placeholderSeed: item.id,
                               borderRadius: BorderRadius.circular(12),
-                              color: Colors.grey.shade300,
-                              image: item.images.isNotEmpty
-                                  ? DecorationImage(image: NetworkImage(item.images.first), fit: BoxFit.cover)
-                                  : null,
                             ),
-                          ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(

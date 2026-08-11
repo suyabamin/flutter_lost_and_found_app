@@ -40,7 +40,7 @@ class ChatRoomModel {
       postTitle: map['postTitle'] ?? '',
       postImage: map['postImage'] ?? '',
       lastMessage: map['lastMessage'] ?? '',
-      lastMessageTime: map['lastMessageTime'] != null ? DateTime.parse(map['lastMessageTime']) : DateTime.now(),
+      lastMessageTime: _parseDateTime(map['lastMessageTime']),
       unreadCount: map['unreadCount'] ?? 0,
     );
   }
@@ -80,8 +80,19 @@ class ChatMessageModel {
       senderId: map['senderId'] ?? '',
       text: map['text'] ?? '',
       imageUrl: map['imageUrl'] ?? '',
-      timestamp: map['timestamp'] != null ? DateTime.parse(map['timestamp']) : DateTime.now(),
+      timestamp: _parseDateTime(map['timestamp']),
       isRead: map['isRead'] ?? false,
     );
+  }
+}
+
+DateTime _parseDateTime(dynamic val) {
+  if (val == null) return DateTime.now();
+  if (val is String) return DateTime.tryParse(val) ?? DateTime.now();
+  if (val is int) return DateTime.fromMillisecondsSinceEpoch(val);
+  try {
+    return (val as dynamic).toDate();
+  } catch (_) {
+    return DateTime.now();
   }
 }

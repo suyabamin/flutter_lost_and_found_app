@@ -15,9 +15,12 @@ class ClaimModel {
   final List<String> claimImages;
   final List<String> claimDocuments;
   final String status; // 'pending', 'approved', 'rejected', 'completed'
+  final String recoveryStatus; // 'in_progress', 'both_confirmed'
   final DateTime createdAt;
   final DateTime? approvedAt;
   final DateTime? rejectedAt;
+  final DateTime? ownerConfirmedAt;
+  final DateTime? finderConfirmedAt;
 
   // Live Location tracking parameters (optional)
   final bool isClaimerSharingLocation;
@@ -44,9 +47,12 @@ class ClaimModel {
     required this.claimImages,
     this.claimDocuments = const [],
     this.status = 'pending',
+    this.recoveryStatus = 'in_progress',
     DateTime? createdAt,
     this.approvedAt,
     this.rejectedAt,
+    this.ownerConfirmedAt,
+    this.finderConfirmedAt,
     this.isClaimerSharingLocation = false,
     this.isOwnerSharingLocation = false,
     this.claimerLat,
@@ -73,9 +79,12 @@ class ClaimModel {
       'claimImages': claimImages,
       'claimDocuments': claimDocuments,
       'status': status,
+      'recoveryStatus': recoveryStatus,
       'createdAt': createdAt.toIso8601String(),
       'approvedAt': approvedAt?.toIso8601String(),
       'rejectedAt': rejectedAt?.toIso8601String(),
+      'ownerConfirmedAt': ownerConfirmedAt?.toIso8601String(),
+      'finderConfirmedAt': finderConfirmedAt?.toIso8601String(),
       'isClaimerSharingLocation': isClaimerSharingLocation,
       'isOwnerSharingLocation': isOwnerSharingLocation,
       'claimerLat': claimerLat,
@@ -103,9 +112,12 @@ class ClaimModel {
       claimImages: List<String>.from(map['claimImages'] ?? []),
       claimDocuments: List<String>.from(map['claimDocuments'] ?? []),
       status: map['status'] ?? 'pending',
-      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : DateTime.now(),
-      approvedAt: map['approvedAt'] != null ? DateTime.parse(map['approvedAt']) : null,
-      rejectedAt: map['rejectedAt'] != null ? DateTime.parse(map['rejectedAt']) : null,
+      recoveryStatus: map['recoveryStatus'] ?? 'in_progress',
+      createdAt: _parseDateTime(map['createdAt']),
+      approvedAt: _parseNullableDateTime(map['approvedAt']),
+      rejectedAt: _parseNullableDateTime(map['rejectedAt']),
+      ownerConfirmedAt: _parseNullableDateTime(map['ownerConfirmedAt']),
+      finderConfirmedAt: _parseNullableDateTime(map['finderConfirmedAt']),
       isClaimerSharingLocation: map['isClaimerSharingLocation'] ?? false,
       isOwnerSharingLocation: map['isOwnerSharingLocation'] ?? false,
       claimerLat: (map['claimerLat'] as num?)?.toDouble(),
@@ -113,5 +125,27 @@ class ClaimModel {
       ownerLat: (map['ownerLat'] as num?)?.toDouble(),
       ownerLng: (map['ownerLng'] as num?)?.toDouble(),
     );
+  }
+}
+
+DateTime _parseDateTime(dynamic val) {
+  if (val == null) return DateTime.now();
+  if (val is String) return DateTime.tryParse(val) ?? DateTime.now();
+  if (val is int) return DateTime.fromMillisecondsSinceEpoch(val);
+  try {
+    return (val as dynamic).toDate();
+  } catch (_) {
+    return DateTime.now();
+  }
+}
+
+DateTime? _parseNullableDateTime(dynamic val) {
+  if (val == null) return null;
+  if (val is String) return DateTime.tryParse(val);
+  if (val is int) return DateTime.fromMillisecondsSinceEpoch(val);
+  try {
+    return (val as dynamic).toDate();
+  } catch (_) {
+    return null;
   }
 }

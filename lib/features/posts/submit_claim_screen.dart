@@ -1,15 +1,19 @@
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
+import '../../core/widgets/app_image.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/services/firestore_service.dart';
 
 class SubmitClaimScreen extends ConsumerStatefulWidget {
   final String postId;
@@ -33,6 +37,7 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
   double _latitude = 23.8103;
   double _longitude = 90.4125;
   final List<XFile> _pickedImages = [];
+  final List<Uint8List> _pickedBytes = []; // raw bytes for local display
   bool _isSubmitting = false;
 
   @override
@@ -79,9 +84,18 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
   Future<void> _pickImage() async {
     try {
       final picker = ImagePicker();
-      final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 85);
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 600,
+        maxHeight: 600,
+        imageQuality: 50,
+      );
       if (picked != null) {
-        setState(() => _pickedImages.add(picked));
+        final bytes = await picked.readAsBytes();
+        setState(() {
+          _pickedImages.add(picked);
+          _pickedBytes.add(bytes);
+        });
       }
     } catch (e) {
       if (mounted) {
@@ -98,6 +112,17 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
     setState(() => _isSubmitting = true);
 
     try {
+      // Use FirebaseAuth directly (synchronous) — avoids the async StreamProvider
+      // null bug where claimerId becomes 'claimer_timestamp' instead of real uid,
+      // causing the Firestore read rule to deny access right after creation.
+      final authUser = FirebaseAuth.instance.currentUser;
+      final currentUid = authUser?.uid;
+
+      if (currentUid == null) {
+        throw Exception('You must be signed in to submit a claim.');
+      }
+
+      // Also read the Riverpod user for display name / email fallbacks
       final user = ref.read(currentUserProvider).value;
       final post = await ref.read(firestoreServiceProvider).getPost(widget.postId);
 
@@ -105,28 +130,28 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
         throw Exception('Original post not found.');
       }
 
-      // Upload images using CloudinaryService
+      // Upload proof images if provided
       final cloudinaryService = ref.read(cloudinaryServiceProvider);
       List<String> imageUrls = [];
       if (_pickedImages.isNotEmpty) {
         imageUrls = await cloudinaryService.uploadMultipleXFiles(_pickedImages);
-      } else {
-        imageUrls = ['https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/600/400'];
       }
+      // Empty list is fine — claim images are optional proof documents
 
       final claimId = 'claim_${DateTime.now().millisecondsSinceEpoch}';
       final newClaim = ClaimModel(
         claimId: claimId,
         postId: widget.postId,
         postOwnerId: post.userId,
-        claimerId: user?.uid ?? 'claimer_${DateTime.now().millisecondsSinceEpoch}',
+        // Always use the real Firebase Auth UID — never a guest/timestamp fallback
+        claimerId: currentUid,
         claimerName: _nameController.text.trim().isNotEmpty
             ? _nameController.text.trim()
-            : (user?.displayName ?? 'Tanvir Ahmed'),
+            : (user?.displayName ?? authUser?.displayName ?? 'Anonymous'),
         claimerPhone: _phoneController.text.trim(),
         claimerEmail: _emailController.text.trim().isNotEmpty
             ? _emailController.text.trim()
-            : (user?.email ?? 'claimer@example.com'),
+            : (user?.email ?? authUser?.email ?? ''),
         address: _addressController.text.trim(),
         latitude: _latitude,
         longitude: _longitude,
@@ -138,6 +163,11 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       );
 
       await ref.read(firestoreServiceProvider).createClaim(newClaim);
+
+      // Store bytes so claim details screen can show the actual photo immediately
+      if (_pickedBytes.isNotEmpty) {
+        FirestoreService.storeLocalClaimImageBytes(claimId, List.from(_pickedBytes));
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -300,7 +330,14 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                     final xfile = _pickedImages[index];
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: Image.network(xfile.path, width: 90, height: 90, fit: BoxFit.cover),
+                      child: AppImage(
+                        url: xfile.path,
+                        bytes: index < _pickedBytes.length ? _pickedBytes[index] : null,
+                        width: 90,
+                        height: 90,
+                        fit: BoxFit.cover,
+                        placeholderSeed: 'claim_$index',
+                      ),
                     );
                   },
                 ),

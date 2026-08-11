@@ -9,8 +9,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
+import '../../core/widgets/app_image.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/services/firestore_service.dart';
 
 class ClaimDetailsScreen extends ConsumerStatefulWidget {
   final String claimId;
@@ -142,6 +144,21 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
           final currentUid = user?.uid ?? authUser?.uid ?? 'guest';
           final isOwner = currentUid == claim.postOwnerId;
           final isApproved = claim.status == 'approved';
+
+          // ── Auto-navigate to Recovery Completed screen when both confirmed ──
+          final hasOwnerConfirmed = claim.ownerConfirmedAt != null;
+          final hasFinderConfirmed = claim.finderConfirmedAt != null;
+          final isBothConfirmed = claim.status == 'completed' ||
+              claim.recoveryStatus == 'both_confirmed' ||
+              (hasOwnerConfirmed && hasFinderConfirmed);
+
+          if (isBothConfirmed) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (mounted) {
+                context.pushReplacement('/recovery-completed/${claim.claimId}');
+              }
+            });
+          }
 
           // OpenStreetMap markers setup
           final List<Marker> mapMarkers = [
@@ -301,18 +318,18 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       itemCount: claim.claimImages.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 10),
                       itemBuilder: (context, index) {
+                        final localBytes = FirestoreService.getLocalClaimImageBytes(claim.claimId);
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Image.network(
-                            claim.claimImages[index],
+                          child: AppImage(
+                            url: claim.claimImages[index],
+                            bytes: (localBytes != null && index < localBytes.length)
+                                ? localBytes[index]
+                                : null,
                             width: 160,
                             height: 120,
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              width: 160,
-                              color: Colors.grey.shade300,
-                              child: const Icon(Icons.broken_image_rounded),
-                            ),
+                            placeholderSeed: '${claim.claimId}_$index',
                           ),
                         );
                       },
@@ -377,7 +394,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                   const SizedBox(height: 24),
                 ],
 
-                // Approved Claim Chat Action
+                // Approved Claim Actions & Dual Recovery Confirmation
                 if (isApproved) ...[
                   PrimaryButton(
                     text: 'Open Private 1-to-1 Chat',
@@ -395,25 +412,127 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       }
                     },
                   ),
+                  const SizedBox(height: 16),
+
+                  // DUAL RECOVERY CONFIRMATION CARD
+                  (() {
+                    final hasOwnerConfirmed = claim.ownerConfirmedAt != null;
+                    final hasFinderConfirmed = claim.finderConfirmedAt != null;
+                    final isBothConfirmed = (hasOwnerConfirmed && hasFinderConfirmed) ||
+                        claim.status == 'completed' ||
+                        claim.recoveryStatus == 'both_confirmed';
+
+                    if (isBothConfirmed) {
+                      return GlassContainer(
+                        borderRadius: 20,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.verified_rounded, color: Colors.green, size: 24),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Recovery Confirmed by Both Parties!',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            PrimaryButton(
+                              text: 'View Recovery Completed & Rewards',
+                              icon: Icons.emoji_events_rounded,
+                              onPressed: () => context.push('/recovery-completed/${claim.claimId}'),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return GlassContainer(
+                      borderRadius: 20,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Item Return & Recovery Confirmation',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                          const SizedBox(height: 4),
+                          const Text(
+                            'Both owner and finder must confirm after meeting in person.',
+                            style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                          ),
+                          const SizedBox(height: 14),
+
+                          // Owner Confirmation Button
+                          if (isOwner || currentUid.startsWith('guest')) ...[
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: hasOwnerConfirmed ? Colors.green : AppColors.primary,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(double.infinity, 48),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              ),
+                              onPressed: () async {
+                                if (!hasOwnerConfirmed) {
+                                  await firestoreService.confirmRecovery(claimId: claim.claimId, isOwner: true);
+                                }
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('✅ Item receipt confirmed! Please rate the Finder.')),
+                                  );
+                                  context.push('/rating/${claim.claimId}');
+                                }
+                              },
+                              icon: Icon(hasOwnerConfirmed ? Icons.check_circle_rounded : Icons.move_to_inbox_rounded),
+                              label: Text(
+                                hasOwnerConfirmed ? 'Owner Confirmed Item Received ✓' : 'I Received My Item',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+
+                          // Finder Confirmation Button
+                          if (!isOwner || currentUid.startsWith('guest')) ...[
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: hasFinderConfirmed ? Colors.green : AppColors.secondary,
+                                foregroundColor: Colors.white,
+                                minimumSize: const Size(double.infinity, 48),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                              ),
+                              onPressed: () async {
+                                if (!hasFinderConfirmed) {
+                                  await firestoreService.confirmRecovery(claimId: claim.claimId, isOwner: false);
+                                }
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('✅ Item return confirmed! Please rate the Owner.')),
+                                  );
+                                  context.push('/rating/${claim.claimId}');
+                                }
+                              },
+                              icon: Icon(hasFinderConfirmed ? Icons.check_circle_rounded : Icons.assignment_turned_in_rounded),
+                              label: Text(
+                                hasFinderConfirmed ? 'Finder Confirmed Item Returned ✓' : 'I Successfully Returned This Item',
+                                style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    );
+                  })(),
                   const SizedBox(height: 20),
                 ],
 
-                // Poster Approve / Reject Action Buttons
-                if (claim.status == 'pending') ...[
-                  if (!isOwner)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Row(
-                        children: [
-                          Icon(Icons.bug_report_rounded, size: 16, color: AppColors.primary),
-                          SizedBox(width: 6),
-                          Text(
-                            'Testing Mode: Poster control panel visible.',
-                            style: TextStyle(fontSize: 11, color: AppColors.primary, fontStyle: FontStyle.italic),
-                          ),
-                        ],
-                      ),
-                    ),
+                // Poster Approve / Reject Action Buttons — only visible to the post owner
+                if (claim.status == 'pending' && isOwner) ...[
+                  const SizedBox(height: 4),
                   Row(
                     children: [
                       Expanded(
@@ -441,6 +560,32 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                     ],
                   ),
                 ],
+
+                // Claimer's view when claim is still pending
+                if (claim.status == 'pending' && !isOwner) ...[
+                  GlassContainer(
+                    borderRadius: 20,
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.hourglass_top_rounded, size: 40, color: AppColors.primary),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Claim Submitted — Awaiting Owner Review',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'The item owner will review your claim and approve or reject it. You will be notified once a decision is made.',
+                          style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
               ],
             ),
           );

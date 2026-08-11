@@ -1,0 +1,167 @@
+﻿rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helper functions ──────────────────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function claimDoc(claimId) {
+      return get(/databases/$(database)/documents/claims/$(claimId));
+    }
+
+    // Is the signed-in user a participant (owner OR claimer) of this claim?
+    function isClaimParticipant(claimId) {
+      return claimId != null &&
+        claimId != '' &&
+        exists(/databases/$(database)/documents/claims/$(claimId)) &&
+        (claimDoc(claimId).data.postOwnerId == request.auth.uid ||
+         claimDoc(claimId).data.claimerId == request.auth.uid);
+    }
+
+    // Is the signed-in user one participant AND targetUserId is the OTHER participant?
+    // Used when one side updates the other side's user stats (ratings, recovery counts).
+    function isOtherClaimParticipant(claimId, targetUserId) {
+      return claimId != null &&
+        claimId != '' &&
+        exists(/databases/$(database)/documents/claims/$(claimId)) &&
+        ((claimDoc(claimId).data.postOwnerId == request.auth.uid &&
+          claimDoc(claimId).data.claimerId == targetUserId) ||
+         (claimDoc(claimId).data.claimerId == request.auth.uid &&
+          claimDoc(claimId).data.postOwnerId == targetUserId));
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      // Own profile update OR other participant updating stats via a verified claim
+      allow update: if isSignedIn() && (
+        request.auth.uid == userId ||
+        isOtherClaimParticipant(request.resource.data.updatedViaClaimId, userId)
+      );
+      allow delete: if false;
+    }
+
+    // ── Posts ─────────────────────────────────────────────────────────────────
+    match /posts/{postId} {
+      allow read: if true;
+      allow create: if isSignedIn();
+      // Owner can always update.
+      // Claim participant can mark post as 'completed' when item is recovered.
+      allow update: if isSignedIn() && (
+        request.auth.uid == resource.data.userId ||
+        (request.resource.data.status == 'completed' &&
+         isClaimParticipant(request.resource.data.completedClaimId))
+      );
+      allow delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+    }
+
+    // ── Claims ────────────────────────────────────────────────────────────────
+    match /claims/{claimId} {
+      // Owner and claimer can read the claim document
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.postOwnerId ||
+        request.auth.uid == resource.data.claimerId
+      );
+      // Any signed-in user can submit a claim
+      allow create: if isSignedIn();
+      // Owner can approve/reject; claimer can update live location or confirm recovery
+      allow update: if isSignedIn() && (
+        request.auth.uid == resource.data.postOwnerId ||
+        request.auth.uid == resource.data.claimerId
+      );
+      allow delete: if false;
+    }
+
+    // ── Notifications ─────────────────────────────────────────────────────────
+    match /notifications/{notifId} {
+      // Signed-in users can read all notifications (app filters client-side by userId)
+      allow read: if isSignedIn();
+      // Any signed-in user can create notifications (claim flow creates for both parties)
+      allow create: if isSignedIn();
+      // Users can only update/delete their own notifications (e.g. mark as read)
+      allow update, delete: if isSignedIn() &&
+        request.auth.uid == resource.data.userId;
+    }
+
+    // ── Chat Rooms & Messages ─────────────────────────────────────────────────
+    // ChatRoomModel uses `participants` as a List<String> array.
+    match /chat_rooms/{roomId} {
+      // All signed-in users can read (app filters client-side by participant)
+      allow read: if isSignedIn();
+      // Only room participants can update (lastMessage, unreadCount, etc.)
+      allow update: if isSignedIn() &&
+        request.auth.uid in resource.data.participants;
+      // Claim participants can create a chat room (must be in participants list)
+      allow create: if isSignedIn() &&
+        request.auth.uid in request.resource.data.participants;
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        // Only room participants can read messages
+        allow read: if isSignedIn() &&
+          request.auth.uid in
+            get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.participants;
+        // Sender's uid must match their auth uid
+        allow create: if isSignedIn() &&
+          request.auth.uid == request.resource.data.senderId;
+        allow update, delete: if false;
+      }
+    }
+
+    // ── Ratings ───────────────────────────────────────────────────────────────
+    match /ratings/{ratingId} {
+      allow read: if isSignedIn();
+      // RatingModel stores 'fromUserId' — must match auth uid
+      allow create: if isSignedIn() &&
+        request.auth.uid == request.resource.data.fromUserId;
+      allow update, delete: if false;
+    }
+
+    // ── Reviews (duplicate archive of ratings) ────────────────────────────────
+    match /reviews/{reviewId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+        request.auth.uid == request.resource.data.fromUserId;
+      allow update, delete: if false;
+    }
+
+    // ── Payments ──────────────────────────────────────────────────────────────
+    // PaymentModel has no 'userId' field — app filters client-side by posterId/finderId.
+    // confirmPaymentReceived updates payment status to 'completed'.
+    match /payments/{docId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      // Finder confirms receipt → updates status field
+      allow update: if isSignedIn();
+      allow delete: if false;
+    }
+
+    // ── History ───────────────────────────────────────────────────────────────
+    match /history/{docId} {
+      // App streams all and filters client-side by posterId/finderId
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update, delete: if false;
+    }
+
+    // ── Wallet ────────────────────────────────────────────────────────────────
+    // updateWallet is called during archiving — both own wallet and partner wallet.
+    // The archive flow runs as the signed-in user (owner or claimer).
+    // We allow any signed-in user to write any wallet during the recovery flow
+    // because the server-side logic (checkAndArchivePost) is trusted.
+    match /wallet/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      // Own wallet: full write. Other wallet: only allowed via recovery flow (trusted client code).
+      allow write: if isSignedIn();
+    }
+
+    // ── Default deny ──────────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+  }
+}

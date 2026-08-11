@@ -11,7 +11,6 @@ import '../../core/models/post_model.dart';
 import '../../core/widgets/app_image.dart';
 import '../../core/services/firestore_service.dart';
 
-
 // All posts (unfiltered) provider — used for dashboard stats & AI match banner
 final allPostsStreamProvider = StreamProvider<List<PostModel>>((ref) {
   return ref.watch(firestoreServiceProvider).streamPosts();
@@ -21,7 +20,8 @@ class HomeDashboardScreen extends ConsumerStatefulWidget {
   const HomeDashboardScreen({super.key});
 
   @override
-  ConsumerState<HomeDashboardScreen> createState() => _HomeDashboardScreenState();
+  ConsumerState<HomeDashboardScreen> createState() =>
+      _HomeDashboardScreenState();
 }
 
 class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
@@ -36,7 +36,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
     'Documents',
     'Clothing',
     'Keys',
-    'Others'
+    'Others',
   ];
 
   @override
@@ -64,21 +64,35 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                 color: AppColors.primary.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.location_searching_rounded, color: AppColors.primary, size: 24),
+              child: const Icon(
+                Icons.location_searching_rounded,
+                color: AppColors.primary,
+                size: 24,
+              ),
             ),
             const SizedBox(width: 8),
             const Text(
               'Lost & Found BD',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: AppColors.primary),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: AppColors.primary,
+              ),
             ),
           ],
         ),
         actions: [
           StreamBuilder<List<Map<String, dynamic>>>(
-            stream: ref.watch(firestoreServiceProvider).streamNotifications(FirebaseAuth.instance.currentUser?.uid ?? 'guest'),
+            stream: ref
+                .watch(firestoreServiceProvider)
+                .streamNotifications(
+                  FirebaseAuth.instance.currentUser?.uid ?? 'guest',
+                ),
             builder: (context, snapshot) {
               final list = snapshot.data ?? [];
-              final hasUnread = list.any((n) => n['isRead'] == false || n['isRead'] == null);
+              final hasUnread = list.any(
+                (n) => n['isRead'] == false || n['isRead'] == null,
+              );
               return IconButton(
                 icon: Stack(
                   children: [
@@ -148,10 +162,15 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                           controller: _searchController,
                           decoration: InputDecoration(
                             hintText: 'Search keys, pets, wallets...',
-                            prefixIcon: const Icon(Icons.search, color: AppColors.primary),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: AppColors.primary,
+                            ),
                             fillColor: Colors.white,
                             filled: true,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                            contentPadding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                            ),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(16),
                               borderSide: BorderSide.none,
@@ -173,7 +192,9 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                       backgroundColor: Colors.white.withOpacity(0.2),
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
                     onPressed: () => context.push('/ai-search'),
                     icon: const Icon(Icons.auto_awesome_rounded, size: 18),
@@ -226,20 +247,40 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                       color: AppColors.secondaryContainer,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(Icons.map_rounded, color: AppColors.secondary, size: 28),
+                    child: const Icon(
+                      Icons.map_rounded,
+                      color: AppColors.secondary,
+                      size: 28,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Interactive Search Map', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(
+                          'Interactive Search Map',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                         SizedBox(height: 2),
-                        Text('View nearby item markers & search circle on map', style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
+                        Text(
+                          'View nearby item markers & search circle on map',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppColors.outline),
+                  const Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 16,
+                    color: AppColors.outline,
+                  ),
                 ],
               ),
             ),
@@ -250,8 +291,13 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  selectedCategory == 'All' ? 'Recent Reported Feed' : '$selectedCategory Items',
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  selectedCategory == 'All'
+                      ? 'Recent Reported Feed'
+                      : '$selectedCategory Items',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 TextButton(
                   onPressed: () => context.push('/search-results'),
@@ -269,7 +315,9 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                     : posts.where((p) {
                         final cat = p.category.toLowerCase().trim();
                         final sel = selectedCategory.toLowerCase().trim();
-                        return cat == sel || (sel.startsWith('other') && cat.startsWith('other'));
+                        return cat == sel ||
+                            (sel.startsWith('other') &&
+                                cat.startsWith('other'));
                       }).toList();
 
                 if (filtered.isEmpty) {
@@ -279,11 +327,18 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                         padding: const EdgeInsets.all(24),
                         child: Column(
                           children: [
-                            const Icon(Icons.inbox_rounded, size: 48, color: AppColors.outline),
+                            const Icon(
+                              Icons.inbox_rounded,
+                              size: 48,
+                              color: AppColors.outline,
+                            ),
                             const SizedBox(height: 10),
                             Text(
                               'No $selectedCategory items found.',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                           ],
                         ),
@@ -312,7 +367,11 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                         decoration: BoxDecoration(
                           color: isDark ? AppColors.darkSurface : Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.4)),
+                          border: Border.all(
+                            color: AppColors.outlineVariant.withValues(
+                              alpha: 0.4,
+                            ),
+                          ),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.05),
@@ -330,30 +389,49 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                               child: Stack(
                                 children: [
                                   AppImage(
-                                    url: item.images.isNotEmpty ? item.images.first : '',
-                                    bytes: FirestoreService.getLocalImageBytes(item.id)?.firstOrNull,
+                                    url: item.images.isNotEmpty
+                                        ? item.images.first
+                                        : '',
+                                    bytes: FirestoreService.getLocalImageBytes(
+                                      item.id,
+                                    )?.firstOrNull,
                                     width: double.infinity,
                                     height: double.infinity,
                                     fit: BoxFit.cover,
                                     placeholderSeed: item.id,
-                                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                    ),
                                   ),
                                   // Status Badge (LOST / FOUND)
                                   Positioned(
                                     top: 8,
                                     left: 8,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 3,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: isLost ? AppColors.error : AppColors.secondary,
+                                        color: isLost
+                                            ? AppColors.error
+                                            : AppColors.secondary,
                                         borderRadius: BorderRadius.circular(8),
                                         boxShadow: const [
-                                          BoxShadow(color: Colors.black26, blurRadius: 4),
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            blurRadius: 4,
+                                          ),
                                         ],
                                       ),
                                       child: Text(
                                         isLost ? 'LOST' : 'FOUND',
-                                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -362,14 +440,23 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                                     top: 8,
                                     right: 8,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: Colors.black.withValues(alpha: 0.65),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.65,
+                                        ),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
                                         item.category,
-                                        style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.w600),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -383,26 +470,39 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                                 padding: const EdgeInsets.all(10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           item.title,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, height: 1.2),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                            height: 1.2,
+                                          ),
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                         const SizedBox(height: 4),
                                         Row(
                                           children: [
-                                            const Icon(Icons.location_on_outlined, size: 12, color: AppColors.outline),
+                                            const Icon(
+                                              Icons.location_on_outlined,
+                                              size: 12,
+                                              color: AppColors.outline,
+                                            ),
                                             const SizedBox(width: 2),
                                             Expanded(
                                               child: Text(
                                                 item.location,
-                                                style: const TextStyle(fontSize: 10, color: AppColors.outline),
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: AppColors.outline,
+                                                ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
@@ -412,33 +512,54 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                                       ],
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         if (item.rewardAmount > 0)
                                           Container(
-                                            margin: const EdgeInsets.only(bottom: 4),
-                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            margin: const EdgeInsets.only(
+                                              bottom: 4,
+                                            ),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
                                             decoration: BoxDecoration(
-                                              color: Colors.orange.withValues(alpha: 0.15),
-                                              borderRadius: BorderRadius.circular(6),
+                                              color: Colors.orange.withValues(
+                                                alpha: 0.15,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(6),
                                             ),
                                             child: Text(
                                               'Reward: ৳${item.rewardAmount.toInt()}',
-                                              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.deepOrange,
+                                              ),
                                             ),
                                           ),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Expanded(
                                               child: Text(
                                                 'By ${item.userName}',
-                                                style: const TextStyle(fontSize: 10, color: AppColors.outline),
+                                                style: const TextStyle(
+                                                  fontSize: 10,
+                                                  color: AppColors.outline,
+                                                ),
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
-                                            const Icon(Icons.chevron_right_rounded, size: 16, color: AppColors.primary),
+                                            const Icon(
+                                              Icons.chevron_right_rounded,
+                                              size: 16,
+                                              color: AppColors.primary,
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -455,7 +576,12 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('Notice: $err', style: const TextStyle(color: AppColors.outline))),
+              error: (err, stack) => Center(
+                child: Text(
+                  'Notice: $err',
+                  style: const TextStyle(color: AppColors.outline),
+                ),
+              ),
             ),
             const SizedBox(height: 40),
           ],
@@ -465,7 +591,10 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
         backgroundColor: AppColors.primary,
         onPressed: () => context.push('/create-post-step1'),
         icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text('Report Item', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        label: const Text(
+          'Report Item',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _currentNavIndex,
@@ -476,10 +605,26 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen> {
           if (index == 3) context.push('/profile');
         },
         destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.search_outlined), selectedIcon: Icon(Icons.search_rounded), label: 'Search'),
-          NavigationDestination(icon: Icon(Icons.chat_bubble_outline_rounded), selectedIcon: Icon(Icons.chat_bubble_rounded), label: 'Chat'),
-          NavigationDestination(icon: Icon(Icons.person_outline_rounded), selectedIcon: Icon(Icons.person_rounded), label: 'Profile'),
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_outlined),
+            selectedIcon: Icon(Icons.search_rounded),
+            label: 'Search',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.chat_bubble_outline_rounded),
+            selectedIcon: Icon(Icons.chat_bubble_rounded),
+            label: 'Chat',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline_rounded),
+            selectedIcon: Icon(Icons.person_rounded),
+            label: 'Profile',
+          ),
         ],
       ),
     );
@@ -505,13 +650,16 @@ class _AiMatchBanner extends ConsumerWidget {
       data: (posts) {
         // Find the best "found" post that was NOT posted by the current user
         // and has a similarity score > 0
-        final candidates = posts
-            .where((p) =>
-                p.type == 'found' &&
-                p.userId != currentUid &&
-                p.similarityScore > 0)
-            .toList()
-          ..sort((a, b) => b.similarityScore.compareTo(a.similarityScore));
+        final candidates =
+            posts
+                .where(
+                  (p) =>
+                      p.type == 'found' &&
+                      p.userId != currentUid &&
+                      p.similarityScore > 0,
+                )
+                .toList()
+              ..sort((a, b) => b.similarityScore.compareTo(a.similarityScore));
 
         // If no real match yet, hide banner entirely
         if (candidates.isEmpty) return const SizedBox.shrink();
@@ -533,8 +681,11 @@ class _AiMatchBanner extends ConsumerWidget {
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Icon(Icons.auto_awesome_rounded,
-                        color: Colors.white, size: 24),
+                    child: const Icon(
+                      Icons.auto_awesome_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -544,24 +695,28 @@ class _AiMatchBanner extends ConsumerWidget {
                         Text(
                           'AI Match Found! ($pct% Match)',
                           style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              color: AppColors.primary),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: AppColors.primary,
+                          ),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           '"${best.title}" found at ${best.location} matches your report.',
                           style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.onSurfaceVariant),
+                            fontSize: 12,
+                            color: AppColors.onSurfaceVariant,
+                          ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right_rounded,
-                      color: AppColors.primary),
+                  const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.primary,
+                  ),
                 ],
               ),
             ),
@@ -583,48 +738,69 @@ class _LiveStatsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return allPostsAsync.when(
-      loading: () => Row(
+    final historyAsync = ref.watch(allHistoryStreamProvider);
+    final rawPostsAsync = ref.watch(rawAllPostsStreamProvider);
+
+    final activeCount = allPostsAsync.maybeWhen(
+      data: (posts) => posts.length,
+      orElse: () => 0,
+    );
+
+    final historyList = historyAsync.value ?? [];
+    final rawPosts = rawPostsAsync.value ?? [];
+
+    final historyPostIds = historyList.map((h) => h.originalPostId).toSet();
+    final rawCompleted = rawPosts
+        .where(
+          (p) =>
+              (p.status == 'completed' || p.status == 'resolved') &&
+              !historyPostIds.contains(p.id),
+        )
+        .length;
+
+    final totalRecovered = historyList.length + rawCompleted;
+
+    String formatNum(int n) {
+      if (n >= 1000) {
+        return '${(n / 1000).toStringAsFixed(1)}k';
+      }
+      return n.toString();
+    }
+
+    final isLoading = allPostsAsync.isLoading && historyAsync.isLoading;
+
+    if (isLoading) {
+      return Row(
         children: const [
           Expanded(child: _StatPlaceholder()),
           SizedBox(width: 12),
           Expanded(child: _StatPlaceholder()),
         ],
-      ),
-      error: (_, __) => const SizedBox.shrink(),
-      data: (posts) {
-        final recovered = posts.where((p) => p.status == 'resolved').length;
-        final active = posts.where((p) => p.status == 'active').length;
+      );
+    }
 
-        String _fmt(int n) {
-          if (n >= 1000) {
-            return '${(n / 1000).toStringAsFixed(1)}k';
-          }
-          return n.toString();
-        }
-
-        return Row(
-          children: [
-            Expanded(
-              child: StatCard(
-                title: 'Items Recovered',
-                value: _fmt(recovered),
-                icon: Icons.trending_up_rounded,
-                iconColor: AppColors.secondary,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: StatCard(
-                title: 'Active Reports',
-                value: _fmt(active),
-                icon: Icons.schedule_rounded,
-                iconColor: AppColors.primary,
-              ),
-            ),
-          ],
-        );
-      },
+    return Row(
+      children: [
+        Expanded(
+          child: StatCard(
+            title: 'Items Recovered',
+            value: formatNum(totalRecovered),
+            icon: Icons.trending_up_rounded,
+            iconColor: AppColors.secondary,
+            onTap: () => context.push('/recovery-history'),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: StatCard(
+            title: 'Active Reports',
+            value: formatNum(activeCount),
+            icon: Icons.schedule_rounded,
+            iconColor: AppColors.primary,
+            onTap: () => context.push('/search-results'),
+          ),
+        ),
+      ],
     );
   }
 }

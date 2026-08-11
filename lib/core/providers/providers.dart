@@ -8,10 +8,16 @@ import '../models/post_model.dart';
 
 import '../services/cloudinary_service.dart';
 
+import '../models/recovery_models.dart';
+
 // Services
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
-final firestoreServiceProvider = Provider<FirestoreService>((ref) => FirestoreService());
-final cloudinaryServiceProvider = Provider<CloudinaryService>((ref) => CloudinaryService());
+final firestoreServiceProvider = Provider<FirestoreService>(
+  (ref) => FirestoreService(),
+);
+final cloudinaryServiceProvider = Provider<CloudinaryService>(
+  (ref) => CloudinaryService(),
+);
 
 // Auth State Provider
 final authStateProvider = StreamProvider<User?>((ref) {
@@ -38,8 +44,17 @@ final selectedPostTypeProvider = StateProvider<String?>((ref) => null);
 final postsStreamProvider = StreamProvider<List<PostModel>>((ref) {
   final category = ref.watch(selectedCategoryProvider);
   final type = ref.watch(selectedPostTypeProvider);
-  return ref.watch(firestoreServiceProvider).streamPosts(
-        category: category,
-        type: type,
-      );
+  return ref
+      .watch(firestoreServiceProvider)
+      .streamPosts(category: category, type: type);
+});
+
+// Platform-Wide History Stream Provider
+final allHistoryStreamProvider = StreamProvider<List<HistoryModel>>((ref) {
+  return ref.watch(firestoreServiceProvider).streamAllHistory();
+});
+
+// Raw All Posts Stream Provider (unfiltered by status)
+final rawAllPostsStreamProvider = StreamProvider<List<PostModel>>((ref) {
+  return ref.watch(firestoreServiceProvider).streamRawAllPosts();
 });

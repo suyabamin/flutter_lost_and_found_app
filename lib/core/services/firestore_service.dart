@@ -38,12 +38,19 @@ class FirestoreService {
   }
 
   Stream<UserModel?> streamUser(String uid) {
-    return _usersRef.doc(uid).snapshots().map((doc) {
-      if (doc.exists && doc.data() != null) {
-        return UserModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-      }
-      return null;
-    }).handleError((_) => null);
+    return _usersRef
+        .doc(uid)
+        .snapshots()
+        .map((doc) {
+          if (doc.exists && doc.data() != null) {
+            return UserModel.fromMap(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }
+          return null;
+        })
+        .handleError((_) => null);
   }
 
   // In-memory local posts cache to ensure newly posted items are immediately available
@@ -70,7 +77,10 @@ class FirestoreService {
   }
 
   /// Store raw claim proof image bytes for immediate local display.
-  static void storeLocalClaimImageBytes(String claimId, List<Uint8List> imageBytes) {
+  static void storeLocalClaimImageBytes(
+    String claimId,
+    List<Uint8List> imageBytes,
+  ) {
     if (imageBytes.isNotEmpty) {
       _localClaimImageBytes[claimId] = imageBytes;
     }
@@ -80,7 +90,6 @@ class FirestoreService {
   static List<Uint8List>? getLocalClaimImageBytes(String claimId) {
     return _localClaimImageBytes[claimId];
   }
-
 
   // POSTS CRUD
   Future<void> createPost(PostModel post) async {
@@ -96,7 +105,6 @@ class FirestoreService {
     }
   }
 
-
   Stream<List<PostModel>> streamPosts({String? category, String? type}) {
     Query query = _postsRef;
     if (category != null && category != 'All') {
@@ -105,35 +113,70 @@ class FirestoreService {
     if (type != null) {
       query = query.where('type', isEqualTo: type);
     }
-    return query.snapshots().map((snapshot) {
-      final firestorePosts = snapshot.docs
-          .map((doc) => PostModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .where((p) => p.status == 'active' || (p.status != 'completed' && p.status != 'resolved' && p.status != 'archived' && p.status != 'closed'))
-          .where((p) => p.status != 'completed' && p.status != 'resolved' && p.status != 'archived' && p.status != 'closed')
-          .toList();
+    return query
+        .snapshots()
+        .map((snapshot) {
+          final firestorePosts = snapshot.docs
+              .map(
+                (doc) => PostModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .where(
+                (p) =>
+                    p.status == 'active' ||
+                    (p.status != 'completed' &&
+                        p.status != 'resolved' &&
+                        p.status != 'archived' &&
+                        p.status != 'closed'),
+              )
+              .where(
+                (p) =>
+                    p.status != 'completed' &&
+                    p.status != 'resolved' &&
+                    p.status != 'archived' &&
+                    p.status != 'closed',
+              )
+              .toList();
 
-      final firestoreIds = firestorePosts.map((p) => p.id).toSet();
-      final localFiltered = _localPosts.where((lp) {
-        if (lp.status == 'completed' || lp.status == 'resolved' || lp.status == 'archived' || lp.status == 'closed') return false;
-        if (firestoreIds.contains(lp.id)) return false;
-        if (category != null && category != 'All' && lp.category != category) return false;
-        if (type != null && lp.type != type) return false;
-        return true;
-      });
+          final firestoreIds = firestorePosts.map((p) => p.id).toSet();
+          final localFiltered = _localPosts.where((lp) {
+            if (lp.status == 'completed' ||
+                lp.status == 'resolved' ||
+                lp.status == 'archived' ||
+                lp.status == 'closed')
+              return false;
+            if (firestoreIds.contains(lp.id)) return false;
+            if (category != null &&
+                category != 'All' &&
+                lp.category != category)
+              return false;
+            if (type != null && lp.type != type) return false;
+            return true;
+          });
 
-      final combined = [...localFiltered, ...firestorePosts];
-      combined.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return combined;
-    }).handleError((_) {
-      final localFiltered = _localPosts.where((lp) {
-        if (lp.status == 'completed' || lp.status == 'resolved' || lp.status == 'archived' || lp.status == 'closed') return false;
-        if (category != null && category != 'All' && lp.category != category) return false;
-        if (type != null && lp.type != type) return false;
-        return true;
-      }).toList();
-      localFiltered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return localFiltered;
-    });
+          final combined = [...localFiltered, ...firestorePosts];
+          combined.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return combined;
+        })
+        .handleError((_) {
+          final localFiltered = _localPosts.where((lp) {
+            if (lp.status == 'completed' ||
+                lp.status == 'resolved' ||
+                lp.status == 'archived' ||
+                lp.status == 'closed')
+              return false;
+            if (category != null &&
+                category != 'All' &&
+                lp.category != category)
+              return false;
+            if (type != null && lp.type != type) return false;
+            return true;
+          }).toList();
+          localFiltered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return localFiltered;
+        });
   }
 
   Stream<List<PostModel>> streamUserPosts(String userId) {
@@ -141,21 +184,33 @@ class FirestoreService {
         .where('userId', isEqualTo: userId)
         .snapshots()
         .map((snapshot) {
-      final firestorePosts = snapshot.docs
-          .map((doc) => PostModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
+          final firestorePosts = snapshot.docs
+              .map(
+                (doc) => PostModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
 
-      final firestoreIds = firestorePosts.map((p) => p.id).toSet();
-      final localFiltered = _localPosts.where((lp) => (lp.userId == userId || userId.startsWith('guest')) && !firestoreIds.contains(lp.id));
+          final firestoreIds = firestorePosts.map((p) => p.id).toSet();
+          final localFiltered = _localPosts.where(
+            (lp) =>
+                (lp.userId == userId || userId.startsWith('guest')) &&
+                !firestoreIds.contains(lp.id),
+          );
 
-      final combined = [...localFiltered, ...firestorePosts];
-      combined.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return combined;
-    }).handleError((_) {
-      final localFiltered = _localPosts.where((lp) => lp.userId == userId || userId.startsWith('guest')).toList();
-      localFiltered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return localFiltered;
-    });
+          final combined = [...localFiltered, ...firestorePosts];
+          combined.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return combined;
+        })
+        .handleError((_) {
+          final localFiltered = _localPosts
+              .where((lp) => lp.userId == userId || userId.startsWith('guest'))
+              .toList();
+          localFiltered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return localFiltered;
+        });
   }
 
   Future<PostModel?> getPost(String id) async {
@@ -222,29 +277,43 @@ class FirestoreService {
   }
 
   Stream<ClaimModel?> streamClaim(String claimId) {
-    return _claimsRef.doc(claimId).snapshots().map((doc) {
-      if (doc.exists && doc.data() != null) {
-        return ClaimModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-      }
-      return null;
-    }).handleError((_) => null);
+    return _claimsRef
+        .doc(claimId)
+        .snapshots()
+        .map((doc) {
+          if (doc.exists && doc.data() != null) {
+            return ClaimModel.fromMap(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }
+          return null;
+        })
+        .handleError((_) => null);
   }
 
   Stream<List<ClaimModel>> streamClaimsForPost(String postId) {
-    return _claimsRef.where('postId', isEqualTo: postId).snapshots().map((snapshot) {
-      final claims = snapshot.docs
-          .map((doc) => ClaimModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
-      claims.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return claims;
-    }).handleError((_) => <ClaimModel>[]);
+    return _claimsRef
+        .where('postId', isEqualTo: postId)
+        .snapshots()
+        .map((snapshot) {
+          final claims = snapshot.docs
+              .map(
+                (doc) => ClaimModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          claims.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return claims;
+        })
+        .handleError((_) => <ClaimModel>[]);
   }
 
   Future<void> updateClaimStatus(String claimId, String status) async {
     try {
-      final updates = <String, dynamic>{
-        'status': status,
-      };
+      final updates = <String, dynamic>{'status': status};
       if (status == 'approved') {
         updates['approvedAt'] = DateTime.now().toIso8601String();
       } else if (status == 'rejected') {
@@ -257,9 +326,12 @@ class FirestoreService {
       final claim = await getClaim(claimId);
       if (claim != null) {
         await createNotification({
-          'id': 'notif_${claimId}_status_${DateTime.now().millisecondsSinceEpoch}',
+          'id':
+              'notif_${claimId}_status_${DateTime.now().millisecondsSinceEpoch}',
           'userId': claim.claimerId,
-          'title': status == 'approved' ? 'Claim Approved! ✅' : 'Claim Status Updated ❌',
+          'title': status == 'approved'
+              ? 'Claim Approved! ✅'
+              : 'Claim Status Updated ❌',
           'body': status == 'approved'
               ? 'Your claim was approved! Private chat room opened.'
               : 'Your claim for this item was rejected by owner.',
@@ -276,8 +348,11 @@ class FirestoreService {
             posterId: claim.postOwnerId,
             claimerId: claim.claimerId,
             postId: claim.postId,
-            postTitle: 'Claim Approved: ${claim.description.length > 20 ? claim.description.substring(0, 20) : claim.description}',
-            postImage: claim.claimImages.isNotEmpty ? claim.claimImages.first : '',
+            postTitle:
+                'Claim Approved: ${claim.description.length > 20 ? claim.description.substring(0, 20) : claim.description}',
+            postImage: claim.claimImages.isNotEmpty
+                ? claim.claimImages.first
+                : '',
           );
         }
       }
@@ -311,7 +386,8 @@ class FirestoreService {
   // NOTIFICATIONS CRUD
   Future<void> createNotification(Map<String, dynamic> notifData) async {
     try {
-      final id = notifData['id'] ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final id =
+          notifData['id'] ?? DateTime.now().millisecondsSinceEpoch.toString();
       await _notificationsRef.doc(id).set(notifData);
     } catch (_) {}
   }
@@ -320,25 +396,30 @@ class FirestoreService {
     return _notificationsRef
         .snapshots()
         .map((snapshot) {
-      final list = snapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
-          .toList();
-      
-      // Sort notifications by timestamp descending (newest first)
-      list.sort((a, b) {
-        final aTime = a['timestamp']?.toString() ?? '';
-        final bTime = b['timestamp']?.toString() ?? '';
-        return bTime.compareTo(aTime);
-      });
+          final list = snapshot.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList();
 
-      if (userId.isNotEmpty && userId != 'guest') {
-        return list.where((data) {
-          final targetId = data['userId']?.toString() ?? '';
-          return targetId == userId || targetId.isEmpty || targetId == 'guest' || targetId.startsWith('guest_') || targetId.startsWith('claimer_');
-        }).toList();
-      }
-      return list;
-    }).handleError((_) => <Map<String, dynamic>>[]);
+          // Sort notifications by timestamp descending (newest first)
+          list.sort((a, b) {
+            final aTime = a['timestamp']?.toString() ?? '';
+            final bTime = b['timestamp']?.toString() ?? '';
+            return bTime.compareTo(aTime);
+          });
+
+          if (userId.isNotEmpty && userId != 'guest') {
+            return list.where((data) {
+              final targetId = data['userId']?.toString() ?? '';
+              return targetId == userId ||
+                  targetId.isEmpty ||
+                  targetId == 'guest' ||
+                  targetId.startsWith('guest_') ||
+                  targetId.startsWith('claimer_');
+            }).toList();
+          }
+          return list;
+        })
+        .handleError((_) => <Map<String, dynamic>>[]);
   }
 
   // CHAT CRUD & AUTO CHAT CREATION
@@ -359,8 +440,11 @@ class FirestoreService {
           participants: [posterId, claimerId],
           postId: postId,
           postTitle: postTitle,
-          postImage: postImage.isNotEmpty ? postImage : 'https://picsum.photos/seed/$postId/100/100',
-          lastMessage: 'Claim approved. You can now chat and coordinate return.',
+          postImage: postImage.isNotEmpty
+              ? postImage
+              : 'https://picsum.photos/seed/$postId/100/100',
+          lastMessage:
+              'Claim approved. You can now chat and coordinate return.',
           lastMessageTime: DateTime.now(),
           unreadCount: 0,
         );
@@ -375,7 +459,10 @@ class FirestoreService {
     try {
       final doc = await _chatRoomsRef.doc(roomId).get();
       if (doc.exists && doc.data() != null) {
-        return ChatRoomModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        return ChatRoomModel.fromMap(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
       }
     } catch (_) {}
     return null;
@@ -385,13 +472,25 @@ class FirestoreService {
     return _chatRoomsRef
         .snapshots()
         .map((snapshot) {
-      final rooms = snapshot.docs
-          .map((doc) => ChatRoomModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .where((room) => userId.isEmpty || room.participants.contains(userId) || userId.startsWith('guest_') || userId.startsWith('claimer_'))
-          .toList();
-      rooms.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
-      return rooms;
-    }).handleError((_) => <ChatRoomModel>[]);
+          final rooms = snapshot.docs
+              .map(
+                (doc) => ChatRoomModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .where(
+                (room) =>
+                    userId.isEmpty ||
+                    room.participants.contains(userId) ||
+                    userId.startsWith('guest_') ||
+                    userId.startsWith('claimer_'),
+              )
+              .toList();
+          rooms.sort((a, b) => b.lastMessageTime.compareTo(a.lastMessageTime));
+          return rooms;
+        })
+        .handleError((_) => <ChatRoomModel>[]);
   }
 
   Stream<List<ChatMessageModel>> streamMessages(String chatRoomId) {
@@ -400,17 +499,27 @@ class FirestoreService {
         .collection('messages')
         .snapshots()
         .map((snapshot) {
-      final msgs = snapshot.docs
-          .map((doc) => ChatMessageModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
-      msgs.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-      return msgs;
-    }).handleError((_) => <ChatMessageModel>[]);
+          final msgs = snapshot.docs
+              .map(
+                (doc) => ChatMessageModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          msgs.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          return msgs;
+        })
+        .handleError((_) => <ChatMessageModel>[]);
   }
 
   Future<void> sendMessage(String chatRoomId, ChatMessageModel msg) async {
     try {
-      await _chatRoomsRef.doc(chatRoomId).collection('messages').doc(msg.id).set(msg.toMap());
+      await _chatRoomsRef
+          .doc(chatRoomId)
+          .collection('messages')
+          .doc(msg.id)
+          .set(msg.toMap());
       await _chatRoomsRef.doc(chatRoomId).update({
         'lastMessage': msg.text.isNotEmpty ? msg.text : '📷 Image',
         'lastMessageTime': msg.timestamp.toIso8601String(),
@@ -421,7 +530,10 @@ class FirestoreService {
   // ─────────────────────────────────────────────────────────────
   // RECOVERY & DUAL CONFIRMATION
   // ─────────────────────────────────────────────────────────────
-  Future<void> confirmRecovery({required String claimId, required bool isOwner}) async {
+  Future<void> confirmRecovery({
+    required String claimId,
+    required bool isOwner,
+  }) async {
     try {
       final nowStr = DateTime.now().toIso8601String();
       final claimDoc = await _claimsRef.doc(claimId).get();
@@ -438,7 +550,8 @@ class FirestoreService {
       }
 
       final hasOwnerConfirmed = isOwner || (data['ownerConfirmedAt'] != null);
-      final hasFinderConfirmed = !isOwner || (data['finderConfirmedAt'] != null);
+      final hasFinderConfirmed =
+          !isOwner || (data['finderConfirmedAt'] != null);
 
       if (hasOwnerConfirmed && hasFinderConfirmed) {
         updates['recoveryStatus'] = 'both_confirmed';
@@ -449,7 +562,8 @@ class FirestoreService {
       // Send Notifications
       if (isOwner) {
         await createNotification({
-          'id': 'notif_rate_finder_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
+          'id':
+              'notif_rate_finder_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
           'userId': claim.postOwnerId,
           'title': 'Rate Finder 🌟',
           'body': 'Please rate the Finder for returning your item.',
@@ -461,7 +575,8 @@ class FirestoreService {
         });
 
         await createNotification({
-          'id': 'notif_owner_confirmed_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
+          'id':
+              'notif_owner_confirmed_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
           'userId': claim.claimerId,
           'title': 'Owner Confirmed Recovery ✅',
           'body': 'Owner confirmed receipt of item. Please rate the Owner.',
@@ -473,7 +588,8 @@ class FirestoreService {
         });
       } else {
         await createNotification({
-          'id': 'notif_rate_owner_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
+          'id':
+              'notif_rate_owner_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
           'userId': claim.claimerId,
           'title': 'Rate Owner 🌟',
           'body': 'Please rate the Owner after returning their item.',
@@ -485,7 +601,8 @@ class FirestoreService {
         });
 
         await createNotification({
-          'id': 'notif_finder_confirmed_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
+          'id':
+              'notif_finder_confirmed_${claimId}_${DateTime.now().millisecondsSinceEpoch}',
           'userId': claim.postOwnerId,
           'title': 'Finder Confirmed Return ✅',
           'body': 'Finder confirmed item return. Please rate the Finder.',
@@ -519,7 +636,8 @@ class FirestoreService {
         'id': 'notif_payment_${payment.paymentId}',
         'userId': payment.finderId,
         'title': 'Reward Sent 💰',
-        'body': 'Post owner sent ৳ ${payment.amount.toInt()} reward via ${payment.method}. Transaction ID: ${payment.transactionId}',
+        'body':
+            'Post owner sent ৳ ${payment.amount.toInt()} reward via ${payment.method}. Transaction ID: ${payment.transactionId}',
         'claimId': payment.claimId,
         'postId': payment.postId,
         'type': 'reward_payment',
@@ -539,21 +657,35 @@ class FirestoreService {
   }
 
   Stream<PaymentModel?> streamPayment(String paymentId) {
-    return _paymentsRef.doc(paymentId).snapshots().map((doc) {
-      if (doc.exists && doc.data() != null) {
-        return PaymentModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-      }
-      return null;
-    }).handleError((_) => null);
+    return _paymentsRef
+        .doc(paymentId)
+        .snapshots()
+        .map((doc) {
+          if (doc.exists && doc.data() != null) {
+            return PaymentModel.fromMap(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }
+          return null;
+        })
+        .handleError((_) => null);
   }
 
   Stream<PaymentModel?> streamPaymentForClaim(String claimId) {
-    return _paymentsRef.where('claimId', isEqualTo: claimId).snapshots().map((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        return PaymentModel.fromMap(snapshot.docs.first.data() as Map<String, dynamic>, snapshot.docs.first.id);
-      }
-      return null;
-    }).handleError((_) => null);
+    return _paymentsRef
+        .where('claimId', isEqualTo: claimId)
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.docs.isNotEmpty) {
+            return PaymentModel.fromMap(
+              snapshot.docs.first.data() as Map<String, dynamic>,
+              snapshot.docs.first.id,
+            );
+          }
+          return null;
+        })
+        .handleError((_) => null);
   }
 
   Future<void> confirmPaymentReceived(String paymentId) async {
@@ -562,7 +694,10 @@ class FirestoreService {
       final doc = await _paymentsRef.doc(paymentId).get();
       if (!doc.exists) return;
 
-      final payment = PaymentModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      final payment = PaymentModel.fromMap(
+        doc.data() as Map<String, dynamic>,
+        doc.id,
+      );
 
       // Update payment status to completed
       await _paymentsRef.doc(paymentId).update({
@@ -574,9 +709,7 @@ class FirestoreService {
       await updateWallet(userId: payment.finderId, addAmount: payment.amount);
 
       // Update claim status to completed
-      await _claimsRef.doc(payment.claimId).update({
-        'status': 'completed',
-      });
+      await _claimsRef.doc(payment.claimId).update({'status': 'completed'});
 
       // Archive post into history
       await archiveToHistory(
@@ -591,7 +724,8 @@ class FirestoreService {
         'id': 'notif_payment_confirmed_$paymentId',
         'userId': payment.posterId,
         'title': 'Recovery Completed 🎉',
-        'body': 'Finder confirmed reward receipt of ৳ ${payment.amount.toInt()}. Item recovery is complete!',
+        'body':
+            'Finder confirmed reward receipt of ৳ ${payment.amount.toInt()}. Item recovery is complete!',
         'claimId': payment.claimId,
         'postId': payment.postId,
         'type': 'recovery_completed',
@@ -619,7 +753,9 @@ class FirestoreService {
         return false;
       }
 
-      final ratingsSnap = await _ratingsRef.where('claimId', isEqualTo: claimId).get();
+      final ratingsSnap = await _ratingsRef
+          .where('claimId', isEqualTo: claimId)
+          .get();
       final ratingDocs = ratingsSnap.docs;
 
       bool hasOwnerRated = false;
@@ -648,7 +784,10 @@ class FirestoreService {
       }
 
       // Verify ALL 4 CONDITIONS
-      if (hasOwnerConfirmed && hasFinderConfirmed && hasOwnerRated && hasFinderRated) {
+      if (hasOwnerConfirmed &&
+          hasFinderConfirmed &&
+          hasOwnerRated &&
+          hasFinderRated) {
         final post = await getPost(claim.postId);
         final historyId = 'hist_${claimId}';
         final historyDoc = await _historyRef.doc(historyId).get();
@@ -657,7 +796,9 @@ class FirestoreService {
           final ownerUser = await getUser(claim.postOwnerId);
           final finderUser = await getUser(claim.claimerId);
 
-          final avgRating = double.parse(((ownerRatingVal + finderRatingVal) / 2.0).toStringAsFixed(1));
+          final avgRating = double.parse(
+            ((ownerRatingVal + finderRatingVal) / 2.0).toStringAsFixed(1),
+          );
 
           final history = HistoryModel(
             historyId: historyId,
@@ -683,7 +824,10 @@ class FirestoreService {
           );
 
           await _historyRef.doc(historyId).set(history.toMap());
-          await _postsRef.doc(claim.postId).update({'status': 'completed', 'completedClaimId': claimId});
+          await _postsRef.doc(claim.postId).update({
+            'status': 'completed',
+            'completedClaimId': claimId,
+          });
 
           // Remove completed post from local memory feed store immediately
           _localPosts.removeWhere((p) => p.id == claim.postId);
@@ -693,15 +837,24 @@ class FirestoreService {
             'recoveryStatus': 'completed',
           });
 
-          await _incrementUserRecoveryStatsFull(claim.postOwnerId, isOwner: true, viaClaimId: claimId);
-          await _incrementUserRecoveryStatsFull(claim.claimerId, isOwner: false, viaClaimId: claimId);
+          await _incrementUserRecoveryStatsFull(
+            claim.postOwnerId,
+            isOwner: true,
+            viaClaimId: claimId,
+          );
+          await _incrementUserRecoveryStatsFull(
+            claim.claimerId,
+            isOwner: false,
+            viaClaimId: claimId,
+          );
 
           final nowStr = DateTime.now().toIso8601String();
           await createNotification({
             'id': 'notif_rec_complete_owner_${claimId}',
             'userId': claim.postOwnerId,
             'title': 'Recovery Completed Successfully 🎉',
-            'body': 'Recovery completed successfully. Your post has been archived to History.',
+            'body':
+                'Recovery completed successfully. Your post has been archived to History.',
             'claimId': claimId,
             'postId': claim.postId,
             'type': 'recovery_completed',
@@ -713,7 +866,8 @@ class FirestoreService {
             'id': 'notif_rec_complete_finder_${claimId}',
             'userId': claim.claimerId,
             'title': 'Recovery Completed Successfully 🎉',
-            'body': 'Recovery completed successfully. Your return record has been saved to History.',
+            'body':
+                'Recovery completed successfully. Your return record has been saved to History.',
             'claimId': claimId,
             'postId': claim.postId,
             'type': 'recovery_completed',
@@ -730,15 +884,19 @@ class FirestoreService {
     return false;
   }
 
-  Future<void> _incrementUserRecoveryStatsFull(String userId,
-      {required bool isOwner, String? viaClaimId}) async {
+  Future<void> _incrementUserRecoveryStatsFull(
+    String userId, {
+    required bool isOwner,
+    String? viaClaimId,
+  }) async {
     try {
       final doc = await _usersRef.doc(userId).get();
       if (doc.exists) {
         final data = doc.data() as Map<String, dynamic>? ?? {};
         final recoveries = (data['completedRecoveries'] as num?)?.toInt() ?? 0;
         final returns = (data['completedReturns'] as num?)?.toInt() ?? 0;
-        final successful = (data['successfulRecoveryCount'] as num?)?.toInt() ?? 0;
+        final successful =
+            (data['successfulRecoveryCount'] as num?)?.toInt() ?? 0;
         final pts = (data['rewardPoints'] as num?)?.toInt() ?? 0;
 
         final updates = <String, dynamic>{
@@ -842,9 +1000,16 @@ class FirestoreService {
     //    otherwise the post would never be removed from the active feed
     //    even after both participants have rated.
     try {
-      final targetUid = rating.toUserId.isNotEmpty ? rating.toUserId : rating.toUser;
-      final snapshot = await _ratingsRef.where('toUserId', isEqualTo: targetUid).get();
-      final docs = snapshot.docs.isNotEmpty ? snapshot.docs : (await _ratingsRef.where('toUser', isEqualTo: targetUid).get()).docs;
+      final targetUid = rating.toUserId.isNotEmpty
+          ? rating.toUserId
+          : rating.toUser;
+      final snapshot = await _ratingsRef
+          .where('toUserId', isEqualTo: targetUid)
+          .get();
+      final docs = snapshot.docs.isNotEmpty
+          ? snapshot.docs
+          : (await _ratingsRef.where('toUser', isEqualTo: targetUid).get())
+                .docs;
 
       if (docs.isNotEmpty) {
         double total = 0.0;
@@ -872,32 +1037,51 @@ class FirestoreService {
   }
 
   Stream<List<RatingModel>> streamRatingsForUser(String userId) {
-    return _ratingsRef.where('toUser', isEqualTo: userId).snapshots().map((snapshot) {
-      final list = snapshot.docs
-          .map((doc) => RatingModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
-      list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      return list;
-    }).handleError((_) => <RatingModel>[]);
+    return _ratingsRef
+        .where('toUser', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+          final list = snapshot.docs
+              .map(
+                (doc) => RatingModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          list.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return list;
+        })
+        .handleError((_) => <RatingModel>[]);
   }
 
-  Stream<RatingModel?> streamUserRatingForClaim(String claimId, String fromUserId) {
+  Stream<RatingModel?> streamUserRatingForClaim(
+    String claimId,
+    String fromUserId,
+  ) {
     return _ratingsRef
         .where('claimId', isEqualTo: claimId)
         .where('fromUser', isEqualTo: fromUserId)
         .snapshots()
         .map((snapshot) {
-      if (snapshot.docs.isNotEmpty) {
-        return RatingModel.fromMap(snapshot.docs.first.data() as Map<String, dynamic>, snapshot.docs.first.id);
-      }
-      return null;
-    }).handleError((_) => null);
+          if (snapshot.docs.isNotEmpty) {
+            return RatingModel.fromMap(
+              snapshot.docs.first.data() as Map<String, dynamic>,
+              snapshot.docs.first.id,
+            );
+          }
+          return null;
+        })
+        .handleError((_) => null);
   }
 
   // ─────────────────────────────────────────────────────────────
   // WALLET & EARNINGS
   // ─────────────────────────────────────────────────────────────
-  Future<void> updateWallet({required String userId, required double addAmount}) async {
+  Future<void> updateWallet({
+    required String userId,
+    required double addAmount,
+  }) async {
     try {
       final doc = await _walletRef.doc(userId).get();
       double total = 0.0;
@@ -906,7 +1090,10 @@ class FirestoreService {
       double lifetime = 0.0;
 
       if (doc.exists && doc.data() != null) {
-        final w = WalletModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+        final w = WalletModel.fromMap(
+          doc.data() as Map<String, dynamic>,
+          doc.id,
+        );
         total = w.totalEarned + addAmount;
         today = w.todayEarned + addAmount;
         monthly = w.monthlyEarned + addAmount;
@@ -932,50 +1119,119 @@ class FirestoreService {
   }
 
   Stream<WalletModel?> streamWallet(String userId) {
-    return _walletRef.doc(userId).snapshots().map((doc) {
-      if (doc.exists && doc.data() != null) {
-        return WalletModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-      }
-      return WalletModel(userId: userId);
-    }).handleError((_) => WalletModel(userId: userId));
+    return _walletRef
+        .doc(userId)
+        .snapshots()
+        .map((doc) {
+          if (doc.exists && doc.data() != null) {
+            return WalletModel.fromMap(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }
+          return WalletModel(userId: userId);
+        })
+        .handleError((_) => WalletModel(userId: userId));
   }
 
   Stream<List<PaymentModel>> streamUserPayments(String userId) {
-    return _paymentsRef.snapshots().map((snapshot) {
-      final list = snapshot.docs
-          .map((doc) => PaymentModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .where((p) => p.posterId == userId || p.finderId == userId)
-          .toList();
-      list.sort((a, b) => b.paidAt.compareTo(a.paidAt));
-      return list;
-    }).handleError((_) => <PaymentModel>[]);
+    return _paymentsRef
+        .snapshots()
+        .map((snapshot) {
+          final list = snapshot.docs
+              .map(
+                (doc) => PaymentModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .where((p) => p.posterId == userId || p.finderId == userId)
+              .toList();
+          list.sort((a, b) => b.paidAt.compareTo(a.paidAt));
+          return list;
+        })
+        .handleError((_) => <PaymentModel>[]);
   }
 
   // ─────────────────────────────────────────────────────────────
   // HISTORY FEED STREAM
   // ─────────────────────────────────────────────────────────────
   Stream<List<HistoryModel>> streamUserHistory(String userId) {
-    return _historyRef.snapshots().map((snapshot) {
-      final list = snapshot.docs
-          .map((doc) => HistoryModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .where((h) => h.posterId == userId || h.finderId == userId)
-          .toList();
-      list.sort((a, b) => b.completedDate.compareTo(a.completedDate));
-      return list;
-    }).handleError((_) => <HistoryModel>[]);
+    return _historyRef
+        .snapshots()
+        .map((snapshot) {
+          final list = snapshot.docs
+              .map(
+                (doc) => HistoryModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .where((h) => h.posterId == userId || h.finderId == userId)
+              .toList();
+          list.sort((a, b) => b.completedDate.compareTo(a.completedDate));
+          return list;
+        })
+        .handleError((_) => <HistoryModel>[]);
+  }
+
+  Stream<List<HistoryModel>> streamAllHistory() {
+    return _historyRef
+        .snapshots()
+        .map((snapshot) {
+          final list = snapshot.docs
+              .map(
+                (doc) => HistoryModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          list.sort((a, b) => b.completedDate.compareTo(a.completedDate));
+          return list;
+        })
+        .handleError((_) => <HistoryModel>[]);
+  }
+
+  Stream<List<PostModel>> streamRawAllPosts() {
+    return _postsRef
+        .snapshots()
+        .map((snapshot) {
+          final firestorePosts = snapshot.docs
+              .map(
+                (doc) => PostModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          final firestoreIds = firestorePosts.map((p) => p.id).toSet();
+          final localFiltered = _localPosts.where(
+            (lp) => !firestoreIds.contains(lp.id),
+          );
+          return [...localFiltered, ...firestorePosts];
+        })
+        .handleError((_) => _localPosts);
   }
 
   // ─────────────────────────────────────────────────────────────
   // LEADERBOARD STREAM
   // ─────────────────────────────────────────────────────────────
   Stream<List<UserModel>> streamLeaderboard() {
-    return _usersRef.snapshots().map((snapshot) {
-      final list = snapshot.docs
-          .map((doc) => UserModel.fromMap(doc.data() as Map<String, dynamic>, doc.id))
-          .toList();
-      list.sort((a, b) => (b.rewardPoints).compareTo(a.rewardPoints));
-      return list;
-    }).handleError((_) => <UserModel>[]);
+    return _usersRef
+        .snapshots()
+        .map((snapshot) {
+          final list = snapshot.docs
+              .map(
+                (doc) => UserModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          list.sort((a, b) => (b.rewardPoints).compareTo(a.rewardPoints));
+          return list;
+        })
+        .handleError((_) => <UserModel>[]);
   }
 }
-

@@ -98,6 +98,25 @@
 - **Verification**:
   - `flutter test` executed — 9/9 tests passed cleanly.
 
+## Dashboard Live Stats Fix — Items Recovered & Active Reports Sync (2026-08-11)
+- **Root Cause Analysis**:
+  - `streamPosts()` in `firestore_service.dart` filters out all completed/resolved/archived posts so the feed contains only active items.
+  - `_LiveStatsRow` previously derived both `recovered` and `active` counts from `streamPosts()` by filtering for `status == 'resolved'` and `status == 'active'`.
+  - Because `streamPosts()` excludes completed items, `recovered` was hardcoded to `0`. Furthermore, completed recoveries in the app lifecycle are stored in the `history` Firestore collection (`HistoryModel`).
+- **Implementation**:
+  - Added `streamAllHistory()` and `streamRawAllPosts()` to `FirestoreService` (`firestore_service.dart`) without modifying existing protected fetchers.
+  - Exposed `allHistoryStreamProvider` and `rawAllPostsStreamProvider` in `providers.dart`.
+  - Updated `StatCard` (`stat_card.dart`) to accept an optional `onTap` callback.
+  - Rewrote `_LiveStatsRow` in `home_dashboard_screen.dart` to compute:
+    - **Active Reports**: Live count of active items in `postsStreamProvider`.
+    - **Items Recovered**: Dynamic count combining `history` collection records and any raw posts with `completed`/`resolved` status.
+    - **Interactive Navigation**: Tapping *Items Recovered* navigates to `/recovery-history`; tapping *Active Reports* navigates to `/search-results`.
+- **Verification**:
+  - `dart format`: 4 files formatted.
+  - `flutter analyze`: 0 errors in touched files.
+  - `flutter test`: 9/9 unit tests passed cleanly.
+
+
 
 
 

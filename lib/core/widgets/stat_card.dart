@@ -7,6 +7,7 @@ class StatCard extends StatelessWidget {
   final String value;
   final IconData icon;
   final Color? iconColor;
+  final VoidCallback? onTap;
 
   const StatCard({
     super.key,
@@ -14,11 +15,13 @@ class StatCard extends StatelessWidget {
     required this.value,
     required this.icon,
     this.iconColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GlassContainer(
+      onTap: onTap,
       padding: const EdgeInsets.all(14),
       child: Row(
         children: [

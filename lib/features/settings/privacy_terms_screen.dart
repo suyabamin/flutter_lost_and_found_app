@@ -25,14 +25,21 @@ class PrivacyTermsScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: const [
-              Text('Privacy Policy & User Terms', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                'Privacy Policy & User Terms',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
               SizedBox(height: 12),
               Text(
                 '1. Data Privacy & Safety\nWe strictly protect user data. Your NID details are encrypted and used solely for identity verification.\n\n'
                 '2. Report Accuracy\nFalse or fraudulent lost & found reports will result in instant account suspension and referral to Bangladesh Law Enforcement.\n\n'
                 '3. Location & GPS\nLocation coordinates are requested to show nearby items and are never shared publicly without user consent.\n\n'
                 '4. Rewards & Payments\nAll reward transactions via bKash or Nagad are processed securely through certified payment gateways.',
-                style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant, height: 1.5),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.onSurfaceVariant,
+                  height: 1.5,
+                ),
               ),
             ],
           ),

@@ -2,7 +2,8 @@ class PostModel {
   final String id;
   final String title;
   final String description;
-  final String category; // Electronics, Documents, Wallet, Keys, Clothing, Pets, Other
+  final String
+  category; // Electronics, Documents, Wallet, Keys, Clothing, Pets, Other
   final String type; // 'lost' or 'found'
   final String location;
   final double latitude;
@@ -15,6 +16,7 @@ class PostModel {
   final String status; // 'active', 'resolved', 'closed'
   final double rewardAmount;
   final double similarityScore;
+  final String campusId;
   final DateTime createdAt;
 
   PostModel({
@@ -34,6 +36,7 @@ class PostModel {
     this.status = 'active',
     this.rewardAmount = 0.0,
     this.similarityScore = 0.0,
+    this.campusId = '',
     DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now();
 
@@ -55,6 +58,7 @@ class PostModel {
       'status': status,
       'rewardAmount': rewardAmount,
       'similarityScore': similarityScore,
+      'campusId': campusId,
       'createdAt': createdAt.toIso8601String(),
     };
   }
@@ -77,6 +81,7 @@ class PostModel {
       status: map['status'] ?? 'active',
       rewardAmount: (map['rewardAmount'] as num?)?.toDouble() ?? 0.0,
       similarityScore: (map['similarityScore'] as num?)?.toDouble() ?? 0.0,
+      campusId: map['campusId'] ?? '',
       createdAt: _parseDateTime(map['createdAt']),
     );
   }

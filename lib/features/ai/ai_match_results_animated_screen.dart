@@ -6,10 +6,12 @@ class AiMatchResultsAnimatedScreen extends ConsumerStatefulWidget {
   const AiMatchResultsAnimatedScreen({super.key});
 
   @override
-  ConsumerState<AiMatchResultsAnimatedScreen> createState() => _AiMatchResultsAnimatedScreenState();
+  ConsumerState<AiMatchResultsAnimatedScreen> createState() =>
+      _AiMatchResultsAnimatedScreenState();
 }
 
-class _AiMatchResultsAnimatedScreenState extends ConsumerState<AiMatchResultsAnimatedScreen>
+class _AiMatchResultsAnimatedScreenState
+    extends ConsumerState<AiMatchResultsAnimatedScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animController;
   late Animation<double> _fadeAnimation;
@@ -28,13 +30,10 @@ class _AiMatchResultsAnimatedScreenState extends ConsumerState<AiMatchResultsAni
       curve: Curves.easeIn,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
 
     _animController.forward();
   }

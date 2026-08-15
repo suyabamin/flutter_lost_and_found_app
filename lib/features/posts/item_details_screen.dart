@@ -33,11 +33,14 @@ class ItemDetailsScreen extends ConsumerWidget {
           final post = snapshot.data;
 
           final String title = post?.title ?? 'Reported Lost/Found Item';
-          final String description = post?.description ?? 'Detailed description of the reported item.';
+          final String description =
+              post?.description ?? 'Detailed description of the reported item.';
           final String category = post?.category ?? 'Electronics';
           final String type = post?.type ?? 'lost';
           final String location = post?.location ?? 'Dhaka, Bangladesh';
-          final String userName = post?.userName.isNotEmpty == true ? post!.userName : 'Verified Community Member';
+          final String userName = post?.userName.isNotEmpty == true
+              ? post!.userName
+              : 'Verified Community Member';
           final double rewardAmount = post?.rewardAmount ?? 0.0;
           final String mainImage = (post?.images.isNotEmpty == true)
               ? post!.images.first
@@ -51,12 +54,22 @@ class ItemDetailsScreen extends ConsumerWidget {
               final authUser = FirebaseAuth.instance.currentUser;
               final currentUid = user?.uid ?? authUser?.uid;
 
-              final bool isPostOwner = (currentUid != null && post != null && currentUid == post.userId);
-              final bool hasApprovedClaim = claims.any((c) => c.claimerId == currentUid && c.status == 'approved');
-              final bool hasPendingOrApprovedClaim = claims.any((c) => c.claimerId == currentUid);
+              final bool isPostOwner =
+                  (currentUid != null &&
+                  post != null &&
+                  currentUid == post.userId);
+              final bool hasApprovedClaim = claims.any(
+                (c) => c.claimerId == currentUid && c.status == 'approved',
+              );
+              final bool hasPendingOrApprovedClaim = claims.any(
+                (c) => c.claimerId == currentUid,
+              );
 
               // Poster can never claim, and user cannot claim twice
-              final bool canClaim = !isPostOwner && (post?.status != 'closed') && !hasPendingOrApprovedClaim;
+              final bool canClaim =
+                  !isPostOwner &&
+                  (post?.status != 'closed') &&
+                  !hasPendingOrApprovedClaim;
 
               // Only show messaging if user is post owner OR claim has been approved
               final bool showMessaging = isPostOwner || hasApprovedClaim;
@@ -75,7 +88,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                     ),
                     actions: [
                       CircleAvatar(
-                        backgroundColor: isDark ? Colors.black54 : Colors.white70,
+                        backgroundColor: isDark
+                            ? Colors.black54
+                            : Colors.white70,
                         child: IconButton(
                           icon: const Icon(Icons.favorite_border_rounded),
                           onPressed: () => context.push('/favorites'),
@@ -83,12 +98,16 @@ class ItemDetailsScreen extends ConsumerWidget {
                       ),
                       const SizedBox(width: 8),
                       CircleAvatar(
-                        backgroundColor: isDark ? Colors.black54 : Colors.white70,
+                        backgroundColor: isDark
+                            ? Colors.black54
+                            : Colors.white70,
                         child: IconButton(
                           icon: const Icon(Icons.share_rounded),
                           onPressed: () {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Item link copied to clipboard!')),
+                              const SnackBar(
+                                content: Text('Item link copied to clipboard!'),
+                              ),
                             );
                           },
                         ),
@@ -98,7 +117,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                     flexibleSpace: FlexibleSpaceBar(
                       background: AppImage(
                         url: mainImage,
-                        bytes: FirestoreService.getLocalImageBytes(id)?.firstOrNull,
+                        bytes: FirestoreService.getLocalImageBytes(
+                          id,
+                        )?.firstOrNull,
                         fit: BoxFit.cover,
                         placeholderSeed: id,
                       ),
@@ -115,19 +136,33 @@ class ItemDetailsScreen extends ConsumerWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: isLost ? AppColors.error : AppColors.secondary,
+                                  color: isLost
+                                      ? AppColors.error
+                                      : AppColors.secondary,
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
                                   isLost ? 'LOST ITEM' : 'FOUND ITEM',
-                                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                               Text(
-                                post?.date.isNotEmpty == true ? 'Reported ${post!.date}' : 'Recently Reported',
-                                style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                post?.date.isNotEmpty == true
+                                    ? 'Reported ${post!.date}'
+                                    : 'Recently Reported',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.outline,
+                                ),
                               ),
                             ],
                           ),
@@ -135,22 +170,36 @@ class ItemDetailsScreen extends ConsumerWidget {
 
                           Text(
                             title,
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             'Category: $category',
-                            style: const TextStyle(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              const Icon(Icons.location_on_rounded, color: AppColors.primary, size: 18),
+                              const Icon(
+                                Icons.location_on_rounded,
+                                color: AppColors.primary,
+                                size: 18,
+                              ),
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
                                   location,
-                                  style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.primary,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -165,18 +214,33 @@ class ItemDetailsScreen extends ConsumerWidget {
                               borderRadius: 16,
                               padding: const EdgeInsets.all(14),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Row(
                                     children: [
-                                      Icon(Icons.military_tech_rounded, color: Colors.amber, size: 28),
+                                      Icon(
+                                        Icons.military_tech_rounded,
+                                        color: Colors.amber,
+                                        size: 28,
+                                      ),
                                       SizedBox(width: 8),
-                                      Text('Reward Offered', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                      Text(
+                                        'Reward Offered',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   Text(
                                     '৳ ${rewardAmount.round()}',
-                                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -184,11 +248,21 @@ class ItemDetailsScreen extends ConsumerWidget {
                             const SizedBox(height: 20),
                           ],
 
-                          const Text('Description', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const Text(
+                            'Description',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           const SizedBox(height: 6),
                           Text(
                             description,
-                            style: const TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant, height: 1.5),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: AppColors.onSurfaceVariant,
+                              height: 1.5,
+                            ),
                           ),
                           const SizedBox(height: 24),
 
@@ -200,20 +274,38 @@ class ItemDetailsScreen extends ConsumerWidget {
                               children: [
                                 const CircleAvatar(
                                   radius: 24,
-                                  backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=12'),
+                                  backgroundImage: NetworkImage(
+                                    'https://i.pravatar.cc/100?img=12',
+                                  ),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text('Reported by $userName', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                      Text(
+                                        'Reported by $userName',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15,
+                                        ),
+                                      ),
                                       const SizedBox(height: 2),
-                                      Text('NID Verified Member • $location', style: const TextStyle(fontSize: 12, color: AppColors.outline)),
+                                      Text(
+                                        'NID Verified Member • $location',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.outline,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                                const Icon(Icons.verified_user_rounded, color: AppColors.primary),
+                                const Icon(
+                                  Icons.verified_user_rounded,
+                                  color: AppColors.primary,
+                                ),
                               ],
                             ),
                           ),
@@ -226,14 +318,24 @@ class ItemDetailsScreen extends ConsumerWidget {
                                 minimumSize: const Size(double.infinity, 54),
                                 backgroundColor: AppColors.secondary,
                                 foregroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                                 elevation: 4,
                               ),
-                              onPressed: () => context.push('/submit-claim/${post?.id ?? id}'),
-                              icon: const Icon(Icons.assignment_turned_in_rounded, size: 22),
+                              onPressed: () => context.push(
+                                '/submit-claim/${post?.id ?? id}',
+                              ),
+                              icon: const Icon(
+                                Icons.assignment_turned_in_rounded,
+                                size: 22,
+                              ),
                               label: const Text(
                                 'Claim This Item',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 16),
@@ -246,9 +348,12 @@ class ItemDetailsScreen extends ConsumerWidget {
                                 child: OutlinedButton.icon(
                                   style: OutlinedButton.styleFrom(
                                     minimumSize: const Size(0, 50),
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
                                   ),
-                                  onPressed: () => context.push('/google-map-view'),
+                                  onPressed: () =>
+                                      context.push('/google-map-view'),
                                   icon: const Icon(Icons.map_outlined),
                                   label: const Text('View on Map'),
                                 ),

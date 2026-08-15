@@ -71,15 +71,19 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('🌟 Thank you! Your rating & review have been submitted.')),
+          const SnackBar(
+            content: Text(
+              '🌟 Thank you! Your rating & review have been submitted.',
+            ),
+          ),
         );
         context.pop();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error submitting rating: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error submitting rating: $e')));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -118,7 +122,10 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                 const SizedBox(height: 4),
                 const Text(
                   'Your rating builds community trust and safety.',
-                  style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 12),
+                  style: TextStyle(
+                    color: AppColors.onSurfaceVariant,
+                    fontSize: 12,
+                  ),
                 ),
                 const SizedBox(height: 20),
 
@@ -130,16 +137,23 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                     return IconButton(
                       iconSize: 42,
                       icon: Icon(
-                        starIndex <= _overallRating ? Icons.star_rounded : Icons.star_border_rounded,
+                        starIndex <= _overallRating
+                            ? Icons.star_rounded
+                            : Icons.star_border_rounded,
                         color: Colors.amber,
                       ),
-                      onPressed: () => setState(() => _overallRating = starIndex.toDouble()),
+                      onPressed: () =>
+                          setState(() => _overallRating = starIndex.toDouble()),
                     );
                   }),
                 ),
                 Text(
                   '${_overallRating.toInt()} / 5 Stars',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.amber),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.amber,
+                  ),
                 ),
                 const SizedBox(height: 24),
 
@@ -150,23 +164,52 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Detailed Experience Ratings', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                      const Text(
+                        'Detailed Experience Ratings',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                       const SizedBox(height: 14),
 
-                      _buildAspectSlider('Behaviour', _behaviorRating, (val) => setState(() => _behaviorRating = val)),
-                      _buildAspectSlider('Communication', _communicationRating, (val) => setState(() => _communicationRating = val)),
-                      _buildAspectSlider('Trustworthiness', _trustRating, (val) => setState(() => _trustRating = val)),
-                      _buildAspectSlider('Response Time', _responseRating, (val) => setState(() => _responseRating = val)),
+                      _buildAspectSlider(
+                        'Behaviour',
+                        _behaviorRating,
+                        (val) => setState(() => _behaviorRating = val),
+                      ),
+                      _buildAspectSlider(
+                        'Communication',
+                        _communicationRating,
+                        (val) => setState(() => _communicationRating = val),
+                      ),
+                      _buildAspectSlider(
+                        'Trustworthiness',
+                        _trustRating,
+                        (val) => setState(() => _trustRating = val),
+                      ),
+                      _buildAspectSlider(
+                        'Response Time',
+                        _responseRating,
+                        (val) => setState(() => _responseRating = val),
+                      ),
 
                       const Divider(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Would you recommend this user?', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          const Text(
+                            'Would you recommend this user?',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
+                          ),
                           Switch(
                             value: _recommendation,
                             activeColor: AppColors.primary,
-                            onChanged: (val) => setState(() => _recommendation = val),
+                            onChanged: (val) =>
+                                setState(() => _recommendation = val),
                           ),
                         ],
                       ),
@@ -179,7 +222,8 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                 CustomTextField(
                   controller: _reviewController,
                   labelText: 'Write Review (Optional Comment)',
-                  hintText: 'Share details about the return process, punctuality, and trust...',
+                  hintText:
+                      'Share details about the return process, punctuality, and trust...',
                   maxLines: 4,
                   prefixIcon: Icons.rate_review_outlined,
                 ),
@@ -191,10 +235,15 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size(0, 52),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                         onPressed: () => context.pop(),
-                        child: const Text('Cancel', style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -217,7 +266,11 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
     );
   }
 
-  Widget _buildAspectSlider(String title, double value, ValueChanged<double> onChanged) {
+  Widget _buildAspectSlider(
+    String title,
+    double value,
+    ValueChanged<double> onChanged,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Column(
@@ -226,8 +279,21 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-              Text('${value.toInt()} / 5', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                '${value.toInt()} / 5',
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+              ),
             ],
           ),
           SliderTheme(

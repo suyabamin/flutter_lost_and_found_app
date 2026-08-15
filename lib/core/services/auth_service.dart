@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import '../models/user_model.dart';
+import 'firestore_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -91,13 +93,28 @@ class AuthService {
   // ─────────────────────────────────────────────
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      await GoogleSignIn.instance.initialize();
-      final GoogleSignInAccount? googleUser =
-          await GoogleSignIn.instance.authenticate();
+      if (kIsWeb) {
+        final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        googleProvider.addScope('email');
+        googleProvider.addScope('profile');
+        return await _auth.signInWithPopup(googleProvider);
+      }
+
+      const clientId =
+          '779298287833-apkicde2h99c79olnea347540ol3rkv5.apps.googleusercontent.com';
+      await GoogleSignIn.instance.initialize(serverClientId: clientId);
+
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
+          .authenticate();
+
       if (googleUser == null) return null;
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+
+      if (googleAuth.idToken == null) {
+        throw 'Google ID Token is null. Check Firebase OAuth configuration.';
+      }
 
       final OAuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
@@ -105,10 +122,54 @@ class AuthService {
 
       return await _auth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
+      if (e.code == 'popup-closed-by-user' || e.code == 'cancelled') {
+        return null;
+      }
       throw _handleFirebaseError(e);
-    } catch (_) {
-      return null;
+    } catch (e) {
+      print('Google Sign In Error: $e');
+      if (e.toString().contains('canceled') ||
+          e.toString().contains('cancelled') ||
+          e.toString().contains('popup-closed-by-user')) {
+        return null;
+      }
+      throw 'গুগল দিয়ে সাইন-ইন করতে সমস্যা হচ্ছে: ${e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()}';
     }
+  }
+
+  /// Sign in with Google and ensure a Firestore user profile exists.
+  /// Preserves existing user roles (admin, author, campus_admin, user) and profile data if user already exists.
+  Future<UserCredential?> signInWithGoogleAndSyncProfile(
+    FirestoreService firestoreService,
+  ) async {
+    final cred = await signInWithGoogle();
+    if (cred != null && cred.user != null) {
+      final user = cred.user!;
+      try {
+        final existingUser = await firestoreService.getUser(user.uid);
+        if (existingUser == null) {
+          // Create profile for new Google user with default role 'user'
+          final newUser = UserModel(
+            uid: user.uid,
+            email: user.email ?? '',
+            displayName: user.displayName?.isNotEmpty == true
+                ? user.displayName!
+                : 'User',
+            photoUrl: user.photoURL ?? '',
+            phoneNumber: user.phoneNumber ?? '',
+            role: 'user',
+            isNidVerified: false,
+            rewardPoints: 0,
+            location: 'Dhaka, Bangladesh',
+            createdAt: DateTime.now(),
+          );
+          await firestoreService.saveUser(newUser);
+        }
+      } catch (e) {
+        print('Firestore user profile sync warning: $e');
+      }
+    }
+    return cred;
   }
 
   // ─────────────────────────────────────────────

@@ -10,11 +10,15 @@ class PoliceGdIntegrationScreen extends ConsumerStatefulWidget {
   const PoliceGdIntegrationScreen({super.key});
 
   @override
-  ConsumerState<PoliceGdIntegrationScreen> createState() => _PoliceGdIntegrationScreenState();
+  ConsumerState<PoliceGdIntegrationScreen> createState() =>
+      _PoliceGdIntegrationScreenState();
 }
 
-class _PoliceGdIntegrationScreenState extends ConsumerState<PoliceGdIntegrationScreen> {
-  final _thanaController = TextEditingController(text: 'Dhanmondi Model Thana, Dhaka');
+class _PoliceGdIntegrationScreenState
+    extends ConsumerState<PoliceGdIntegrationScreen> {
+  final _thanaController = TextEditingController(
+    text: 'Dhanmondi Model Thana, Dhaka',
+  );
   final _incidentDescController = TextEditingController();
   final _imeiController = TextEditingController();
   bool _isGenerating = false;
@@ -25,7 +29,11 @@ class _PoliceGdIntegrationScreenState extends ConsumerState<PoliceGdIntegrationS
       if (mounted) {
         setState(() => _isGenerating = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Official General Diary (GD) draft generated successfully!')),
+          const SnackBar(
+            content: Text(
+              'Official General Diary (GD) draft generated successfully!',
+            ),
+          ),
         );
       }
     });
@@ -48,14 +56,30 @@ class _PoliceGdIntegrationScreenState extends ConsumerState<PoliceGdIntegrationS
           children: [
             Row(
               children: const [
-                Icon(Icons.local_police_rounded, size: 36, color: Colors.indigo),
+                Icon(
+                  Icons.local_police_rounded,
+                  size: 36,
+                  color: Colors.indigo,
+                ),
                 SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Bangladesh Police E-GD Format', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text('Auto-fill General Diary form for official filing', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                      Text(
+                        'Bangladesh Police E-GD Format',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Auto-fill General Diary form for official filing',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.outline,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -84,7 +108,8 @@ class _PoliceGdIntegrationScreenState extends ConsumerState<PoliceGdIntegrationS
                   CustomTextField(
                     controller: _incidentDescController,
                     labelText: 'Detailed Statement of Occurrence',
-                    hintText: 'Provide precise timeline, location, and circumstances...',
+                    hintText:
+                        'Provide precise timeline, location, and circumstances...',
                     maxLines: 4,
                   ),
                 ],

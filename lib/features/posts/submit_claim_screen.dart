@@ -99,9 +99,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not pick image: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Could not pick image: $e')));
       }
     }
   }
@@ -124,7 +124,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
 
       // Also read the Riverpod user for display name / email fallbacks
       final user = ref.read(currentUserProvider).value;
-      final post = await ref.read(firestoreServiceProvider).getPost(widget.postId);
+      final post = await ref
+          .read(firestoreServiceProvider)
+          .getPost(widget.postId);
 
       if (post == null) {
         throw Exception('Original post not found.');
@@ -166,20 +168,27 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
 
       // Store bytes so claim details screen can show the actual photo immediately
       if (_pickedBytes.isNotEmpty) {
-        FirestoreService.storeLocalClaimImageBytes(claimId, List.from(_pickedBytes));
+        FirestoreService.storeLocalClaimImageBytes(
+          claimId,
+          List.from(_pickedBytes),
+        );
       }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('🎉 Claim submitted successfully! Notification sent to owner.')),
+          const SnackBar(
+            content: Text(
+              '🎉 Claim submitted successfully! Notification sent to owner.',
+            ),
+          ),
         );
         context.push('/claim-details/$claimId');
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error submitting claim: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error submitting claim: $e')));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -222,7 +231,10 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
               const SizedBox(height: 4),
               const Text(
                 'Provide ownership details or discovery location to claim this item.',
-                style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 20),
 
@@ -236,7 +248,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                       labelText: 'Full Name',
                       hintText: 'Tanvir Ahmed',
                       prefixIcon: Icons.person_outline,
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Enter your full name' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Enter your full name'
+                          : null,
                     ),
                     const SizedBox(height: 14),
                     CustomTextField(
@@ -245,7 +259,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                       hintText: '+8801700000000',
                       prefixIcon: Icons.phone_outlined,
                       keyboardType: TextInputType.phone,
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Enter contact phone' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Enter contact phone'
+                          : null,
                     ),
                     const SizedBox(height: 14),
                     CustomTextField(
@@ -262,7 +278,10 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                       hintText: 'Dhanmondi, Dhaka',
                       prefixIcon: Icons.location_on_outlined,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.my_location_rounded, color: AppColors.primary),
+                        icon: const Icon(
+                          Icons.my_location_rounded,
+                          color: AppColors.primary,
+                        ),
                         onPressed: _fetchCurrentGpsLocation,
                       ),
                     ),
@@ -270,15 +289,19 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                     CustomTextField(
                       controller: _descController,
                       labelText: 'Claim Description',
-                      hintText: 'Explain when & where you lost/found this item...',
+                      hintText:
+                          'Explain when & where you lost/found this item...',
                       maxLines: 3,
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Provide claim description' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Provide claim description'
+                          : null,
                     ),
                     const SizedBox(height: 14),
                     CustomTextField(
                       controller: _proofController,
                       labelText: 'Proof of Ownership / Identifiers',
-                      hintText: 'Serial number, unique marks, wallpaper photo details...',
+                      hintText:
+                          'Serial number, unique marks, wallpaper photo details...',
                       maxLines: 2,
                     ),
                     const SizedBox(height: 14),
@@ -294,7 +317,10 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
               ),
               const SizedBox(height: 20),
 
-              const Text('Upload Proof Images & Documents', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                'Upload Proof Images & Documents',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 10),
 
               SizedBox(
@@ -313,14 +339,22 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                           decoration: BoxDecoration(
                             color: AppColors.primary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                            border: Border.all(
+                              color: AppColors.primary.withOpacity(0.3),
+                            ),
                           ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.add_a_photo, color: AppColors.primary),
                               SizedBox(height: 4),
-                              Text('Add Proof', style: TextStyle(fontSize: 11, color: AppColors.primary)),
+                              Text(
+                                'Add Proof',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.primary,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -332,7 +366,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                       borderRadius: BorderRadius.circular(16),
                       child: AppImage(
                         url: xfile.path,
-                        bytes: index < _pickedBytes.length ? _pickedBytes[index] : null,
+                        bytes: index < _pickedBytes.length
+                            ? _pickedBytes[index]
+                            : null,
                         width: 90,
                         height: 90,
                         fit: BoxFit.cover,

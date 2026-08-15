@@ -23,7 +23,10 @@ class AdminDashboardScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('System Overview', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            const Text(
+              'System Overview',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 14),
 
             Row(
@@ -70,7 +73,10 @@ class AdminDashboardScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 24),
 
-            const Text('Specialized Portals', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Specialized Portals',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
 
             GlassContainer(
@@ -79,15 +85,23 @@ class AdminDashboardScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   ListTile(
-                    leading: const Icon(Icons.school_outlined, color: AppColors.primary),
+                    leading: const Icon(
+                      Icons.school_outlined,
+                      color: AppColors.primary,
+                    ),
                     title: const Text('University Campus Portal'),
-                    subtitle: const Text('DU, BUET, NSU, BRACU desk management'),
+                    subtitle: const Text(
+                      'DU, BUET, NSU, BRACU desk management',
+                    ),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/university-dashboard'),
                   ),
                   const Divider(),
                   ListTile(
-                    leading: const Icon(Icons.corporate_fare_outlined, color: AppColors.secondary),
+                    leading: const Icon(
+                      Icons.corporate_fare_outlined,
+                      color: AppColors.secondary,
+                    ),
                     title: const Text('Corporate Office Desk'),
                     subtitle: const Text('Lost item logs for offices and hubs'),
                     trailing: const Icon(Icons.chevron_right_rounded),

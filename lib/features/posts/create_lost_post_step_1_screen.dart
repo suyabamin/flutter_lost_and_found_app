@@ -13,10 +13,12 @@ class CreateLostPostStep1Screen extends ConsumerStatefulWidget {
   const CreateLostPostStep1Screen({super.key});
 
   @override
-  ConsumerState<CreateLostPostStep1Screen> createState() => _CreateLostPostStep1ScreenState();
+  ConsumerState<CreateLostPostStep1Screen> createState() =>
+      _CreateLostPostStep1ScreenState();
 }
 
-class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1Screen> {
+class _CreateLostPostStep1ScreenState
+    extends ConsumerState<CreateLostPostStep1Screen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _locationController = TextEditingController(text: 'Dhanmondi, Dhaka');
@@ -73,9 +75,9 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not pick image: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Could not pick image: $e')));
       }
     }
   }
@@ -120,7 +122,10 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
-              const Text('Step 1 of 2: Item Details & Photos', style: TextStyle(color: AppColors.onSurfaceVariant)),
+              const Text(
+                'Step 1 of 2: Item Details & Photos',
+                style: TextStyle(color: AppColors.onSurfaceVariant),
+              ),
               const SizedBox(height: 20),
 
               // Type Switcher
@@ -131,7 +136,10 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                       label: const Center(child: Text('I Lost Something')),
                       selected: _type == 'lost',
                       selectedColor: AppColors.error,
-                      labelStyle: TextStyle(color: _type == 'lost' ? Colors.white : null, fontWeight: FontWeight.bold),
+                      labelStyle: TextStyle(
+                        color: _type == 'lost' ? Colors.white : null,
+                        fontWeight: FontWeight.bold,
+                      ),
                       onSelected: (val) => setState(() => _type = 'lost'),
                     ),
                   ),
@@ -141,7 +149,10 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                       label: const Center(child: Text('I Found Something')),
                       selected: _type == 'found',
                       selectedColor: AppColors.secondary,
-                      labelStyle: TextStyle(color: _type == 'found' ? Colors.white : null, fontWeight: FontWeight.bold),
+                      labelStyle: TextStyle(
+                        color: _type == 'found' ? Colors.white : null,
+                        fontWeight: FontWeight.bold,
+                      ),
                       onSelected: (val) => setState(() => _type = 'found'),
                     ),
                   ),
@@ -158,16 +169,30 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                       controller: _titleController,
                       labelText: 'Title',
                       hintText: 'e.g. Silver iPhone 14 Pro with blue case',
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Enter a title' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Enter a title'
+                          : null,
                     ),
                     const SizedBox(height: 14),
 
                     DropdownButtonFormField<String>(
                       initialValue: _category,
                       decoration: const InputDecoration(labelText: 'Category'),
-                      items: ['Electronics', 'Wallets', 'Documents', 'Keys', 'Pets', 'Clothing', 'Others']
-                          .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                          .toList(),
+                      items:
+                          [
+                                'Electronics',
+                                'Wallets',
+                                'Documents',
+                                'Keys',
+                                'Pets',
+                                'Clothing',
+                                'Others',
+                              ]
+                              .map(
+                                (c) =>
+                                    DropdownMenuItem(value: c, child: Text(c)),
+                              )
+                              .toList(),
                       onChanged: (v) => setState(() => _category = v!),
                     ),
                     const SizedBox(height: 14),
@@ -175,9 +200,12 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                     CustomTextField(
                       controller: _descController,
                       labelText: 'Description',
-                      hintText: 'Provide detailed info (color, serial numbers, marks...)',
+                      hintText:
+                          'Provide detailed info (color, serial numbers, marks...)',
                       maxLines: 3,
-                      validator: (v) => v == null || v.trim().isEmpty ? 'Provide description' : null,
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Provide description'
+                          : null,
                     ),
                     const SizedBox(height: 14),
 
@@ -187,7 +215,10 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                       hintText: 'e.g. Near Dhanmondi 27, Dhaka',
                       prefixIcon: Icons.location_on_outlined,
                       suffixIcon: IconButton(
-                        icon: const Icon(Icons.map_rounded, color: AppColors.primary),
+                        icon: const Icon(
+                          Icons.map_rounded,
+                          color: AppColors.primary,
+                        ),
                         onPressed: _openLocationPicker,
                       ),
                     ),
@@ -197,7 +228,13 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                       child: TextButton.icon(
                         onPressed: _openLocationPicker,
                         icon: const Icon(Icons.pin_drop_rounded, size: 16),
-                        label: const Text('Pick Spot on Live Map / Search Place', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        label: const Text(
+                          'Pick Spot on Live Map / Search Place',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -215,7 +252,10 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
               ),
               const SizedBox(height: 20),
 
-              const Text('Add Images (Up to 4)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              const Text(
+                'Add Images (Up to 4)',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
               const SizedBox(height: 10),
 
               SizedBox(
@@ -234,14 +274,22 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                           decoration: BoxDecoration(
                             color: AppColors.primary.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                            border: Border.all(
+                              color: AppColors.primary.withOpacity(0.3),
+                            ),
                           ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.add_a_photo, color: AppColors.primary),
                               SizedBox(height: 4),
-                              Text('Add Photo', style: TextStyle(fontSize: 11, color: AppColors.primary)),
+                              Text(
+                                'Add Photo',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.primary,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -252,8 +300,18 @@ class _CreateLostPostStep1ScreenState extends ConsumerState<CreateLostPostStep1S
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: kIsWeb
-                          ? Image.network(xfile.path, width: 90, height: 90, fit: BoxFit.cover)
-                          : Image.file(File(xfile.path), width: 90, height: 90, fit: BoxFit.cover),
+                          ? Image.network(
+                              xfile.path,
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            )
+                          : Image.file(
+                              File(xfile.path),
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            ),
                     );
                   },
                 ),

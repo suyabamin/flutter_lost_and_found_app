@@ -15,7 +15,8 @@ class GoogleMapViewScreen extends ConsumerStatefulWidget {
   const GoogleMapViewScreen({super.key});
 
   @override
-  ConsumerState<GoogleMapViewScreen> createState() => _GoogleMapViewScreenState();
+  ConsumerState<GoogleMapViewScreen> createState() =>
+      _GoogleMapViewScreenState();
 }
 
 class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
@@ -76,7 +77,9 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
               liveState.trackingStatus == LiveTrackingStatus.active
                   ? Icons.sensors_rounded
                   : Icons.my_location_rounded,
-              color: liveState.trackingStatus == LiveTrackingStatus.active ? Colors.green : null,
+              color: liveState.trackingStatus == LiveTrackingStatus.active
+                  ? Colors.green
+                  : null,
             ),
             tooltip: 'Center on My GPS Location',
             onPressed: () {
@@ -90,10 +93,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
         children: [
           FlutterMap(
             mapController: _mapController,
-            options: MapOptions(
-              initialCenter: userLatLng,
-              initialZoom: 13,
-            ),
+            options: MapOptions(initialCenter: userLatLng, initialZoom: 13),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -130,7 +130,11 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                         border: Border.all(color: Colors.blue, width: 2),
                       ),
                       child: const Center(
-                        child: Icon(Icons.my_location_rounded, color: Colors.blue, size: 28),
+                        child: Icon(
+                          Icons.my_location_rounded,
+                          color: Colors.blue,
+                          size: 28,
+                        ),
                       ),
                     ),
                   ),
@@ -143,52 +147,69 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                         itemWithDist.post.status != 'closed')
                       (() {
                         final post = itemWithDist.post;
-                        final double lat = post.latitude != 0.0 ? post.latitude : (23.8103 + (post.id.hashCode % 100) * 0.001);
-                        final double lng = post.longitude != 0.0 ? post.longitude : (90.4125 + (post.id.hashCode % 80) * 0.001);
+                        final double lat = post.latitude != 0.0
+                            ? post.latitude
+                            : (23.8103 + (post.id.hashCode % 100) * 0.001);
+                        final double lng = post.longitude != 0.0
+                            ? post.longitude
+                            : (90.4125 + (post.id.hashCode % 80) * 0.001);
                         final bool isLost = post.type == 'lost';
-                        final bool isSelected = radiusState.selectedPostId == post.id;
+                        final bool isSelected =
+                            radiusState.selectedPostId == post.id;
 
-                        Color markerBg = isLost ? AppColors.error : AppColors.secondary;
+                        Color markerBg = isLost
+                            ? AppColors.error
+                            : AppColors.secondary;
 
-                      return Marker(
-                        point: ll.LatLng(lat, lng),
-                        width: isSelected ? 54 : 44,
-                        height: isSelected ? 54 : 44,
-                        child: GestureDetector(
-                          onTap: () {
-                            radiusNotifier.selectPost(post.id);
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => _buildPostPreviewSheet(context, post, itemWithDist.distanceKm),
-                            );
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
-                            decoration: BoxDecoration(
-                              color: markerBg,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: isSelected ? Colors.white : Colors.white,
-                                width: isSelected ? 3 : 2,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: isSelected ? Colors.blue.withOpacity(0.6) : Colors.black26,
-                                  blurRadius: isSelected ? 12 : 4,
-                                  spreadRadius: isSelected ? 2 : 0,
+                        return Marker(
+                          point: ll.LatLng(lat, lng),
+                          width: isSelected ? 54 : 44,
+                          height: isSelected ? 54 : 44,
+                          child: GestureDetector(
+                            onTap: () {
+                              radiusNotifier.selectPost(post.id);
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => _buildPostPreviewSheet(
+                                  context,
+                                  post,
+                                  itemWithDist.distanceKm,
                                 ),
-                              ],
-                            ),
-                            child: Icon(
-                              isLost ? Icons.search_rounded : Icons.check_circle_outline_rounded,
-                              color: Colors.white,
-                              size: isSelected ? 28 : 22,
+                              );
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              decoration: BoxDecoration(
+                                color: markerBg,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: isSelected
+                                      ? Colors.white
+                                      : Colors.white,
+                                  width: isSelected ? 3 : 2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: isSelected
+                                        ? Colors.blue.withOpacity(0.6)
+                                        : Colors.black26,
+                                    blurRadius: isSelected ? 12 : 4,
+                                    spreadRadius: isSelected ? 2 : 0,
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                isLost
+                                    ? Icons.search_rounded
+                                    : Icons.check_circle_outline_rounded,
+                                color: Colors.white,
+                                size: isSelected ? 28 : 22,
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    })(),
+                        );
+                      })(),
                   ],
                 ],
               ),
@@ -205,9 +226,16 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Row(
                     children: [
-                      SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
                       SizedBox(width: 12),
-                      Text('Locating GPS position...', style: TextStyle(fontSize: 12)),
+                      Text(
+                        'Locating GPS position...',
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ],
                   ),
                 ),
@@ -230,11 +258,18 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.radar_rounded, color: AppColors.primary, size: 20),
+                          const Icon(
+                            Icons.radar_rounded,
+                            color: AppColors.primary,
+                            size: 20,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             '${nearbyPostsWithDistance.length} Items inside ${LocationUtils.formatDistance(radiusState.radiusKm)}',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 13,
+                            ),
                           ),
                         ],
                       ),
@@ -242,7 +277,10 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                         children: [
                           TextButton(
                             onPressed: () => context.push('/search-results'),
-                            child: const Text('List View', style: TextStyle(fontSize: 12)),
+                            child: const Text(
+                              'List View',
+                              style: TextStyle(fontSize: 12),
+                            ),
                           ),
                         ],
                       ),
@@ -254,26 +292,42 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: [1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0].map((km) {
-                        final bool isSel = (radiusState.radiusKm - km).abs() < 0.1;
+                      children: [1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0].map((
+                        km,
+                      ) {
+                        final bool isSel =
+                            (radiusState.radiusKm - km).abs() < 0.1;
                         return Padding(
                           padding: const EdgeInsets.only(right: 6),
                           child: InkWell(
                             onTap: () => radiusNotifier.setRadius(km),
                             borderRadius: BorderRadius.circular(10),
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 4,
+                              ),
                               decoration: BoxDecoration(
-                                color: isSel ? AppColors.primary : Colors.white.withOpacity(0.8),
+                                color: isSel
+                                    ? AppColors.primary
+                                    : Colors.white.withOpacity(0.8),
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: isSel ? AppColors.primary : AppColors.outlineVariant),
+                                border: Border.all(
+                                  color: isSel
+                                      ? AppColors.primary
+                                      : AppColors.outlineVariant,
+                                ),
                               ),
                               child: Text(
-                                km < 1.0 ? '${(km * 1000).toInt()}m' : '${km.toInt()}KM',
+                                km < 1.0
+                                    ? '${(km * 1000).toInt()}m'
+                                    : '${km.toInt()}KM',
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
-                                  color: isSel ? Colors.white : AppColors.onSurface,
+                                  color: isSel
+                                      ? Colors.white
+                                      : AppColors.onSurface,
                                 ),
                               ),
                             ),
@@ -287,13 +341,23 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                   // Radius Slider
                   Row(
                     children: [
-                      const Text('Radius:', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                      const Text(
+                        'Radius:',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                       Expanded(
                         child: SliderTheme(
                           data: SliderThemeData(
                             trackHeight: 3,
-                            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
-                            overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                            thumbShape: const RoundSliderThumbShape(
+                              enabledThumbRadius: 7,
+                            ),
+                            overlayShape: const RoundSliderOverlayShape(
+                              overlayRadius: 14,
+                            ),
                             activeTrackColor: AppColors.primary,
                             thumbColor: AppColors.primary,
                           ),
@@ -308,7 +372,11 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                       ),
                       Text(
                         LocationUtils.formatDistance(radiusState.radiusKm),
-                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.primary),
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ],
                   ),
@@ -321,7 +389,11 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
     );
   }
 
-  Widget _buildPostPreviewSheet(BuildContext context, PostModel post, double distanceKm) {
+  Widget _buildPostPreviewSheet(
+    BuildContext context,
+    PostModel post,
+    double distanceKm,
+  ) {
     final bool isLost = post.type == 'lost';
 
     return Container(
@@ -343,7 +415,10 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                   borderRadius: BorderRadius.circular(12),
                   color: Colors.grey.shade200,
                   image: post.images.isNotEmpty
-                      ? DecorationImage(image: NetworkImage(post.images.first), fit: BoxFit.cover)
+                      ? DecorationImage(
+                          image: NetworkImage(post.images.first),
+                          fit: BoxFit.cover,
+                        )
                       : null,
                 ),
               ),
@@ -355,33 +430,52 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                     Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           decoration: BoxDecoration(
-                            color: isLost ? AppColors.error : AppColors.secondary,
+                            color: isLost
+                                ? AppColors.error
+                                : AppColors.secondary,
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: Text(
                             post.type.toUpperCase(),
-                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           LocationUtils.formatDistance(distanceKm),
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
                     Text(
                       post.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       post.location,
-                      style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.outline,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -396,14 +490,22 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
               onPressed: () {
                 Navigator.pop(context);
                 context.push('/item-details/${post.id}');
               },
-              child: const Text('View Full Details & Claim', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              child: const Text(
+                'View Full Details & Claim',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],

@@ -59,7 +59,8 @@ class NotificationsScreen extends ConsumerWidget {
               final item = allNotifs[index];
               final String title = item['title'] ?? 'Notification';
               final String body = item['body'] ?? item['subtitle'] ?? '';
-              final String time = item['time'] ?? item['timestamp'] ?? 'Just now';
+              final String time =
+                  item['time'] ?? item['timestamp'] ?? 'Just now';
               final String? claimId = item['claimId'];
               final String type = item['type'] ?? 'general';
 
@@ -85,10 +86,10 @@ class NotificationsScreen extends ConsumerWidget {
                         type == 'claim' || type == 'claim_status'
                             ? Icons.assignment_turned_in_rounded
                             : type == 'ai_match'
-                                ? Icons.auto_awesome
-                                : type == 'chat'
-                                    ? Icons.chat_rounded
-                                    : Icons.military_tech_rounded,
+                            ? Icons.auto_awesome
+                            : type == 'chat'
+                            ? Icons.chat_rounded
+                            : Icons.military_tech_rounded,
                         color: type == 'claim' || type == 'claim_status'
                             ? AppColors.secondary
                             : AppColors.primary,
@@ -102,31 +103,60 @@ class NotificationsScreen extends ConsumerWidget {
                           Row(
                             children: [
                               Expanded(
-                                child: Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                child: Text(
+                                  title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ),
                               if (type == 'claim' || type == 'claim_status')
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: AppColors.secondary.withOpacity(0.2),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: const Text('CLAIM', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: AppColors.secondary)),
+                                  child: const Text(
+                                    'CLAIM',
+                                    style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.secondary,
+                                    ),
+                                  ),
                                 ),
                             ],
                           ),
                           const SizedBox(height: 3),
-                          Text(body, style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
+                          Text(
+                            body,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.onSurfaceVariant,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             time.length > 20 ? time.substring(0, 10) : time,
-                            style: const TextStyle(fontSize: 10, color: AppColors.outline),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: AppColors.outline,
+                            ),
                           ),
                         ],
                       ),
                     ),
                     if (claimId != null && claimId.isNotEmpty)
-                      const Icon(Icons.arrow_forward_ios_rounded, size: 14, color: AppColors.secondary),
+                      const Icon(
+                        Icons.arrow_forward_ios_rounded,
+                        size: 14,
+                        color: AppColors.secondary,
+                      ),
                   ],
                 ),
               );

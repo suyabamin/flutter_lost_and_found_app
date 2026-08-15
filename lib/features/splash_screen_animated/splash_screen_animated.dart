@@ -9,10 +9,12 @@ class SplashScreenAnimatedScreen extends ConsumerStatefulWidget {
   const SplashScreenAnimatedScreen({super.key});
 
   @override
-  ConsumerState<SplashScreenAnimatedScreen> createState() => _SplashScreenAnimatedScreenState();
+  ConsumerState<SplashScreenAnimatedScreen> createState() =>
+      _SplashScreenAnimatedScreenState();
 }
 
-class _SplashScreenAnimatedScreenState extends ConsumerState<SplashScreenAnimatedScreen>
+class _SplashScreenAnimatedScreenState
+    extends ConsumerState<SplashScreenAnimatedScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _bgController;
   late Animation<double> _pulseAnimation;
@@ -25,9 +27,10 @@ class _SplashScreenAnimatedScreenState extends ConsumerState<SplashScreenAnimate
       duration: const Duration(seconds: 4),
     )..repeat(reverse: true);
 
-    _pulseAnimation = Tween<double>(begin: 0.9, end: 1.1).animate(
-      CurvedAnimation(parent: _bgController, curve: Curves.easeInOut),
-    );
+    _pulseAnimation = Tween<double>(
+      begin: 0.9,
+      end: 1.1,
+    ).animate(CurvedAnimation(parent: _bgController, curve: Curves.easeInOut));
 
     Timer(const Duration(seconds: 3), () {
       if (mounted) {
@@ -59,13 +62,25 @@ class _SplashScreenAnimatedScreenState extends ConsumerState<SplashScreenAnimate
                     colors: isDark
                         ? [
                             AppColors.darkBackground,
-                            Color.lerp(AppColors.darkSurface, AppColors.primary, _bgController.value * 0.2)!,
+                            Color.lerp(
+                              AppColors.darkSurface,
+                              AppColors.primary,
+                              _bgController.value * 0.2,
+                            )!,
                             AppColors.darkBackground,
                           ]
                         : [
-                            Color.lerp(AppColors.primaryContainer.withOpacity(0.2), AppColors.secondaryContainer.withOpacity(0.3), _bgController.value)!,
+                            Color.lerp(
+                              AppColors.primaryContainer.withOpacity(0.2),
+                              AppColors.secondaryContainer.withOpacity(0.3),
+                              _bgController.value,
+                            )!,
                             AppColors.background,
-                            Color.lerp(AppColors.secondaryContainer.withOpacity(0.3), AppColors.primaryContainer.withOpacity(0.2), _bgController.value)!,
+                            Color.lerp(
+                              AppColors.secondaryContainer.withOpacity(0.3),
+                              AppColors.primaryContainer.withOpacity(0.2),
+                              _bgController.value,
+                            )!,
                           ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -118,7 +133,9 @@ class _SplashScreenAnimatedScreenState extends ConsumerState<SplashScreenAnimate
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 2,
-                          color: isDark ? Colors.white70 : AppColors.onSurfaceVariant,
+                          color: isDark
+                              ? Colors.white70
+                              : AppColors.onSurfaceVariant,
                         ),
                       ),
                       const Spacer(),
@@ -145,7 +162,11 @@ class _SplashScreenAnimatedScreenState extends ConsumerState<SplashScreenAnimate
                       const SizedBox(height: 12),
                       const Text(
                         'Connecting you back to what matters...',
-                        style: TextStyle(fontSize: 12, fontStyle: FontStyle.italic, color: AppColors.outline),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontStyle: FontStyle.italic,
+                          color: AppColors.outline,
+                        ),
                       ),
                       const SizedBox(height: 48),
                     ],

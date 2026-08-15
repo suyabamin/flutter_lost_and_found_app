@@ -12,7 +12,8 @@ class NidVerificationScreen extends ConsumerStatefulWidget {
   const NidVerificationScreen({super.key});
 
   @override
-  ConsumerState<NidVerificationScreen> createState() => _NidVerificationScreenState();
+  ConsumerState<NidVerificationScreen> createState() =>
+      _NidVerificationScreenState();
 }
 
 class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
@@ -42,7 +43,9 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
       if (mounted) {
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('NID Documents submitted for verification!')),
+          const SnackBar(
+            content: Text('NID Documents submitted for verification!'),
+          ),
         );
         context.pop();
       }
@@ -64,7 +67,10 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Verify Bangladesh NID', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text(
+              'Verify Bangladesh NID',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 4),
             const Text(
               'Gain instant Trust Badge, unlock higher rewards, and secure direct police GD generation.',
@@ -95,7 +101,10 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
             ),
             const SizedBox(height: 20),
 
-            const Text('Upload NID Card Photos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const Text(
+              'Upload NID Card Photos',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             const SizedBox(height: 12),
 
             Row(
@@ -108,16 +117,34 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.3),
+                        ),
                       ),
                       child: _nidFrontImage != null
-                          ? ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.file(_nidFrontImage!, fit: BoxFit.cover))
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.file(
+                                _nidFrontImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
                           : const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.badge, color: AppColors.primary, size: 32),
+                                Icon(
+                                  Icons.badge,
+                                  color: AppColors.primary,
+                                  size: 32,
+                                ),
                                 SizedBox(height: 6),
-                                Text('NID Front Side', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                Text(
+                                  'NID Front Side',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                     ),
@@ -132,16 +159,34 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.08),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.3)),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.3),
+                        ),
                       ),
                       child: _nidBackImage != null
-                          ? ClipRRect(borderRadius: BorderRadius.circular(16), child: Image.file(_nidBackImage!, fit: BoxFit.cover))
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.file(
+                                _nidBackImage!,
+                                fit: BoxFit.cover,
+                              ),
+                            )
                           : const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.badge_outlined, color: AppColors.primary, size: 32),
+                                Icon(
+                                  Icons.badge_outlined,
+                                  color: AppColors.primary,
+                                  size: 32,
+                                ),
                                 SizedBox(height: 6),
-                                Text('NID Back Side', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                Text(
+                                  'NID Back Side',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ],
                             ),
                     ),

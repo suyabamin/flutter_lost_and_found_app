@@ -35,7 +35,11 @@ class AppImage extends StatelessWidget {
   });
 
   /// Build an ImageProvider for contexts requiring ImageProvider (e.g. DecorationImage / CircleAvatar)
-  static ImageProvider getImageProvider(String imagePath, {String placeholderSeed = 'item', Uint8List? bytes}) {
+  static ImageProvider getImageProvider(
+    String imagePath, {
+    String placeholderSeed = 'item',
+    Uint8List? bytes,
+  }) {
     if (bytes != null) return MemoryImage(bytes);
 
     final clean = imagePath.trim();
@@ -68,10 +72,7 @@ class AppImage extends StatelessWidget {
     Widget imageWidget = _buildRawImage();
 
     if (borderRadius != null) {
-      imageWidget = ClipRRect(
-        borderRadius: borderRadius!,
-        child: imageWidget,
-      );
+      imageWidget = ClipRRect(borderRadius: borderRadius!, child: imageWidget);
     }
 
     return imageWidget;
@@ -110,8 +111,12 @@ class AppImage extends StatelessWidget {
             width: width,
             height: height,
             fit: fit,
-            errorBuilder: (_, __, ___) =>
-                Image.network(fallbackUrl, width: width, height: height, fit: fit),
+            errorBuilder: (_, __, ___) => Image.network(
+              fallbackUrl,
+              width: width,
+              height: height,
+              fit: fit,
+            ),
           );
         }
       } catch (_) {}
@@ -139,8 +144,12 @@ class AppImage extends StatelessWidget {
             width: width,
             height: height,
             fit: fit,
-            errorBuilder: (_, __, ___) =>
-                Image.network(fallbackUrl, width: width, height: height, fit: fit),
+            errorBuilder: (_, __, ___) => Image.network(
+              fallbackUrl,
+              width: width,
+              height: height,
+              fit: fit,
+            ),
           );
         }
       } catch (_) {}

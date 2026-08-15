@@ -27,6 +27,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   bool _obscureConfirmPassword = true;
   bool _acceptTerms = false;
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
   String? _errorMessage;
 
   @override
@@ -39,10 +40,44 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isGoogleLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      final firestoreService = ref.read(firestoreServiceProvider);
+
+      final cred = await authService.signInWithGoogleAndSyncProfile(
+        firestoreService,
+      );
+      if (cred != null && cred.user != null) {
+        if (mounted) {
+          context.go('/home');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e
+              .toString()
+              .replaceAll(RegExp(r'\[.*?\]'), '')
+              .trim();
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _isGoogleLoading = false);
+    }
+  }
+
   Future<void> _handleRegister() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     if (!_acceptTerms) {
-      setState(() => _errorMessage = 'Please accept the Terms & Privacy Policy');
+      setState(
+        () => _errorMessage = 'Please accept the Terms & Privacy Policy',
+      );
       return;
     }
 
@@ -110,7 +145,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 const SizedBox(height: 6),
                 const Text(
                   'Join Lost & Found BD community today.',
-                  style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 24),
 
@@ -128,14 +166,26 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             decoration: BoxDecoration(
                               color: AppColors.error.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                              border: Border.all(
+                                color: AppColors.error.withOpacity(0.3),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                                const Icon(
+                                  Icons.error_outline,
+                                  color: AppColors.error,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
-                                  child: Text(_errorMessage!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
+                                  child: Text(
+                                    _errorMessage!,
+                                    style: const TextStyle(
+                                      color: AppColors.error,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -148,7 +198,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           labelText: 'Full Name',
                           hintText: 'e.g. Tanvir Ahmed',
                           prefixIcon: Icons.person_outline,
-                          validator: (v) => v == null || v.trim().isEmpty ? 'Enter your full name' : null,
+                          validator: (v) => v == null || v.trim().isEmpty
+                              ? 'Enter your full name'
+                              : null,
                         ),
                         const SizedBox(height: 14),
 
@@ -158,7 +210,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           hintText: 'tanvir@example.com',
                           prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (v) => v == null || !v.contains('@') ? 'Enter a valid email' : null,
+                          validator: (v) => v == null || !v.contains('@')
+                              ? 'Enter a valid email'
+                              : null,
                         ),
                         const SizedBox(height: 14),
 
@@ -178,10 +232,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscurePassword,
                           suffixIcon: IconButton(
-                            icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
-                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                           ),
-                          validator: (v) => v == null || v.length < 6 ? 'Minimum 6 characters' : null,
+                          validator: (v) => v == null || v.length < 6
+                              ? 'Minimum 6 characters'
+                              : null,
                         ),
                         const SizedBox(height: 14),
 
@@ -192,8 +254,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscureConfirmPassword,
                           suffixIcon: IconButton(
-                            icon: Icon(_obscureConfirmPassword ? Icons.visibility : Icons.visibility_off),
-                            onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                            icon: Icon(
+                              _obscureConfirmPassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscureConfirmPassword =
+                                  !_obscureConfirmPassword,
+                            ),
                           ),
                           validator: (v) {
                             if (v != _passwordController.text) {
@@ -212,7 +281,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               child: Checkbox(
                                 value: _acceptTerms,
                                 activeColor: AppColors.primary,
-                                onChanged: (v) => setState(() => _acceptTerms = v ?? false),
+                                onChanged: (v) =>
+                                    setState(() => _acceptTerms = v ?? false),
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -221,7 +291,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 onTap: () => context.push('/privacy-terms'),
                                 child: const Text(
                                   'I agree to the Terms of Service & Privacy Policy',
-                                  style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.onSurfaceVariant,
+                                  ),
                                 ),
                               ),
                             ),
@@ -233,7 +306,80 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           text: 'Register Account',
                           icon: Icons.check_circle_outline_rounded,
                           isLoading: _isLoading,
-                          onPressed: _handleRegister,
+                          onPressed: _isGoogleLoading ? null : _handleRegister,
+                        ),
+                        const SizedBox(height: 20),
+
+                        Row(
+                          children: const [
+                            Expanded(
+                              child: Divider(color: AppColors.outlineVariant),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                'OR CONTINUE WITH',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.outline,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(color: AppColors.outlineVariant),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 52),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            side: const BorderSide(
+                              color: AppColors.outlineVariant,
+                            ),
+                            backgroundColor: isDark
+                                ? AppColors.darkSurface
+                                : Colors.white,
+                          ),
+                          onPressed: _isGoogleLoading || _isLoading
+                              ? null
+                              : _handleGoogleSignIn,
+                          child: _isGoogleLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network(
+                                      'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+                                      width: 22,
+                                      height: 22,
+                                      errorBuilder: (c, e, s) => const Icon(
+                                        Icons.g_mobiledata_rounded,
+                                        size: 28,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Text(
+                                      'Continue with Google',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ],
                     ),
@@ -244,12 +390,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account? ', style: TextStyle(fontSize: 14)),
+                    const Text(
+                      'Already have an account? ',
+                      style: TextStyle(fontSize: 14),
+                    ),
                     GestureDetector(
                       onTap: () => context.pop(),
                       child: const Text(
                         'Sign In',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ],

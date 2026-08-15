@@ -10,6 +10,8 @@ import '../services/cloudinary_service.dart';
 
 import '../models/recovery_models.dart';
 
+import '../models/campus_models.dart';
+
 // Services
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 final firestoreServiceProvider = Provider<FirestoreService>(
@@ -58,3 +60,30 @@ final allHistoryStreamProvider = StreamProvider<List<HistoryModel>>((ref) {
 final rawAllPostsStreamProvider = StreamProvider<List<PostModel>>((ref) {
   return ref.watch(firestoreServiceProvider).streamRawAllPosts();
 });
+
+// Campus Providers
+final selectedCampusProvider = StateProvider<CampusModel?>((ref) => null);
+
+final allCampusesStreamProvider = StreamProvider<List<CampusModel>>((ref) {
+  return ref.watch(firestoreServiceProvider).streamAllCampuses();
+});
+
+final userCampusMembershipsProvider = StreamProvider<List<CampusMemberModel>>((
+  ref,
+) {
+  final user = ref.watch(currentUserProvider).value;
+  if (user == null) return Stream.value([]);
+  return ref
+      .watch(firestoreServiceProvider)
+      .streamUserCampusMemberships(user.uid);
+});
+
+final campusPostsStreamProvider =
+    StreamProvider.family<List<PostModel>, String>((ref, campusId) {
+      return ref.watch(firestoreServiceProvider).streamCampusPosts(campusId);
+    });
+
+final campusMembersStreamProvider =
+    StreamProvider.family<List<CampusMemberModel>, String>((ref, campusId) {
+      return ref.watch(firestoreServiceProvider).streamCampusMembers(campusId);
+    });

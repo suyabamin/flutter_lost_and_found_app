@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,10 +13,12 @@ class ChatConversationScreen extends ConsumerStatefulWidget {
   const ChatConversationScreen({super.key, required this.id});
 
   @override
-  ConsumerState<ChatConversationScreen> createState() => _ChatConversationScreenState();
+  ConsumerState<ChatConversationScreen> createState() =>
+      _ChatConversationScreenState();
 }
 
-class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen> {
+class _ChatConversationScreenState
+    extends ConsumerState<ChatConversationScreen> {
   final TextEditingController _msgController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isSending = false;
@@ -62,7 +64,9 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not send message. Please check connection.')),
+          const SnackBar(
+            content: Text('Could not send message. Please check connection.'),
+          ),
         );
       }
     } finally {
@@ -73,7 +77,12 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
   Future<void> _sendImageAttachment() async {
     try {
       final picker = ImagePicker();
-      final picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 600, maxHeight: 600, imageQuality: 50);
+      final picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 600,
+        maxHeight: 600,
+        imageQuality: 50,
+      );
       if (picked == null) return;
 
       final cloudinaryService = ref.read(cloudinaryServiceProvider);
@@ -92,9 +101,9 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
       _scrollToBottom();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error attaching image: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error attaching image: $e')));
       }
     }
   }
@@ -152,12 +161,17 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                     children: [
                       Text(
                         roomTitle,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const Text('Online • Private 1-to-1 Room',
-                          style: TextStyle(fontSize: 11, color: Colors.green)),
+                      const Text(
+                        'Online • Private 1-to-1 Room',
+                        style: TextStyle(fontSize: 11, color: Colors.green),
+                      ),
                     ],
                   ),
                 ),
@@ -173,8 +187,10 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                        content: Text(
-                            'Private chat room end-to-end coordinated for lost/found item return.')),
+                      content: Text(
+                        'Private chat room end-to-end coordinated for lost/found item return.',
+                      ),
+                    ),
                   );
                 },
               ),
@@ -189,14 +205,16 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                   builder: (context, snapshot) {
                     final dbMessages = snapshot.data ?? [];
 
-                    final List<ChatMessageModel> displayMessages = dbMessages.isEmpty
+                    final List<ChatMessageModel> displayMessages =
+                        dbMessages.isEmpty
                         ? [
                             ChatMessageModel(
                               id: 'system_welcome',
                               senderId: 'system',
-                              text: '?? Claim Approved! You can now chat in private to coordinate item handoff.',
+                              text:
+                                  '?? Claim Approved! You can now chat in private to coordinate item handoff.',
                               timestamp: DateTime.now(),
-                            )
+                            ),
                           ]
                         : dbMessages;
 
@@ -204,14 +222,18 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
 
                     return ListView.builder(
                       controller: _scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 16,
+                      ),
                       itemCount: displayMessages.length,
                       itemBuilder: (context, index) {
                         final msg = displayMessages[index];
                         // KEY FIX: compare senderId stored in Firestore with current user's uid
                         final bool isMe = msg.senderId == currentUid;
                         final bool isSystem = msg.senderId == 'system';
-                        final bool isImage = msg.text.startsWith('http') ||
+                        final bool isImage =
+                            msg.text.startsWith('http') ||
                             msg.text.startsWith('data:image');
 
                         // System announcement bubble (centered)
@@ -222,12 +244,17 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                             decoration: BoxDecoration(
                               color: AppColors.secondary.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(16),
-                              border: Border.all(color: AppColors.secondary.withOpacity(0.3)),
+                              border: Border.all(
+                                color: AppColors.secondary.withOpacity(0.3),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.verified_user_rounded,
-                                    color: AppColors.secondary, size: 20),
+                                const Icon(
+                                  Icons.verified_user_rounded,
+                                  color: AppColors.secondary,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
@@ -250,17 +277,21 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 4),
                           child: Row(
-                            mainAxisAlignment:
-                                isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+                            mainAxisAlignment: isMe
+                                ? MainAxisAlignment.end
+                                : MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               // Avatar shown only for the other person's messages (on the left)
                               if (!isMe) ...[
                                 CircleAvatar(
                                   radius: 14,
-                                  backgroundColor: AppColors.primary.withOpacity(0.18),
+                                  backgroundColor: AppColors.primary
+                                      .withOpacity(0.18),
                                   child: Text(
-                                    otherUid.isNotEmpty ? otherUid[0].toUpperCase() : 'U',
+                                    otherUid.isNotEmpty
+                                        ? otherUid[0].toUpperCase()
+                                        : 'U',
                                     style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
@@ -273,22 +304,30 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
 
                               // Bubble + timestamp
                               Column(
-                                crossAxisAlignment:
-                                    isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                crossAxisAlignment: isMe
+                                    ? CrossAxisAlignment.end
+                                    : CrossAxisAlignment.start,
                                 children: [
                                   Container(
                                     constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.of(context).size.width * 0.68,
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                          0.68,
                                     ),
                                     padding: isImage
                                         ? const EdgeInsets.all(3)
-                                        : const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                                        : const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 10,
+                                          ),
                                     decoration: BoxDecoration(
                                       // MY messages: blue (primary color)
                                       // OTHER's messages: grey
                                       color: isMe
                                           ? AppColors.primary
-                                          : (isDark ? const Color(0xFF2C2C2E) : Colors.grey.shade200),
+                                          : (isDark
+                                                ? const Color(0xFF2C2C2E)
+                                                : Colors.grey.shade200),
                                       borderRadius: BorderRadius.only(
                                         topLeft: const Radius.circular(18),
                                         topRight: const Radius.circular(18),
@@ -310,15 +349,27 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                                     ),
                                     child: isImage
                                         ? ClipRRect(
-                                            borderRadius: BorderRadius.circular(14),
+                                            borderRadius: BorderRadius.circular(
+                                              14,
+                                            ),
                                             child: Image.network(
                                               msg.text,
                                               fit: BoxFit.cover,
-                                              width: MediaQuery.of(context).size.width * 0.60,
-                                              errorBuilder: (_, __, ___) => const Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: Icon(Icons.broken_image_rounded),
-                                              ),
+                                              width:
+                                                  MediaQuery.of(
+                                                    context,
+                                                  ).size.width *
+                                                  0.60,
+                                              errorBuilder: (_, __, ___) =>
+                                                  const Padding(
+                                                    padding: EdgeInsets.all(
+                                                      8.0,
+                                                    ),
+                                                    child: Icon(
+                                                      Icons
+                                                          .broken_image_rounded,
+                                                    ),
+                                                  ),
                                             ),
                                           )
                                         : Text(
@@ -326,7 +377,9 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                                             style: TextStyle(
                                               color: isMe
                                                   ? Colors.white
-                                                  : (isDark ? Colors.white : Colors.black87),
+                                                  : (isDark
+                                                        ? Colors.white
+                                                        : Colors.black87),
                                               fontSize: 14.5,
                                             ),
                                           ),
@@ -334,12 +387,18 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
 
                                   // Timestamp under each bubble
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 3, left: 4, right: 4),
+                                    padding: const EdgeInsets.only(
+                                      top: 3,
+                                      left: 4,
+                                      right: 4,
+                                    ),
                                     child: Text(
                                       _formatTime(msg.timestamp),
                                       style: TextStyle(
                                         fontSize: 10,
-                                        color: isDark ? Colors.white38 : Colors.black38,
+                                        color: isDark
+                                            ? Colors.white38
+                                            : Colors.black38,
                                       ),
                                     ),
                                   ),
@@ -362,19 +421,28 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                 decoration: BoxDecoration(
                   color: isDark ? AppColors.darkSurface : Colors.white,
-                  border: Border(top: BorderSide(color: AppColors.outlineVariant.withOpacity(0.5))),
+                  border: Border(
+                    top: BorderSide(
+                      color: AppColors.outlineVariant.withOpacity(0.5),
+                    ),
+                  ),
                 ),
                 child: SafeArea(
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.add_photo_alternate_rounded, color: AppColors.primary),
+                        icon: const Icon(
+                          Icons.add_photo_alternate_rounded,
+                          color: AppColors.primary,
+                        ),
                         onPressed: _sendImageAttachment,
                       ),
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF2C2C2E) : Colors.grey.shade100,
+                            color: isDark
+                                ? const Color(0xFF2C2C2E)
+                                : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(24),
                           ),
                           child: TextField(
@@ -383,7 +451,10 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                             decoration: const InputDecoration(
                               hintText: 'Type a message...',
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 10,
+                              ),
                             ),
                             onSubmitted: (_) => _sendMessage(),
                           ),
@@ -402,9 +473,16 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
                           child: _isSending
                               ? const Padding(
                                   padding: EdgeInsets.all(10),
-                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
                                 )
-                              : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                              : const Icon(
+                                  Icons.send_rounded,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
                         ),
                       ),
                     ],
@@ -418,4 +496,3 @@ class _ChatConversationScreenState extends ConsumerState<ChatConversationScreen>
     );
   }
 }
-

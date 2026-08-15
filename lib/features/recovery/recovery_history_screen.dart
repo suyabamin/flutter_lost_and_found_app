@@ -12,12 +12,14 @@ class RecoveryHistoryScreen extends ConsumerStatefulWidget {
   const RecoveryHistoryScreen({super.key});
 
   @override
-  ConsumerState<RecoveryHistoryScreen> createState() => _RecoveryHistoryScreenState();
+  ConsumerState<RecoveryHistoryScreen> createState() =>
+      _RecoveryHistoryScreenState();
 }
 
 class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedFilter = 'All'; // 'All', 'Recovered (Poster)', 'Returned (Finder)'
+  String _selectedFilter =
+      'All'; // 'All', 'Recovered (Poster)', 'Returned (Finder)'
 
   @override
   void dispose() {
@@ -51,9 +53,14 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                   controller: _searchController,
                   decoration: InputDecoration(
                     hintText: 'Search recovered items, locations...',
-                    prefixIcon: const Icon(Icons.search, color: AppColors.primary),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppColors.primary,
+                    ),
                     filled: true,
-                    fillColor: isDark ? AppColors.darkSurface : Colors.grey.shade100,
+                    fillColor: isDark
+                        ? AppColors.darkSurface
+                        : Colors.grey.shade100,
                     contentPadding: const EdgeInsets.symmetric(vertical: 10),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -67,7 +74,9 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                   height: 38,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: ['All', 'Recovered Items', 'Returned Items'].map((filter) {
+                    children: ['All', 'Recovered Items', 'Returned Items'].map((
+                      filter,
+                    ) {
                       final isSelected = _selectedFilter == filter;
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
@@ -99,17 +108,25 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                 final filteredList = rawList.where((item) {
                   // Filter by Search Query
                   if (searchQuery.isNotEmpty) {
-                    final matchTitle = item.title.toLowerCase().contains(searchQuery);
-                    final matchLoc = item.location.toLowerCase().contains(searchQuery);
-                    final matchCat = item.category.toLowerCase().contains(searchQuery);
+                    final matchTitle = item.title.toLowerCase().contains(
+                      searchQuery,
+                    );
+                    final matchLoc = item.location.toLowerCase().contains(
+                      searchQuery,
+                    );
+                    final matchCat = item.category.toLowerCase().contains(
+                      searchQuery,
+                    );
                     if (!matchTitle && !matchLoc && !matchCat) return false;
                   }
 
                   // Filter by Type
-                  if (_selectedFilter == 'Recovered Items' && item.posterId != currentUid) {
+                  if (_selectedFilter == 'Recovered Items' &&
+                      item.posterId != currentUid) {
                     return false;
                   }
-                  if (_selectedFilter == 'Returned Items' && item.finderId != currentUid) {
+                  if (_selectedFilter == 'Returned Items' &&
+                      item.finderId != currentUid) {
                     return false;
                   }
 
@@ -117,19 +134,38 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                 }).toList();
 
                 if (filteredList.isEmpty) {
-                  return Center(child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.history_toggle_off_rounded, size: 64, color: AppColors.outline),
-                        SizedBox(height: 12),
-                        Text('No recovery history found.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        SizedBox(height: 4),
-                        Text('Completed recoveries will be permanently archived here.', style: TextStyle(color: AppColors.outline, fontSize: 12), textAlign: TextAlign.center),
-                      ],
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(
+                            Icons.history_toggle_off_rounded,
+                            size: 64,
+                            color: AppColors.outline,
+                          ),
+                          SizedBox(height: 12),
+                          Text(
+                            'No recovery history found.',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'Completed recoveries will be permanently archived here.',
+                            style: TextStyle(
+                              color: AppColors.outline,
+                              fontSize: 12,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),);
+                  );
                 }
 
                 return ListView.separated(
@@ -152,11 +188,17 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                               borderRadius: BorderRadius.circular(14),
                               color: Colors.grey.shade200,
                               image: item.images.isNotEmpty
-                                  ? DecorationImage(image: NetworkImage(item.images.first), fit: BoxFit.cover)
+                                  ? DecorationImage(
+                                      image: NetworkImage(item.images.first),
+                                      fit: BoxFit.cover,
+                                    )
                                   : null,
                             ),
                             child: item.images.isEmpty
-                                ? const Icon(Icons.verified_rounded, color: Colors.green)
+                                ? const Icon(
+                                    Icons.verified_rounded,
+                                    color: Colors.green,
+                                  )
                                 : null,
                           ),
                           const SizedBox(width: 14),
@@ -167,45 +209,67 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                                 Row(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: isPoster ? AppColors.primary : AppColors.secondary,
+                                        color: isPoster
+                                            ? AppColors.primary
+                                            : AppColors.secondary,
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
                                         isPoster ? 'RECOVERED' : 'RETURNED',
-                                        style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                     const Spacer(),
                                     Text(
                                       '${item.completedDate.day}/${item.completedDate.month}/${item.completedDate.year}',
-                                      style: const TextStyle(fontSize: 11, color: AppColors.outline),
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: AppColors.outline,
+                                      ),
                                     ),
                                   ],
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
                                   item.title,
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   'Location: ${item.location}',
-                                  style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.outline,
+                                  ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 if (item.rewardAmount > 0) ...[
                                   const SizedBox(height: 4),
                                   Text(
-                                    isPoster ? 'Reward Paid: ৳ ${item.rewardAmount.toInt()}' : 'Reward Earned: ৳ ${item.rewardAmount.toInt()}',
+                                    isPoster
+                                        ? 'Reward Paid: ৳ ${item.rewardAmount.toInt()}'
+                                        : 'Reward Earned: ৳ ${item.rewardAmount.toInt()}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
-                                      color: isPoster ? AppColors.error : Colors.green,
+                                      color: isPoster
+                                          ? AppColors.error
+                                          : Colors.green,
                                     ),
                                   ),
                                 ],

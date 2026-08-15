@@ -64,19 +64,49 @@ final appRouter = GoRouter(
   initialLocation: '/splash',
   routes: [
     GoRoute(path: '/splash', builder: (context, state) => const SplashScreen()),
-    GoRoute(path: '/splash-animated', builder: (context, state) => const SplashScreenAnimatedScreen()),
-    GoRoute(path: '/welcome', builder: (context, state) => const WelcomeAuthScreen()),
-    GoRoute(path: '/welcome-animated', builder: (context, state) => const WelcomeAuthAnimatedScreen()),
+    GoRoute(
+      path: '/splash-animated',
+      builder: (context, state) => const SplashScreenAnimatedScreen(),
+    ),
+    GoRoute(
+      path: '/welcome',
+      builder: (context, state) => const WelcomeAuthScreen(),
+    ),
+    GoRoute(
+      path: '/welcome-animated',
+      builder: (context, state) => const WelcomeAuthAnimatedScreen(),
+    ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
-    GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
-    GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordScreen()),
-    GoRoute(path: '/otp-verify', builder: (context, state) => const OtpVerificationScreen()),
-    GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingFlowScreen()),
-    
-    GoRoute(path: '/home', builder: (context, state) => const HomeDashboardScreen()),
-    GoRoute(path: '/home-animated', builder: (context, state) => const HomeDashboardAnimatedScreen()),
-    
-    GoRoute(path: '/ai-search', builder: (context, state) => const AiSmartSearchScreen()),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: '/forgot-password',
+      builder: (context, state) => const ForgotPasswordScreen(),
+    ),
+    GoRoute(
+      path: '/otp-verify',
+      builder: (context, state) => const OtpVerificationScreen(),
+    ),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingFlowScreen(),
+    ),
+
+    GoRoute(
+      path: '/home',
+      builder: (context, state) => const HomeDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/home-animated',
+      builder: (context, state) => const HomeDashboardAnimatedScreen(),
+    ),
+
+    GoRoute(
+      path: '/ai-search',
+      builder: (context, state) => const AiSmartSearchScreen(),
+    ),
     GoRoute(
       path: '/search-results',
       builder: (context, state) {
@@ -85,14 +115,28 @@ final appRouter = GoRouter(
         return SearchResultsScreen(query: query, category: category);
       },
     ),
-    GoRoute(path: '/ai-scan', builder: (context, state) => const AiImageScanScreen()),
-    GoRoute(path: '/ai-matches', builder: (context, state) => const AiMatchResultsScreen()),
-    GoRoute(path: '/ai-matches-animated', builder: (context, state) => const AiMatchResultsAnimatedScreen()),
-    
-    GoRoute(path: '/create-post-step1', builder: (context, state) => const CreateLostPostStep1Screen()),
+    GoRoute(
+      path: '/ai-scan',
+      builder: (context, state) => const AiImageScanScreen(),
+    ),
+    GoRoute(
+      path: '/ai-matches',
+      builder: (context, state) => const AiMatchResultsScreen(),
+    ),
+    GoRoute(
+      path: '/ai-matches-animated',
+      builder: (context, state) => const AiMatchResultsAnimatedScreen(),
+    ),
+
+    GoRoute(
+      path: '/create-post-step1',
+      builder: (context, state) => const CreateLostPostStep1Screen(),
+    ),
     GoRoute(
       path: '/preview-report',
-      builder: (context, state) => PreviewPublishReportScreen(postData: state.extra as Map<String, dynamic>?),
+      builder: (context, state) => PreviewPublishReportScreen(
+        postData: state.extra as Map<String, dynamic>?,
+      ),
     ),
     GoRoute(
       path: '/item-details/:id',
@@ -115,17 +159,26 @@ final appRouter = GoRouter(
         return ClaimDetailsScreen(claimId: claimId);
       },
     ),
-    GoRoute(path: '/my-posts', builder: (context, state) => const MyPostsScreen()),
-    
-    GoRoute(path: '/map-view', builder: (context, state) => const GoogleMapViewScreen()),
+    GoRoute(
+      path: '/my-posts',
+      builder: (context, state) => const MyPostsScreen(),
+    ),
+
+    GoRoute(
+      path: '/map-view',
+      builder: (context, state) => const GoogleMapViewScreen(),
+    ),
     GoRoute(
       path: '/select-location',
       builder: (context, state) => SelectLocationScreen(
         initialLocation: state.uri.queryParameters['initial'],
       ),
     ),
-    
-    GoRoute(path: '/chats', builder: (context, state) => const ChatListScreen()),
+
+    GoRoute(
+      path: '/chats',
+      builder: (context, state) => const ChatListScreen(),
+    ),
     GoRoute(
       path: '/chat/:id',
       builder: (context, state) {
@@ -133,15 +186,36 @@ final appRouter = GoRouter(
         return ChatConversationScreen(id: id);
       },
     ),
-    
-    GoRoute(path: '/notifications', builder: (context, state) => const NotificationsScreen()),
-    GoRoute(path: '/profile', builder: (context, state) => const ProfileScreen()),
-    GoRoute(path: '/edit-profile', builder: (context, state) => const EditProfileScreen()),
-    GoRoute(path: '/favorites', builder: (context, state) => const FavoritesScreen()),
-    GoRoute(path: '/history', builder: (context, state) => const HistoryScreen()),
-    GoRoute(path: '/rewards', builder: (context, state) => const RewardsWalletScreen()),
-    GoRoute(path: '/leaderboard', builder: (context, state) => const recovery_lb.LeaderboardScreen()),
-    
+
+    GoRoute(
+      path: '/notifications',
+      builder: (context, state) => const NotificationsScreen(),
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/edit-profile',
+      builder: (context, state) => const EditProfileScreen(),
+    ),
+    GoRoute(
+      path: '/favorites',
+      builder: (context, state) => const FavoritesScreen(),
+    ),
+    GoRoute(
+      path: '/history',
+      builder: (context, state) => const HistoryScreen(),
+    ),
+    GoRoute(
+      path: '/rewards',
+      builder: (context, state) => const RewardsWalletScreen(),
+    ),
+    GoRoute(
+      path: '/leaderboard',
+      builder: (context, state) => const recovery_lb.LeaderboardScreen(),
+    ),
+
     // Recovery & Payment Routes
     GoRoute(
       path: '/recovery-completed/:claimId',
@@ -171,20 +245,50 @@ final appRouter = GoRouter(
         return RatingScreen(claimId: claimId);
       },
     ),
-    GoRoute(path: '/recovery-history', builder: (context, state) => const RecoveryHistoryScreen()),
+    GoRoute(
+      path: '/recovery-history',
+      builder: (context, state) => const RecoveryHistoryScreen(),
+    ),
     GoRoute(path: '/wallet', builder: (context, state) => const WalletScreen()),
-    
-    GoRoute(path: '/nid-verification', builder: (context, state) => const NidVerificationScreen()),
-    GoRoute(path: '/police-gd', builder: (context, state) => const PoliceGdIntegrationScreen()),
-    
-    GoRoute(path: '/admin', builder: (context, state) => const AdminDashboardScreen()),
-    GoRoute(path: '/university-dashboard', builder: (context, state) => const UniversityDashboardScreen()),
-    GoRoute(path: '/office-dashboard', builder: (context, state) => const OfficeDashboardScreen()),
-    
-    GoRoute(path: '/settings', builder: (context, state) => const SettingsScreen()),
-    GoRoute(path: '/help', builder: (context, state) => const HelpCenterScreen()),
-    GoRoute(path: '/privacy-terms', builder: (context, state) => const PrivacyTermsScreen()),
-    GoRoute(path: '/empty-offline', builder: (context, state) => const AppStatesEmptyOfflineScreen()),
+
+    GoRoute(
+      path: '/nid-verification',
+      builder: (context, state) => const NidVerificationScreen(),
+    ),
+    GoRoute(
+      path: '/police-gd',
+      builder: (context, state) => const PoliceGdIntegrationScreen(),
+    ),
+
+    GoRoute(
+      path: '/admin',
+      builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/university-dashboard',
+      builder: (context, state) => const UniversityDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/office-dashboard',
+      builder: (context, state) => const OfficeDashboardScreen(),
+    ),
+
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/help',
+      builder: (context, state) => const HelpCenterScreen(),
+    ),
+    GoRoute(
+      path: '/privacy-terms',
+      builder: (context, state) => const PrivacyTermsScreen(),
+    ),
+    GoRoute(
+      path: '/empty-offline',
+      builder: (context, state) => const AppStatesEmptyOfflineScreen(),
+    ),
     GoRoute(path: '/shader', builder: (context, state) => const ShaderScreen()),
     GoRoute(path: '/about', builder: (context, state) => const AboutScreen()),
   ],

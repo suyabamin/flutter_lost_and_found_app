@@ -41,7 +41,11 @@ class RewardSuccessScreen extends ConsumerWidget {
                     border: Border.all(color: Colors.green, width: 3),
                   ),
                   child: const Center(
-                    child: Icon(Icons.check_rounded, color: Colors.green, size: 54),
+                    child: Icon(
+                      Icons.check_rounded,
+                      color: Colors.green,
+                      size: 54,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -53,7 +57,10 @@ class RewardSuccessScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
                 const Text(
                   'Notification sent to Finder. Once Finder confirms receipt, recovery will be finalized.',
-                  style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13),
+                  style: TextStyle(
+                    color: AppColors.onSurfaceVariant,
+                    fontSize: 13,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 28),
@@ -66,38 +73,87 @@ class RewardSuccessScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Transaction ID:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
-                          Text(payment?.transactionId ?? 'N/A', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                          const Text(
+                            'Transaction ID:',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.outline,
+                            ),
+                          ),
+                          Text(
+                            payment?.transactionId ?? 'N/A',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Method & Amount:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
-                          Text('${payment?.method ?? "bKash"} • ৳ ${payment?.amount.toInt() ?? 0}', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                          const Text(
+                            'Method & Amount:',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.outline,
+                            ),
+                          ),
+                          Text(
+                            '${payment?.method ?? "bKash"} • ৳ ${payment?.amount.toInt() ?? 0}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.primary,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Receiver:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
-                          Text(payment?.receiverName ?? 'Finder', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          const Text(
+                            'Receiver:',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.outline,
+                            ),
+                          ),
+                          Text(
+                            payment?.receiverName ?? 'Finder',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Status:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                          const Text(
+                            'Status:',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.outline,
+                            ),
+                          ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.orange.withOpacity(0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text('PAID (Awaiting Finder)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.orange)),
+                            child: const Text(
+                              'PAID (Awaiting Finder)',
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -111,7 +167,9 @@ class RewardSuccessScreen extends ConsumerWidget {
                   icon: Icons.arrow_back_rounded,
                   onPressed: () {
                     if (payment != null && payment.claimId.isNotEmpty) {
-                      context.pushReplacement('/recovery-completed/${payment.claimId}');
+                      context.pushReplacement(
+                        '/recovery-completed/${payment.claimId}',
+                      );
                     } else {
                       context.go('/home');
                     }

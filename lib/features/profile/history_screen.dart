@@ -27,12 +27,16 @@ class HistoryScreen extends ConsumerWidget {
         stream: firestoreService.streamUserHistory(currentUid),
         builder: (context, snapshot) {
           final items = snapshot.data ?? [];
-          if (snapshot.connectionState == ConnectionState.waiting && items.isEmpty) {
+          if (snapshot.connectionState == ConnectionState.waiting &&
+              items.isEmpty) {
             return const Center(child: CircularProgressIndicator());
           }
           if (items.isEmpty) {
             return const Center(
-              child: Text('No Recovery History Yet', style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(
+                'No Recovery History Yet',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             );
           }
 
@@ -42,9 +46,12 @@ class HistoryScreen extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = items[index];
-              final isOwner = currentUid == item.posterId || currentUid == item.ownerId;
+              final isOwner =
+                  currentUid == item.posterId || currentUid == item.ownerId;
               final partnerName = isOwner ? item.finderName : item.ownerName;
-              final ratingGiven = isOwner ? item.ownerRating : item.finderRating;
+              final ratingGiven = isOwner
+                  ? item.ownerRating
+                  : item.finderRating;
               final reviewText = isOwner ? item.ownerReview : item.finderReview;
 
               return GlassContainer(
@@ -55,32 +62,78 @@ class HistoryScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        Icon(isOwner ? Icons.inbox_rounded : Icons.task_alt_rounded, color: isOwner ? AppColors.primary : Colors.green),
+                        Icon(
+                          isOwner
+                              ? Icons.inbox_rounded
+                              : Icons.task_alt_rounded,
+                          color: isOwner ? AppColors.primary : Colors.green,
+                        ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(item.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                              Text('Cat: ${item.category} • Partner: $partnerName', style: const TextStyle(fontSize: 11, color: AppColors.outline)),
+                              Text(
+                                item.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                'Cat: ${item.category} • Partner: $partnerName',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.outline,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        Text('${item.completedDate.day}/${item.completedDate.month}/${item.completedDate.year}', style: const TextStyle(fontSize: 11, color: AppColors.outline)),
+                        Text(
+                          '${item.completedDate.day}/${item.completedDate.month}/${item.completedDate.year}',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.outline,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
                       children: [
                         if (item.rewardAmount > 0)
-                          Text('Reward: ৳${item.rewardAmount.toInt()}  ', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isOwner ? AppColors.error : Colors.green)),
-                        const Icon(Icons.star_rounded, color: Colors.amber, size: 14),
-                        Text(' $ratingGiven / 5', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                          Text(
+                            'Reward: ৳${item.rewardAmount.toInt()}  ',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: isOwner ? AppColors.error : Colors.green,
+                            ),
+                          ),
+                        const Icon(
+                          Icons.star_rounded,
+                          color: Colors.amber,
+                          size: 14,
+                        ),
+                        Text(
+                          ' $ratingGiven / 5',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                     if (reviewText.isNotEmpty) ...[
                       const SizedBox(height: 4),
-                      Text('Review: "$reviewText"', style: const TextStyle(fontSize: 11, fontStyle: FontStyle.italic)),
+                      Text(
+                        'Review: "$reviewText"',
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     ],
                   ],
                 ),

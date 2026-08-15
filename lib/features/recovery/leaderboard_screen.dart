@@ -33,7 +33,10 @@ class LeaderboardScreen extends ConsumerWidget {
 
           if (list.isEmpty) {
             return const Center(
-              child: Text('No leaderboard data yet.', style: TextStyle(color: AppColors.outline)),
+              child: Text(
+                'No leaderboard data yet.',
+                style: TextStyle(color: AppColors.outline),
+              ),
             );
           }
 
@@ -95,7 +98,10 @@ class LeaderboardScreen extends ConsumerWidget {
 
                 const Align(
                   alignment: Alignment.centerLeft,
-                  child: Text('Community Top Heroes', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  child: Text(
+                    'Community Top Heroes',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                 ),
                 const SizedBox(height: 12),
 
@@ -124,32 +130,58 @@ class LeaderboardScreen extends ConsumerWidget {
                             ),
                             child: Text(
                               '#$rank',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
                           CircleAvatar(
                             radius: 20,
-                            backgroundImage: u.photoUrl.isNotEmpty ? NetworkImage(u.photoUrl) : null,
-                            child: u.photoUrl.isEmpty ? const Icon(Icons.person_rounded) : null,
+                            backgroundImage: u.photoUrl.isNotEmpty
+                                ? NetworkImage(u.photoUrl)
+                                : null,
+                            child: u.photoUrl.isEmpty
+                                ? const Icon(Icons.person_rounded)
+                                : null,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(u.displayName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                Text(
+                                  u.displayName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
                                 Text(
                                   '${u.rewardPoints} Points • ${u.location}',
-                                  style: const TextStyle(fontSize: 11, color: AppColors.outline),
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.outline,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          const Icon(Icons.star_rounded, color: Colors.amber, size: 18),
+                          const Icon(
+                            Icons.star_rounded,
+                            color: Colors.amber,
+                            size: 18,
+                          ),
                           const SizedBox(width: 4),
-                          const Text('5.0', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                          const Text(
+                            '5.0',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                     );
@@ -174,7 +206,9 @@ class LeaderboardScreen extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkSurface : Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? AppColors.darkSurface
+            : Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color, width: isFirst ? 2.5 : 1.5),
         boxShadow: [
@@ -192,20 +226,31 @@ class LeaderboardScreen extends ConsumerWidget {
           const SizedBox(height: 6),
           CircleAvatar(
             radius: isFirst ? 26 : 20,
-            backgroundImage: user.photoUrl.isNotEmpty ? NetworkImage(user.photoUrl) : null,
-            child: user.photoUrl.isEmpty ? const Icon(Icons.person_rounded) : null,
+            backgroundImage: user.photoUrl.isNotEmpty
+                ? NetworkImage(user.photoUrl)
+                : null,
+            child: user.photoUrl.isEmpty
+                ? const Icon(Icons.person_rounded)
+                : null,
           ),
           const SizedBox(height: 8),
           Text(
             user.displayName.split(' ').first,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: isFirst ? 14 : 12),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: isFirst ? 14 : 12,
+            ),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 2),
           Text(
             '${user.rewardPoints} Pts',
-            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: color),
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: color,
+            ),
           ),
         ],
       ),

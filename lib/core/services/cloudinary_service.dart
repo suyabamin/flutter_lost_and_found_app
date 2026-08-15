@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,23 +8,28 @@ class CloudinaryService {
   final bool _isConfigured;
 
   CloudinaryService()
-      : _isConfigured = (dotenv.env['CLOUDINARY_CLOUD_NAME'] != null &&
-            dotenv.env['CLOUDINARY_CLOUD_NAME'] != 'demo_cloud_name' &&
-            dotenv.env['CLOUDINARY_CLOUD_NAME']!.isNotEmpty),
-        _cloudinary = (dotenv.env['CLOUDINARY_CLOUD_NAME'] != null &&
-                dotenv.env['CLOUDINARY_CLOUD_NAME'] != 'demo_cloud_name')
-            ? CloudinaryPublic(
-                dotenv.env['CLOUDINARY_CLOUD_NAME']!,
-                dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? 'preset',
-                cache: false,
-              )
-            : null;
+    : _isConfigured =
+          (dotenv.env['CLOUDINARY_CLOUD_NAME'] != null &&
+          dotenv.env['CLOUDINARY_CLOUD_NAME'] != 'demo_cloud_name' &&
+          dotenv.env['CLOUDINARY_CLOUD_NAME']!.isNotEmpty),
+      _cloudinary =
+          (dotenv.env['CLOUDINARY_CLOUD_NAME'] != null &&
+              dotenv.env['CLOUDINARY_CLOUD_NAME'] != 'demo_cloud_name')
+          ? CloudinaryPublic(
+              dotenv.env['CLOUDINARY_CLOUD_NAME']!,
+              dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? 'preset',
+              cache: false,
+            )
+          : null;
 
   /// Upload a single XFile.
   /// If Cloudinary is configured, uploads to Cloudinary.
   /// Otherwise, converts the actual user photo to self-contained Base64 Data URI.
   /// NEVER returns random stock images or placeholder pictures.
-  Future<String> uploadXFile(XFile xfile, {String folder = 'lost_and_found'}) async {
+  Future<String> uploadXFile(
+    XFile xfile, {
+    String folder = 'lost_and_found',
+  }) async {
     final bytes = await xfile.readAsBytes();
 
     // 1. Try Cloudinary if properly configured
@@ -54,8 +59,10 @@ class CloudinaryService {
   }
 
   /// Upload multiple XFiles safely for Firestore document storage
-  Future<List<String>> uploadMultipleXFiles(List<XFile> xfiles,
-      {String folder = 'lost_and_found'}) async {
+  Future<List<String>> uploadMultipleXFiles(
+    List<XFile> xfiles, {
+    String folder = 'lost_and_found',
+  }) async {
     if (xfiles.isEmpty) return [];
     final tasks = xfiles.map((file) => uploadXFile(file, folder: folder));
     return await Future.wait(tasks);

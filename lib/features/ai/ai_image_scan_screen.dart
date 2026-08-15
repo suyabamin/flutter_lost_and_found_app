@@ -60,7 +60,10 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
               const Text(
                 'Upload a photo of your lost or found item. Gemini AI will scan features and compare with all database records.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -74,7 +77,12 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(18),
-                              child: Image.file(_selectedImage!, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+                              child: Image.file(
+                                _selectedImage!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
                             ),
                             if (_isScanning)
                               Container(
@@ -82,11 +90,16 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: const [
-                                    CircularProgressIndicator(color: Colors.white),
+                                    CircularProgressIndicator(
+                                      color: Colors.white,
+                                    ),
                                     SizedBox(height: 16),
                                     Text(
                                       'Analyzing features & OCR text...',
-                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -97,21 +110,33 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add_a_photo_outlined, size: 64, color: AppColors.primary.withOpacity(0.6)),
+                              Icon(
+                                Icons.add_a_photo_outlined,
+                                size: 64,
+                                color: AppColors.primary.withOpacity(0.6),
+                              ),
                               const SizedBox(height: 16),
-                              const Text('Select or Capture Image', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              const Text(
+                                'Select or Capture Image',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   ElevatedButton.icon(
-                                    onPressed: () => _pickImage(ImageSource.camera),
+                                    onPressed: () =>
+                                        _pickImage(ImageSource.camera),
                                     icon: const Icon(Icons.camera_alt),
                                     label: const Text('Camera'),
                                   ),
                                   const SizedBox(width: 12),
                                   OutlinedButton.icon(
-                                    onPressed: () => _pickImage(ImageSource.gallery),
+                                    onPressed: () =>
+                                        _pickImage(ImageSource.gallery),
                                     icon: const Icon(Icons.photo_library),
                                     label: const Text('Gallery'),
                                   ),

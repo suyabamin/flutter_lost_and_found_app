@@ -169,24 +169,24 @@ class LiveLocationNotifier extends StateNotifier<LiveLocationState> {
       distanceFilter: 5, // Update every 5 meters movement
     );
 
-    _positionSubscription = Geolocator.getPositionStream(
-      locationSettings: locationSettings,
-    ).listen((position) {
-      _cacheLocation(position.latitude, position.longitude);
-      state = state.copyWith(
-        latitude: position.latitude,
-        longitude: position.longitude,
-        accuracy: position.accuracy,
-        lastUpdated: DateTime.now(),
-        trackingStatus: LiveTrackingStatus.active,
-        isGpsEnabled: true,
-        hasPermission: true,
-      );
-    }, onError: (err) {
-      state = state.copyWith(
-        errorMessage: err.toString(),
-      );
-    });
+    _positionSubscription =
+        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+          (position) {
+            _cacheLocation(position.latitude, position.longitude);
+            state = state.copyWith(
+              latitude: position.latitude,
+              longitude: position.longitude,
+              accuracy: position.accuracy,
+              lastUpdated: DateTime.now(),
+              trackingStatus: LiveTrackingStatus.active,
+              isGpsEnabled: true,
+              hasPermission: true,
+            );
+          },
+          onError: (err) {
+            state = state.copyWith(errorMessage: err.toString());
+          },
+        );
   }
 
   void pauseLiveLocation() {
@@ -239,7 +239,9 @@ class RadiusSearchState {
       isEnabled: isEnabled ?? this.isEnabled,
       sortOption: sortOption ?? this.sortOption,
       filterType: filterType ?? this.filterType,
-      selectedPostId: clearSelectedPost ? null : (selectedPostId ?? this.selectedPostId),
+      selectedPostId: clearSelectedPost
+          ? null
+          : (selectedPostId ?? this.selectedPostId),
     );
   }
 }
@@ -273,13 +275,15 @@ class RadiusSearchNotifier extends StateNotifier<RadiusSearchState> {
 }
 
 // RIVERPOD PROVIDERS
-final liveLocationProvider = StateNotifierProvider<LiveLocationNotifier, LiveLocationState>((ref) {
-  return LiveLocationNotifier();
-});
+final liveLocationProvider =
+    StateNotifierProvider<LiveLocationNotifier, LiveLocationState>((ref) {
+      return LiveLocationNotifier();
+    });
 
-final radiusSearchProvider = StateNotifierProvider<RadiusSearchNotifier, RadiusSearchState>((ref) {
-  return RadiusSearchNotifier();
-});
+final radiusSearchProvider =
+    StateNotifierProvider<RadiusSearchNotifier, RadiusSearchState>((ref) {
+      return RadiusSearchNotifier();
+    });
 
 class PostWithDistance {
   final PostModel post;
@@ -301,7 +305,10 @@ final filteredRadiusPostsProvider = Provider<List<PostWithDistance>>((ref) {
 
   for (final post in posts) {
     // 0. Active Status Filter: Remove completed/found/archived items from map
-    if (post.status == 'completed' || post.status == 'resolved' || post.status == 'archived' || post.status == 'closed') {
+    if (post.status == 'completed' ||
+        post.status == 'resolved' ||
+        post.status == 'archived' ||
+        post.status == 'closed') {
       continue;
     }
 
@@ -338,11 +345,17 @@ final filteredRadiusPostsProvider = Provider<List<PostWithDistance>>((ref) {
   if (radiusState.sortOption == 'Nearest') {
     listWithDistance.sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
   } else if (radiusState.sortOption == 'Newest') {
-    listWithDistance.sort((a, b) => b.post.createdAt.compareTo(a.post.createdAt));
+    listWithDistance.sort(
+      (a, b) => b.post.createdAt.compareTo(a.post.createdAt),
+    );
   } else if (radiusState.sortOption == 'Reward') {
-    listWithDistance.sort((a, b) => b.post.rewardAmount.compareTo(a.post.rewardAmount));
+    listWithDistance.sort(
+      (a, b) => b.post.rewardAmount.compareTo(a.post.rewardAmount),
+    );
   } else if (radiusState.sortOption == 'AI Match') {
-    listWithDistance.sort((a, b) => b.post.similarityScore.compareTo(a.post.similarityScore));
+    listWithDistance.sort(
+      (a, b) => b.post.similarityScore.compareTo(a.post.similarityScore),
+    );
   }
 
   return listWithDistance;

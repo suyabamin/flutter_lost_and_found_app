@@ -1,4 +1,4 @@
-﻿rules_version = '2';
+rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
@@ -158,6 +158,20 @@ service cloud.firestore {
       allow write: if isSignedIn();
     }
 
+    // ── Campuses ──────────────────────────────────────────────────────────────
+    match /campuses/{campusId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.auth.uid == request.resource.data.creatorId;
+      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.creatorId;
+    }
+
+    // ── Campus Members ────────────────────────────────────────────────────────
+    match /campus_members/{memberId} {
+      allow read: if isSignedIn();
+      allow create, update: if isSignedIn() && request.auth.uid == request.resource.data.uid;
+      allow delete: if false;
+    }
+
     // ── Default deny ──────────────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
@@ -165,3 +179,4 @@ service cloud.firestore {
 
   }
 }
+

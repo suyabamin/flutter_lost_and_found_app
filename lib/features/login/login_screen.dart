@@ -21,6 +21,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePassword = true;
   bool _rememberMe = false;
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
   String? _errorMessage;
 
   @override
@@ -28,6 +29,36 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isGoogleLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final authService = ref.read(authServiceProvider);
+      final firestoreService = ref.read(firestoreServiceProvider);
+
+      final cred = await authService.signInWithGoogleAndSyncProfile(
+        firestoreService,
+      );
+      if (cred != null && mounted) {
+        context.go('/home');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _errorMessage = e
+              .toString()
+              .replaceAll(RegExp(r'\[.*?\]'), '')
+              .trim();
+        });
+      }
+    } finally {
+      if (mounted) setState(() => _isGoogleLoading = false);
+    }
   }
 
   Future<void> _handleLogin() async {
@@ -80,7 +111,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     color: AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.location_searching_rounded, size: 48, color: AppColors.primary),
+                  child: const Icon(
+                    Icons.location_searching_rounded,
+                    size: 48,
+                    color: AppColors.primary,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 Text(
@@ -94,7 +129,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 const SizedBox(height: 6),
                 const Text(
                   'Connecting lost belongings with their owners.',
-                  style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 28),
 
@@ -109,12 +147,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       children: [
                         const Text(
                           'Welcome Back',
-                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 4),
                         const Text(
                           'Please enter your details to sign in.',
-                          style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.onSurfaceVariant,
+                          ),
                         ),
                         const SizedBox(height: 20),
 
@@ -124,14 +168,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             decoration: BoxDecoration(
                               color: AppColors.error.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: AppColors.error.withOpacity(0.3)),
+                              border: Border.all(
+                                color: AppColors.error.withOpacity(0.3),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.error_outline, color: AppColors.error, size: 20),
+                                const Icon(
+                                  Icons.error_outline,
+                                  color: AppColors.error,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
-                                  child: Text(_errorMessage!, style: const TextStyle(color: AppColors.error, fontSize: 13)),
+                                  child: Text(
+                                    _errorMessage!,
+                                    style: const TextStyle(
+                                      color: AppColors.error,
+                                      fontSize: 13,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -146,7 +202,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           hintText: 'name@example.com',
                           prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
-                          validator: (val) => val == null || !val.contains('@') ? 'Enter a valid email' : null,
+                          validator: (val) => val == null || !val.contains('@')
+                              ? 'Enter a valid email'
+                              : null,
                         ),
                         const SizedBox(height: 16),
 
@@ -158,10 +216,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscurePassword,
                           suffixIcon: IconButton(
-                            icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
-                            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () => setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            ),
                           ),
-                          validator: (val) => val == null || val.length < 6 ? 'Password must be at least 6 chars' : null,
+                          validator: (val) => val == null || val.length < 6
+                              ? 'Password must be at least 6 chars'
+                              : null,
                         ),
                         const SizedBox(height: 12),
 
@@ -177,11 +243,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   child: Checkbox(
                                     value: _rememberMe,
                                     activeColor: AppColors.primary,
-                                    onChanged: (val) => setState(() => _rememberMe = val ?? false),
+                                    onChanged: (val) => setState(
+                                      () => _rememberMe = val ?? false,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text('Remember me', style: TextStyle(fontSize: 13)),
+                                const Text(
+                                  'Remember me',
+                                  style: TextStyle(fontSize: 13),
+                                ),
                               ],
                             ),
                             GestureDetector(
@@ -209,12 +280,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
                         Row(
                           children: const [
-                            Expanded(child: Divider(color: AppColors.outlineVariant)),
+                            Expanded(
+                              child: Divider(color: AppColors.outlineVariant),
+                            ),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12),
-                              child: Text('OR CONTINUE WITH', style: TextStyle(fontSize: 11, color: AppColors.outline)),
+                              child: Text(
+                                'OR CONTINUE WITH',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.outline,
+                                ),
+                              ),
                             ),
-                            Expanded(child: Divider(color: AppColors.outlineVariant)),
+                            Expanded(
+                              child: Divider(color: AppColors.outlineVariant),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -222,21 +303,46 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         OutlinedButton(
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 48),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            side: const BorderSide(color: AppColors.outlineVariant),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            side: const BorderSide(
+                              color: AppColors.outlineVariant,
+                            ),
                           ),
-                          onPressed: () async {
-                            final cred = await ref.read(authServiceProvider).signInWithGoogle();
-                            if (cred != null && context.mounted) context.go('/home');
-                          },
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.g_mobiledata_rounded, size: 28, color: Colors.blue),
-                              SizedBox(width: 8),
-                              Text('Google Sign-In', style: TextStyle(fontWeight: FontWeight.w600)),
-                            ],
-                          ),
+                          onPressed: _isGoogleLoading || _isLoading
+                              ? null
+                              : _handleGoogleSignIn,
+                          child: _isGoogleLoading
+                              ? const SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network(
+                                      'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
+                                      width: 22,
+                                      height: 22,
+                                      errorBuilder: (c, e, s) => const Icon(
+                                        Icons.g_mobiledata_rounded,
+                                        size: 28,
+                                        color: Colors.blue,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    const Text(
+                                      'Google Sign-In',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                         ),
                       ],
                     ),
@@ -247,12 +353,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("Don't have an account? ", style: TextStyle(fontSize: 14)),
+                    const Text(
+                      "Don't have an account? ",
+                      style: TextStyle(fontSize: 14),
+                    ),
                     GestureDetector(
                       onTap: () => context.push('/register'),
                       child: const Text(
                         'Register Now',
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primary),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primary,
+                        ),
                       ),
                     ),
                   ],

@@ -30,16 +30,33 @@ class FavoritesScreen extends ConsumerWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Image.network('https://picsum.photos/seed/fav$index/100/100', width: 70, height: 70, fit: BoxFit.cover),
+                  child: Image.network(
+                    'https://picsum.photos/seed/fav$index/100/100',
+                    width: 70,
+                    height: 70,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(index == 0 ? 'iPhone 14 Pro' : 'Black Wallet', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(
+                        index == 0 ? 'iPhone 14 Pro' : 'Black Wallet',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(index == 0 ? 'Banani, Dhaka' : 'Dhanmondi, Dhaka', style: const TextStyle(fontSize: 12, color: AppColors.outline)),
+                      Text(
+                        index == 0 ? 'Banani, Dhaka' : 'Dhanmondi, Dhaka',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.outline,
+                        ),
+                      ),
                     ],
                   ),
                 ),

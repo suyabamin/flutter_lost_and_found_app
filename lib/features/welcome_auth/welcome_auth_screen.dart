@@ -45,7 +45,10 @@ class WelcomeAuthScreen extends ConsumerWidget {
           SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -94,14 +97,41 @@ class WelcomeAuthScreen extends ConsumerWidget {
                           OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 52),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              side: const BorderSide(color: AppColors.outlineVariant),
-                              backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              side: const BorderSide(
+                                color: AppColors.outlineVariant,
+                              ),
+                              backgroundColor: isDark
+                                  ? AppColors.darkSurface
+                                  : Colors.white,
                             ),
                             onPressed: () async {
-                              final cred = await authService.signInWithGoogle();
-                              if (cred != null && context.mounted) {
-                                context.go('/home');
+                              try {
+                                final firestoreService = ref.read(
+                                  firestoreServiceProvider,
+                                );
+                                final cred = await authService
+                                    .signInWithGoogleAndSyncProfile(
+                                      firestoreService,
+                                    );
+                                if (cred != null && context.mounted) {
+                                  context.go('/home');
+                                }
+                              } catch (e) {
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        e
+                                            .toString()
+                                            .replaceAll(RegExp(r'\[.*?\]'), '')
+                                            .trim(),
+                                      ),
+                                    ),
+                                  );
+                                }
                               }
                             },
                             child: Row(
@@ -111,7 +141,8 @@ class WelcomeAuthScreen extends ConsumerWidget {
                                   'https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg',
                                   width: 22,
                                   height: 22,
-                                  errorBuilder: (c, e, s) => const Icon(Icons.g_mobiledata, size: 24),
+                                  errorBuilder: (c, e, s) =>
+                                      const Icon(Icons.g_mobiledata, size: 24),
                                 ),
                                 const SizedBox(width: 12),
                                 const Text(
@@ -131,15 +162,25 @@ class WelcomeAuthScreen extends ConsumerWidget {
                           OutlinedButton(
                             style: OutlinedButton.styleFrom(
                               minimumSize: const Size(double.infinity, 52),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              side: const BorderSide(color: AppColors.outlineVariant),
-                              backgroundColor: isDark ? AppColors.darkSurface : Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              side: const BorderSide(
+                                color: AppColors.outlineVariant,
+                              ),
+                              backgroundColor: isDark
+                                  ? AppColors.darkSurface
+                                  : Colors.white,
                             ),
                             onPressed: () => context.push('/otp-verify'),
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.phone, color: AppColors.primary, size: 22),
+                                Icon(
+                                  Icons.phone,
+                                  color: AppColors.primary,
+                                  size: 22,
+                                ),
                                 SizedBox(width: 12),
                                 Text(
                                   'Continue with Phone',
@@ -156,12 +197,22 @@ class WelcomeAuthScreen extends ConsumerWidget {
                           const SizedBox(height: 16),
                           Row(
                             children: const [
-                              Expanded(child: Divider(color: AppColors.outlineVariant)),
+                              Expanded(
+                                child: Divider(color: AppColors.outlineVariant),
+                              ),
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 12),
-                                child: Text('OR', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                                child: Text(
+                                  'OR',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.outline,
+                                  ),
+                                ),
                               ),
-                              Expanded(child: Divider(color: AppColors.outlineVariant)),
+                              Expanded(
+                                child: Divider(color: AppColors.outlineVariant),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 16),
@@ -178,7 +229,10 @@ class WelcomeAuthScreen extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text("Don't have an account? ", style: TextStyle(fontSize: 14)),
+                              const Text(
+                                "Don't have an account? ",
+                                style: TextStyle(fontSize: 14),
+                              ),
                               GestureDetector(
                                 onTap: () => context.push('/register'),
                                 child: const Text(

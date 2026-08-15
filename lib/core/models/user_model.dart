@@ -69,11 +69,15 @@ class UserModel {
       rewardPoints: map['rewardPoints'] ?? 0,
       location: map['location'] ?? 'Dhaka, Bangladesh',
       averageRating: (map['averageRating'] as num?)?.toDouble() ?? 5.0,
-      totalReviews: (map['totalReviews'] as num?)?.toInt() ?? (map['totalRatings'] as num?)?.toInt() ?? 0,
+      totalReviews:
+          (map['totalReviews'] as num?)?.toInt() ??
+          (map['totalRatings'] as num?)?.toInt() ??
+          0,
       completedRecoveries: (map['completedRecoveries'] as num?)?.toInt() ?? 0,
       completedReturns: (map['completedReturns'] as num?)?.toInt() ?? 0,
       trustScore: (map['trustScore'] as num?)?.toInt() ?? 100,
-      successfulRecoveryCount: (map['successfulRecoveryCount'] as num?)?.toInt() ?? 0,
+      successfulRecoveryCount:
+          (map['successfulRecoveryCount'] as num?)?.toInt() ?? 0,
       createdAt: _parseDateTime(map['createdAt']),
     );
   }

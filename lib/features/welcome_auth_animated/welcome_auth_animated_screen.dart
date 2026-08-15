@@ -9,10 +9,13 @@ class WelcomeAuthAnimatedScreen extends ConsumerStatefulWidget {
   const WelcomeAuthAnimatedScreen({super.key});
 
   @override
-  ConsumerState<WelcomeAuthAnimatedScreen> createState() => _WelcomeAuthAnimatedScreenState();
+  ConsumerState<WelcomeAuthAnimatedScreen> createState() =>
+      _WelcomeAuthAnimatedScreenState();
 }
 
-class _WelcomeAuthAnimatedScreenState extends ConsumerState<WelcomeAuthAnimatedScreen> with SingleTickerProviderStateMixin {
+class _WelcomeAuthAnimatedScreenState
+    extends ConsumerState<WelcomeAuthAnimatedScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -68,7 +71,10 @@ class _WelcomeAuthAnimatedScreenState extends ConsumerState<WelcomeAuthAnimatedS
               SafeArea(
                 child: Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 16,
+                    ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -96,7 +102,10 @@ class _WelcomeAuthAnimatedScreenState extends ConsumerState<WelcomeAuthAnimatedS
                         const Text(
                           'AI-powered smart recovery network for all of Bangladesh.',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.onSurfaceVariant,
+                          ),
                         ),
                         const SizedBox(height: 36),
                         GlassContainer(
@@ -113,8 +122,12 @@ class _WelcomeAuthAnimatedScreenState extends ConsumerState<WelcomeAuthAnimatedS
                               OutlinedButton(
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 52),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                  side: const BorderSide(color: AppColors.outlineVariant),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  side: const BorderSide(
+                                    color: AppColors.outlineVariant,
+                                  ),
                                 ),
                                 onPressed: () => context.push('/otp-verify'),
                                 child: const Text('Phone Number Verification'),
@@ -123,16 +136,22 @@ class _WelcomeAuthAnimatedScreenState extends ConsumerState<WelcomeAuthAnimatedS
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text("New here? ", style: TextStyle(fontSize: 14)),
+                                  const Text(
+                                    "New here? ",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
                                   GestureDetector(
                                     onTap: () => context.push('/register'),
                                     child: const Text(
                                       'Create Account',
-                                      style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primary,
+                                      ),
                                     ),
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),

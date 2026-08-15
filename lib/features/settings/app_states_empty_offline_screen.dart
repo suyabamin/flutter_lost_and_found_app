@@ -26,14 +26,24 @@ class AppStatesEmptyOfflineScreen extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.wifi_off_rounded, size: 72, color: AppColors.primary.withOpacity(0.6)),
+                Icon(
+                  Icons.wifi_off_rounded,
+                  size: 72,
+                  color: AppColors.primary.withOpacity(0.6),
+                ),
                 const SizedBox(height: 16),
-                const Text('You are currently offline', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                const Text(
+                  'You are currently offline',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
                 const SizedBox(height: 8),
                 const Text(
                   'Check your mobile network or Wi-Fi connection. Offline cached data is currently being displayed.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(

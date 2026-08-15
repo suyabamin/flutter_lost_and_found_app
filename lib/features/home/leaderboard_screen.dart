@@ -8,11 +8,36 @@ class LeaderboardScreen extends ConsumerWidget {
   const LeaderboardScreen({super.key});
 
   final List<Map<String, dynamic>> _rankings = const [
-    {'name': 'Tanvir Ahmed', 'points': 2450, 'rank': 1, 'avatar': 'https://i.pravatar.cc/100?img=11'},
-    {'name': 'Naimur Rahman', 'points': 2100, 'rank': 2, 'avatar': 'https://i.pravatar.cc/100?img=12'},
-    {'name': 'Sadia Islam', 'points': 1890, 'rank': 3, 'avatar': 'https://i.pravatar.cc/100?img=16'},
-    {'name': 'Arif Hasan', 'points': 1420, 'rank': 4, 'avatar': 'https://i.pravatar.cc/100?img=33'},
-    {'name': 'Mehedi Hasan', 'points': 1180, 'rank': 5, 'avatar': 'https://i.pravatar.cc/100?img=53'},
+    {
+      'name': 'Tanvir Ahmed',
+      'points': 2450,
+      'rank': 1,
+      'avatar': 'https://i.pravatar.cc/100?img=11',
+    },
+    {
+      'name': 'Naimur Rahman',
+      'points': 2100,
+      'rank': 2,
+      'avatar': 'https://i.pravatar.cc/100?img=12',
+    },
+    {
+      'name': 'Sadia Islam',
+      'points': 1890,
+      'rank': 3,
+      'avatar': 'https://i.pravatar.cc/100?img=16',
+    },
+    {
+      'name': 'Arif Hasan',
+      'points': 1420,
+      'rank': 4,
+      'avatar': 'https://i.pravatar.cc/100?img=33',
+    },
+    {
+      'name': 'Mehedi Hasan',
+      'points': 1180,
+      'rank': 5,
+      'avatar': 'https://i.pravatar.cc/100?img=53',
+    },
   ];
 
   @override
@@ -42,11 +67,17 @@ class LeaderboardScreen extends ConsumerWidget {
                   backgroundColor: rank == 1
                       ? Colors.amber
                       : rank == 2
-                          ? Colors.grey.shade400
-                          : rank == 3
-                              ? Colors.brown.shade300
-                              : AppColors.outlineVariant,
-                  child: Text('$rank', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ? Colors.grey.shade400
+                      : rank == 3
+                      ? Colors.brown.shade300
+                      : AppColors.outlineVariant,
+                  child: Text(
+                    '$rank',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(width: 14),
                 CircleAvatar(
@@ -58,14 +89,30 @@ class LeaderboardScreen extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      const Text('Verified Hero', style: TextStyle(fontSize: 11, color: AppColors.outline)),
+                      Text(
+                        item['name'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const Text(
+                        'Verified Hero',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: AppColors.outline,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Text(
                   '${item['points']} PTS',
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),

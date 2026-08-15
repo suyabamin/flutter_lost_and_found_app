@@ -17,7 +17,8 @@ class RewardPaymentScreen extends ConsumerStatefulWidget {
   const RewardPaymentScreen({super.key, required this.claimId});
 
   @override
-  ConsumerState<RewardPaymentScreen> createState() => _RewardPaymentScreenState();
+  ConsumerState<RewardPaymentScreen> createState() =>
+      _RewardPaymentScreenState();
 }
 
 class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
@@ -75,9 +76,9 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Payment processing error: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Payment processing error: $e')));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -113,7 +114,8 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
               if (_receiverNameController.text.isEmpty) {
                 _receiverNameController.text = claim.claimerName;
               }
-              if (_receiverNumberController.text.isEmpty && claim.claimerPhone.isNotEmpty) {
+              if (_receiverNumberController.text.isEmpty &&
+                  claim.claimerPhone.isNotEmpty) {
                 _receiverNumberController.text = claim.claimerPhone;
               }
 
@@ -130,16 +132,29 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                         padding: const EdgeInsets.all(18),
                         child: Column(
                           children: [
-                            const Text('Total Reward Amount', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                            const Text(
+                              'Total Reward Amount',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.outline,
+                              ),
+                            ),
                             const SizedBox(height: 4),
                             Text(
                               '৳ ${amount.round()}',
-                              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: AppColors.primary),
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               'Reward for item: "${post?.title ?? "Recovered Item"}"',
-                              style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.onSurfaceVariant,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -147,7 +162,13 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      const Text('Select Payment Method', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Select Payment Method',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 12),
 
                       // Method Selector Chips (bKash, Rocket, Nagad)
@@ -162,16 +183,23 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: InkWell(
-                                onTap: () => setState(() => _selectedMethod = m),
+                                onTap: () =>
+                                    setState(() => _selectedMethod = m),
                                 borderRadius: BorderRadius.circular(16),
                                 child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 200),
-                                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? badgeColor.withOpacity(0.15) : Colors.transparent,
+                                    color: isSelected
+                                        ? badgeColor.withOpacity(0.15)
+                                        : Colors.transparent,
                                     borderRadius: BorderRadius.circular(16),
                                     border: Border.all(
-                                      color: isSelected ? badgeColor : AppColors.outlineVariant,
+                                      color: isSelected
+                                          ? badgeColor
+                                          : AppColors.outlineVariant,
                                       width: isSelected ? 2 : 1,
                                     ),
                                   ),
@@ -179,8 +207,11 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                                     children: [
                                       Icon(
                                         m == 'bKash'
-                                            ? Icons.account_balance_wallet_rounded
-                                            : (m == 'Rocket' ? Icons.rocket_launch_rounded : Icons.flash_on_rounded),
+                                            ? Icons
+                                                  .account_balance_wallet_rounded
+                                            : (m == 'Rocket'
+                                                  ? Icons.rocket_launch_rounded
+                                                  : Icons.flash_on_rounded),
                                         color: badgeColor,
                                         size: 24,
                                       ),
@@ -213,7 +244,9 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                               controller: _receiverNameController,
                               labelText: 'Receiver Name (Finder)',
                               prefixIcon: Icons.person_outline_rounded,
-                              validator: (v) => v == null || v.trim().isEmpty ? 'Enter receiver name' : null,
+                              validator: (v) => v == null || v.trim().isEmpty
+                                  ? 'Enter receiver name'
+                                  : null,
                             ),
                             const SizedBox(height: 14),
                             CustomTextField(
@@ -221,7 +254,9 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                               labelText: 'Receiver Phone Number',
                               prefixIcon: Icons.phone_android_rounded,
                               keyboardType: TextInputType.phone,
-                              validator: (v) => v == null || v.trim().isEmpty ? 'Enter receiver number' : null,
+                              validator: (v) => v == null || v.trim().isEmpty
+                                  ? 'Enter receiver number'
+                                  : null,
                             ),
                             const SizedBox(height: 14),
                             CustomTextField(
@@ -255,7 +290,10 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                       Center(
                         child: TextButton(
                           onPressed: () => context.pop(),
-                          child: const Text('Cancel Payment', style: TextStyle(color: AppColors.outline)),
+                          child: const Text(
+                            'Cancel Payment',
+                            style: TextStyle(color: AppColors.outline),
+                          ),
                         ),
                       ),
                     ],

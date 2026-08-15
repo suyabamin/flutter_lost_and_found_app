@@ -10,7 +10,8 @@ class ShaderScreen extends ConsumerStatefulWidget {
   ConsumerState<ShaderScreen> createState() => _ShaderScreenState();
 }
 
-class _ShaderScreenState extends ConsumerState<ShaderScreen> with SingleTickerProviderStateMixin {
+class _ShaderScreenState extends ConsumerState<ShaderScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -45,8 +46,16 @@ class _ShaderScreenState extends ConsumerState<ShaderScreen> with SingleTickerPr
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.lerp(AppColors.primary, AppColors.secondary, _controller.value)!,
-                  Color.lerp(AppColors.tertiary, AppColors.primaryContainer, _controller.value)!,
+                  Color.lerp(
+                    AppColors.primary,
+                    AppColors.secondary,
+                    _controller.value,
+                  )!,
+                  Color.lerp(
+                    AppColors.tertiary,
+                    AppColors.primaryContainer,
+                    _controller.value,
+                  )!,
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -58,7 +67,11 @@ class _ShaderScreenState extends ConsumerState<ShaderScreen> with SingleTickerPr
                 child: Text(
                   'Interactive Custom Shader / Dynamic Waves Demo',
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),

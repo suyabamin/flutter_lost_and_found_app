@@ -11,7 +11,8 @@ class SplashScreen extends ConsumerStatefulWidget {
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _pulseAnimation;
   late Animation<double> _progressAnimation;
@@ -24,13 +25,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
       duration: const Duration(seconds: 3),
     );
 
-    _pulseAnimation = Tween<double>(begin: 0.95, end: 1.05).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _pulseAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.05,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    _progressAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
-    );
+    _progressAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic));
 
     _controller.repeat(reverse: true);
 
@@ -130,7 +133,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 2.0,
-                      color: isDark ? Colors.white70 : AppColors.onSurfaceVariant.withOpacity(0.8),
+                      color: isDark
+                          ? Colors.white70
+                          : AppColors.onSurfaceVariant.withOpacity(0.8),
                     ),
                   ),
                   const Spacer(),
@@ -144,7 +149,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                             width: 140,
                             height: 4,
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.white12 : AppColors.surfaceVariant,
+                              color: isDark
+                                  ? Colors.white12
+                                  : AppColors.surfaceVariant,
                               borderRadius: BorderRadius.circular(2),
                             ),
                             child: Align(

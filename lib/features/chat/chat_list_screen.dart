@@ -53,11 +53,24 @@ class ChatListScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.chat_bubble_outline_rounded, size: 64, color: AppColors.outline),
+                  Icon(
+                    Icons.chat_bubble_outline_rounded,
+                    size: 64,
+                    color: AppColors.outline,
+                  ),
                   SizedBox(height: 12),
-                  Text('No active conversations yet.', style: TextStyle(fontSize: 16, color: AppColors.outline)),
+                  Text(
+                    'No active conversations yet.',
+                    style: TextStyle(fontSize: 16, color: AppColors.outline),
+                  ),
                   SizedBox(height: 4),
-                  Text('Approved claims will open private 1-to-1 chat rooms here.', style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
+                  Text(
+                    'Approved claims will open private 1-to-1 chat rooms here.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -69,7 +82,8 @@ class ChatListScreen extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final chat = allChats[index];
-              final String timeStr = '${chat.lastMessageTime.hour}:${chat.lastMessageTime.minute.toString().padLeft(2, '0')}';
+              final String timeStr =
+                  '${chat.lastMessageTime.hour}:${chat.lastMessageTime.minute.toString().padLeft(2, '0')}';
 
               return GlassContainer(
                 onTap: () => context.push('/chat/${chat.id}'),
@@ -80,7 +94,9 @@ class ChatListScreen extends ConsumerWidget {
                     CircleAvatar(
                       radius: 26,
                       backgroundImage: NetworkImage(
-                        chat.postImage.isNotEmpty ? chat.postImage : 'https://picsum.photos/seed/${chat.id}/100/100',
+                        chat.postImage.isNotEmpty
+                            ? chat.postImage
+                            : 'https://picsum.photos/seed/${chat.id}/100/100',
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -88,7 +104,13 @@ class ChatListScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(chat.postTitle, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                          Text(
+                            chat.postTitle,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             chat.lastMessage,
@@ -96,8 +118,12 @@ class ChatListScreen extends ConsumerWidget {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 13,
-                              color: chat.unreadCount > 0 ? AppColors.primary : AppColors.onSurfaceVariant,
-                              fontWeight: chat.unreadCount > 0 ? FontWeight.bold : FontWeight.normal,
+                              color: chat.unreadCount > 0
+                                  ? AppColors.primary
+                                  : AppColors.onSurfaceVariant,
+                              fontWeight: chat.unreadCount > 0
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
                         ],
@@ -106,18 +132,31 @@ class ChatListScreen extends ConsumerWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(timeStr, style: const TextStyle(fontSize: 11, color: AppColors.outline)),
+                        Text(
+                          timeStr,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: AppColors.outline,
+                          ),
+                        ),
                         const SizedBox(height: 6),
                         if (chat.unreadCount > 0)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.secondary,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
                               '${chat.unreadCount}',
-                              style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                       ],

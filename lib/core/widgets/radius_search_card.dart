@@ -8,7 +8,15 @@ import '../utils/location_utils.dart';
 class RadiusSearchCard extends ConsumerWidget {
   const RadiusSearchCard({super.key});
 
-  static const List<double> _quickChipsKm = [1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0];
+  static const List<double> _quickChipsKm = [
+    1.0,
+    2.0,
+    5.0,
+    10.0,
+    20.0,
+    50.0,
+    100.0,
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +42,11 @@ class RadiusSearchCard extends ConsumerWidget {
                       color: AppColors.primary.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.radar_rounded, color: AppColors.primary, size: 22),
+                    child: const Icon(
+                      Icons.radar_rounded,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   Column(
@@ -42,13 +54,19 @@ class RadiusSearchCard extends ConsumerWidget {
                     children: [
                       const Text(
                         'Radius Search Filter',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                       Text(
                         radiusState.isEnabled
                             ? 'Showing items within ${LocationUtils.formatDistance(radiusState.radiusKm)}'
                             : 'Radius filter disabled (All distances)',
-                        style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.onSurfaceVariant,
+                        ),
                       ),
                     ],
                   ),
@@ -68,29 +86,42 @@ class RadiusSearchCard extends ConsumerWidget {
             // Quick Selection Chips
             const Text(
               'Quick Distance Preset',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.outline),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.outline,
+              ),
             ),
             const SizedBox(height: 8),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: _quickChipsKm.map((km) {
-                  final bool isSelected = (radiusState.radiusKm - km).abs() < 0.1;
+                  final bool isSelected =
+                      (radiusState.radiusKm - km).abs() < 0.1;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: ChoiceChip(
                       label: Text(
-                        km < 1.0 ? '${(km * 1000).toInt()} m' : '${km.toInt()} KM',
+                        km < 1.0
+                            ? '${(km * 1000).toInt()} m'
+                            : '${km.toInt()} KM',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.onSurface),
+                          color: isSelected
+                              ? Colors.white
+                              : (isDark ? Colors.white70 : AppColors.onSurface),
                         ),
                       ),
                       selected: isSelected,
                       selectedColor: AppColors.primary,
-                      backgroundColor: isDark ? AppColors.darkSurface : Colors.grey.shade100,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                      backgroundColor: isDark
+                          ? AppColors.darkSurface
+                          : Colors.grey.shade100,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                       onSelected: (selected) {
                         if (selected) {
                           radiusNotifier.setRadius(km);
@@ -108,16 +139,26 @@ class RadiusSearchCard extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Custom Radius:', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                const Text(
+                  'Custom Radius:',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.primaryContainer.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     LocationUtils.formatDistance(radiusState.radiusKm),
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary, fontSize: 13),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primary,
+                      fontSize: 13,
+                    ),
                   ),
                 ),
               ],
@@ -146,9 +187,18 @@ class RadiusSearchCard extends ConsumerWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('500 m', style: TextStyle(fontSize: 10, color: AppColors.outline)),
-                  Text('50 KM', style: TextStyle(fontSize: 10, color: AppColors.outline)),
-                  Text('100 KM', style: TextStyle(fontSize: 10, color: AppColors.outline)),
+                  Text(
+                    '500 m',
+                    style: TextStyle(fontSize: 10, color: AppColors.outline),
+                  ),
+                  Text(
+                    '50 KM',
+                    style: TextStyle(fontSize: 10, color: AppColors.outline),
+                  ),
+                  Text(
+                    '100 KM',
+                    style: TextStyle(fontSize: 10, color: AppColors.outline),
+                  ),
                 ],
               ),
             ),
@@ -158,7 +208,11 @@ class RadiusSearchCard extends ConsumerWidget {
             // Secondary Filters (Type & Sorting)
             const Text(
               'Filter & Sort Options',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.outline),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppColors.outline,
+              ),
             ),
             const SizedBox(height: 10),
             Wrap(
@@ -234,7 +288,9 @@ class RadiusSearchCard extends ConsumerWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.secondary : (isDark ? AppColors.darkSurface : Colors.grey.shade100),
+          color: isSelected
+              ? AppColors.secondary
+              : (isDark ? AppColors.darkSurface : Colors.grey.shade100),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.secondary : Colors.transparent,
@@ -245,7 +301,9 @@ class RadiusSearchCard extends ConsumerWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.onSurface),
+            color: isSelected
+                ? Colors.white
+                : (isDark ? Colors.white70 : AppColors.onSurface),
           ),
         ),
       ),
@@ -267,7 +325,9 @@ class RadiusSearchCard extends ConsumerWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : (isDark ? AppColors.darkSurface : Colors.grey.shade100),
+          color: isSelected
+              ? AppColors.primary
+              : (isDark ? AppColors.darkSurface : Colors.grey.shade100),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? AppColors.primary : Colors.transparent,
@@ -278,7 +338,9 @@ class RadiusSearchCard extends ConsumerWidget {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
-            color: isSelected ? Colors.white : (isDark ? Colors.white70 : AppColors.onSurface),
+            color: isSelected
+                ? Colors.white
+                : (isDark ? Colors.white70 : AppColors.onSurface),
           ),
         ),
       ),

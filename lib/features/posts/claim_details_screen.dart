@@ -41,7 +41,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
       _positionSubscription = null;
       setState(() => _isSharingLiveLocation = false);
 
-      await ref.read(firestoreServiceProvider).updateLiveLocation(
+      await ref
+          .read(firestoreServiceProvider)
+          .updateLiveLocation(
             claimId: claim.claimId,
             isOwner: isOwner,
             isSharing: false,
@@ -58,37 +60,44 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
 
       setState(() => _isSharingLiveLocation = true);
 
-      _positionSubscription = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 5,
-        ),
-      ).listen((position) async {
-        await ref.read(firestoreServiceProvider).updateLiveLocation(
-              claimId: claim.claimId,
-              isOwner: isOwner,
-              isSharing: true,
-              lat: position.latitude,
-              lng: position.longitude,
-            );
-      });
+      _positionSubscription =
+          Geolocator.getPositionStream(
+            locationSettings: const LocationSettings(
+              accuracy: LocationAccuracy.high,
+              distanceFilter: 5,
+            ),
+          ).listen((position) async {
+            await ref
+                .read(firestoreServiceProvider)
+                .updateLiveLocation(
+                  claimId: claim.claimId,
+                  isOwner: isOwner,
+                  isSharing: true,
+                  lat: position.latitude,
+                  lng: position.longitude,
+                );
+          });
     }
   }
 
   Future<void> _handleApprove(ClaimModel claim) async {
     setState(() => _isUpdating = true);
     try {
-      await ref.read(firestoreServiceProvider).updateClaimStatus(claim.claimId, 'approved');
+      await ref
+          .read(firestoreServiceProvider)
+          .updateClaimStatus(claim.claimId, 'approved');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('🎉 Claim Approved! Private 1-to-1 Chat created.')),
+          const SnackBar(
+            content: Text('🎉 Claim Approved! Private 1-to-1 Chat created.'),
+          ),
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error approving claim: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error approving claim: $e')));
       }
     } finally {
       if (mounted) setState(() => _isUpdating = false);
@@ -98,17 +107,19 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
   Future<void> _handleReject(ClaimModel claim) async {
     setState(() => _isUpdating = true);
     try {
-      await ref.read(firestoreServiceProvider).updateClaimStatus(claim.claimId, 'rejected');
+      await ref
+          .read(firestoreServiceProvider)
+          .updateClaimStatus(claim.claimId, 'rejected');
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Claim rejected.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Claim rejected.')));
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error rejecting claim: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error rejecting claim: $e')));
       }
     } finally {
       if (mounted) setState(() => _isUpdating = false);
@@ -148,7 +159,8 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
           // ── Auto-navigate to Recovery Completed screen when both confirmed ──
           final hasOwnerConfirmed = claim.ownerConfirmedAt != null;
           final hasFinderConfirmed = claim.finderConfirmedAt != null;
-          final isBothConfirmed = claim.status == 'completed' ||
+          final isBothConfirmed =
+              claim.status == 'completed' ||
               claim.recoveryStatus == 'both_confirmed' ||
               (hasOwnerConfirmed && hasFinderConfirmed);
 
@@ -166,28 +178,44 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
               point: ll.LatLng(claim.latitude, claim.longitude),
               width: 40,
               height: 40,
-              child: const Icon(Icons.location_pin, color: Colors.red, size: 36),
+              child: const Icon(
+                Icons.location_pin,
+                color: Colors.red,
+                size: 36,
+              ),
             ),
           ];
 
-          if (claim.isClaimerSharingLocation && claim.claimerLat != null && claim.claimerLng != null) {
+          if (claim.isClaimerSharingLocation &&
+              claim.claimerLat != null &&
+              claim.claimerLng != null) {
             mapMarkers.add(
               Marker(
                 point: ll.LatLng(claim.claimerLat!, claim.claimerLng!),
                 width: 40,
                 height: 40,
-                child: const Icon(Icons.person_pin_circle_rounded, color: Colors.blue, size: 36),
+                child: const Icon(
+                  Icons.person_pin_circle_rounded,
+                  color: Colors.blue,
+                  size: 36,
+                ),
               ),
             );
           }
 
-          if (claim.isOwnerSharingLocation && claim.ownerLat != null && claim.ownerLng != null) {
+          if (claim.isOwnerSharingLocation &&
+              claim.ownerLat != null &&
+              claim.ownerLng != null) {
             mapMarkers.add(
               Marker(
                 point: ll.LatLng(claim.ownerLat!, claim.ownerLng!),
                 width: 40,
                 height: 40,
-                child: const Icon(Icons.person_pin_circle_rounded, color: Colors.orange, size: 36),
+                child: const Icon(
+                  Icons.person_pin_circle_rounded,
+                  color: Colors.orange,
+                  size: 36,
+                ),
               ),
             );
           }
@@ -207,7 +235,13 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Claim Status', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                          const Text(
+                            'Claim Status',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.outline,
+                            ),
+                          ),
                           const SizedBox(height: 4),
                           Text(
                             claim.status.toUpperCase(),
@@ -217,8 +251,8 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                               color: claim.status == 'approved'
                                   ? Colors.green
                                   : claim.status == 'rejected'
-                                      ? AppColors.error
-                                      : AppColors.primary,
+                                  ? AppColors.error
+                                  : AppColors.primary,
                             ),
                           ),
                         ],
@@ -226,13 +260,16 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       if (isApproved)
                         ElevatedButton.icon(
                           onPressed: () async {
-                            final roomId = await firestoreService.createOrGetChatRoom(
-                              posterId: claim.postOwnerId,
-                              claimerId: claim.claimerId,
-                              postId: claim.postId,
-                              postTitle: 'Approved Claim Chat',
-                              postImage: claim.claimImages.isNotEmpty ? claim.claimImages.first : '',
-                            );
+                            final roomId = await firestoreService
+                                .createOrGetChatRoom(
+                                  posterId: claim.postOwnerId,
+                                  claimerId: claim.claimerId,
+                                  postId: claim.postId,
+                                  postTitle: 'Approved Claim Chat',
+                                  postImage: claim.claimImages.isNotEmpty
+                                      ? claim.claimImages.first
+                                      : '',
+                                );
                             if (context.mounted) {
                               context.push('/chat/$roomId');
                             }
@@ -263,20 +300,50 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(claim.claimerName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                Text(
+                                  claim.claimerName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
-                                Text(claim.claimerPhone, style: const TextStyle(fontSize: 13, color: AppColors.primary, fontWeight: FontWeight.w600)),
+                                Text(
+                                  claim.claimerPhone,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
                                 if (claim.claimerEmail.isNotEmpty)
-                                  Text(claim.claimerEmail, style: const TextStyle(fontSize: 12, color: AppColors.outline)),
+                                  Text(
+                                    claim.claimerEmail,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.outline,
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
-                          const Icon(Icons.verified_user_rounded, color: AppColors.primary),
+                          const Icon(
+                            Icons.verified_user_rounded,
+                            color: AppColors.primary,
+                          ),
                         ],
                       ),
                       const SizedBox(height: 14),
-                      const Text('Address:', style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text(claim.address, style: const TextStyle(color: AppColors.onSurfaceVariant)),
+                      const Text(
+                        'Address:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        claim.address,
+                        style: const TextStyle(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -289,18 +356,46 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Claim Description:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                      const Text(
+                        'Claim Description:',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text(claim.description, style: const TextStyle(color: AppColors.onSurfaceVariant)),
+                      Text(
+                        claim.description,
+                        style: const TextStyle(
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
                       if (claim.proofDescription.isNotEmpty) ...[
                         const SizedBox(height: 12),
-                        const Text('Proof Identifiers:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                        const Text(
+                          'Proof Identifiers:',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text(claim.proofDescription, style: const TextStyle(color: AppColors.onSurfaceVariant)),
+                        Text(
+                          claim.proofDescription,
+                          style: const TextStyle(
+                            color: AppColors.onSurfaceVariant,
+                          ),
+                        ),
                       ],
                       if (claim.rewardRequested > 0) ...[
                         const SizedBox(height: 12),
-                        Text('Reward Expectation: ৳ ${claim.rewardRequested.round()}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                        Text(
+                          'Reward Expectation: ৳ ${claim.rewardRequested.round()}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
                       ],
                     ],
                   ),
@@ -309,7 +404,10 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
 
                 // Proof Images
                 if (claim.claimImages.isNotEmpty) ...[
-                  const Text('Proof Images', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const Text(
+                    'Proof Images',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                   const SizedBox(height: 10),
                   SizedBox(
                     height: 120,
@@ -318,12 +416,17 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       itemCount: claim.claimImages.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 10),
                       itemBuilder: (context, index) {
-                        final localBytes = FirestoreService.getLocalClaimImageBytes(claim.claimId);
+                        final localBytes =
+                            FirestoreService.getLocalClaimImageBytes(
+                              claim.claimId,
+                            );
                         return ClipRRect(
                           borderRadius: BorderRadius.circular(16),
                           child: AppImage(
                             url: claim.claimImages[index],
-                            bytes: (localBytes != null && index < localBytes.length)
+                            bytes:
+                                (localBytes != null &&
+                                    index < localBytes.length)
                                 ? localBytes[index]
                                 : null,
                             width: 160,
@@ -351,22 +454,35 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                           children: [
                             const Row(
                               children: [
-                                Icon(Icons.location_searching_rounded, color: AppColors.primary),
+                                Icon(
+                                  Icons.location_searching_rounded,
+                                  color: AppColors.primary,
+                                ),
                                 SizedBox(width: 8),
-                                Text('Live Location Sharing (Free Map)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                Text(
+                                  'Live Location Sharing (Free Map)',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
                               ],
                             ),
                             Switch(
                               value: _isSharingLiveLocation,
                               activeColor: AppColors.primary,
-                              onChanged: (val) => _toggleLiveLocationSharing(claim, isOwner),
+                              onChanged: (val) =>
+                                  _toggleLiveLocationSharing(claim, isOwner),
                             ),
                           ],
                         ),
                         const SizedBox(height: 6),
                         const Text(
                           'Share real-time GPS location securely to coordinate handoff.',
-                          style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.onSurfaceVariant,
+                          ),
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
@@ -375,13 +491,18 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             borderRadius: BorderRadius.circular(16),
                             child: FlutterMap(
                               options: MapOptions(
-                                initialCenter: ll.LatLng(claim.latitude, claim.longitude),
+                                initialCenter: ll.LatLng(
+                                  claim.latitude,
+                                  claim.longitude,
+                                ),
                                 initialZoom: 14,
                               ),
                               children: [
                                 TileLayer(
-                                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                  userAgentPackageName: 'com.example.flutter_lost_and_found',
+                                  urlTemplate:
+                                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                  userAgentPackageName:
+                                      'com.example.flutter_lost_and_found',
                                 ),
                                 MarkerLayer(markers: mapMarkers),
                               ],
@@ -405,7 +526,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                         claimerId: claim.claimerId,
                         postId: claim.postId,
                         postTitle: 'Approved Claim Chat',
-                        postImage: claim.claimImages.isNotEmpty ? claim.claimImages.first : '',
+                        postImage: claim.claimImages.isNotEmpty
+                            ? claim.claimImages.first
+                            : '',
                       );
                       if (context.mounted) {
                         context.push('/chat/$roomId');
@@ -418,7 +541,8 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                   (() {
                     final hasOwnerConfirmed = claim.ownerConfirmedAt != null;
                     final hasFinderConfirmed = claim.finderConfirmedAt != null;
-                    final isBothConfirmed = (hasOwnerConfirmed && hasFinderConfirmed) ||
+                    final isBothConfirmed =
+                        (hasOwnerConfirmed && hasFinderConfirmed) ||
                         claim.status == 'completed' ||
                         claim.recoveryStatus == 'both_confirmed';
 
@@ -431,11 +555,19 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.verified_rounded, color: Colors.green, size: 24),
+                                Icon(
+                                  Icons.verified_rounded,
+                                  color: Colors.green,
+                                  size: 24,
+                                ),
                                 SizedBox(width: 8),
                                 Text(
                                   'Recovery Confirmed by Both Parties!',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.green),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: Colors.green,
+                                  ),
                                 ),
                               ],
                             ),
@@ -443,7 +575,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             PrimaryButton(
                               text: 'View Recovery Completed & Rewards',
                               icon: Icons.emoji_events_rounded,
-                              onPressed: () => context.push('/recovery-completed/${claim.claimId}'),
+                              onPressed: () => context.push(
+                                '/recovery-completed/${claim.claimId}',
+                              ),
                             ),
                           ],
                         ),
@@ -458,12 +592,18 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                         children: [
                           const Text(
                             'Item Return & Recovery Confirmation',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           const Text(
                             'Both owner and finder must confirm after meeting in person.',
-                            style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.onSurfaceVariant,
+                            ),
                           ),
                           const SizedBox(height: 14),
 
@@ -471,26 +611,45 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                           if (isOwner || currentUid.startsWith('guest')) ...[
                             ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: hasOwnerConfirmed ? Colors.green : AppColors.primary,
+                                backgroundColor: hasOwnerConfirmed
+                                    ? Colors.green
+                                    : AppColors.primary,
                                 foregroundColor: Colors.white,
                                 minimumSize: const Size(double.infinity, 48),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
                               onPressed: () async {
                                 if (!hasOwnerConfirmed) {
-                                  await firestoreService.confirmRecovery(claimId: claim.claimId, isOwner: true);
+                                  await firestoreService.confirmRecovery(
+                                    claimId: claim.claimId,
+                                    isOwner: true,
+                                  );
                                 }
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('✅ Item receipt confirmed! Please rate the Finder.')),
+                                    const SnackBar(
+                                      content: Text(
+                                        '✅ Item receipt confirmed! Please rate the Finder.',
+                                      ),
+                                    ),
                                   );
                                   context.push('/rating/${claim.claimId}');
                                 }
                               },
-                              icon: Icon(hasOwnerConfirmed ? Icons.check_circle_rounded : Icons.move_to_inbox_rounded),
+                              icon: Icon(
+                                hasOwnerConfirmed
+                                    ? Icons.check_circle_rounded
+                                    : Icons.move_to_inbox_rounded,
+                              ),
                               label: Text(
-                                hasOwnerConfirmed ? 'Owner Confirmed Item Received ✓' : 'I Received My Item',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                hasOwnerConfirmed
+                                    ? 'Owner Confirmed Item Received ✓'
+                                    : 'I Received My Item',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 10),
@@ -500,26 +659,45 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                           if (!isOwner || currentUid.startsWith('guest')) ...[
                             ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: hasFinderConfirmed ? Colors.green : AppColors.secondary,
+                                backgroundColor: hasFinderConfirmed
+                                    ? Colors.green
+                                    : AppColors.secondary,
                                 foregroundColor: Colors.white,
                                 minimumSize: const Size(double.infinity, 48),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
                               ),
                               onPressed: () async {
                                 if (!hasFinderConfirmed) {
-                                  await firestoreService.confirmRecovery(claimId: claim.claimId, isOwner: false);
+                                  await firestoreService.confirmRecovery(
+                                    claimId: claim.claimId,
+                                    isOwner: false,
+                                  );
                                 }
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('✅ Item return confirmed! Please rate the Owner.')),
+                                    const SnackBar(
+                                      content: Text(
+                                        '✅ Item return confirmed! Please rate the Owner.',
+                                      ),
+                                    ),
                                   );
                                   context.push('/rating/${claim.claimId}');
                                 }
                               },
-                              icon: Icon(hasFinderConfirmed ? Icons.check_circle_rounded : Icons.assignment_turned_in_rounded),
+                              icon: Icon(
+                                hasFinderConfirmed
+                                    ? Icons.check_circle_rounded
+                                    : Icons.assignment_turned_in_rounded,
+                              ),
                               label: Text(
-                                hasFinderConfirmed ? 'Finder Confirmed Item Returned ✓' : 'I Successfully Returned This Item',
-                                style: const TextStyle(fontWeight: FontWeight.bold),
+                                hasFinderConfirmed
+                                    ? 'Finder Confirmed Item Returned ✓'
+                                    : 'I Successfully Returned This Item',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
@@ -541,9 +719,13 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             minimumSize: const Size(0, 52),
                             foregroundColor: AppColors.error,
                             side: const BorderSide(color: AppColors.error),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
-                          onPressed: _isUpdating ? null : () => _handleReject(claim),
+                          onPressed: _isUpdating
+                              ? null
+                              : () => _handleReject(claim),
                           icon: const Icon(Icons.close_rounded),
                           label: const Text('Reject Claim'),
                         ),
@@ -568,24 +750,33 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                     padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        const Icon(Icons.hourglass_top_rounded, size: 40, color: AppColors.primary),
+                        const Icon(
+                          Icons.hourglass_top_rounded,
+                          size: 40,
+                          color: AppColors.primary,
+                        ),
                         const SizedBox(height: 12),
                         const Text(
                           'Claim Submitted — Awaiting Owner Review',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
                         const Text(
                           'The item owner will review your claim and approve or reject it. You will be notified once a decision is made.',
-                          style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: AppColors.onSurfaceVariant,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],
                     ),
                   ),
                 ],
-
               ],
             ),
           );

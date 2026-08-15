@@ -31,9 +31,9 @@ class RatingModel {
     this.responseTime = 5.0,
     this.recommendation = true,
     DateTime? createdAt,
-  })  : fromUserId = fromUserId ?? fromUser,
-        toUserId = toUserId ?? toUser,
-        createdAt = createdAt ?? DateTime.now();
+  }) : fromUserId = fromUserId ?? fromUser,
+       toUserId = toUserId ?? toUser,
+       createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {

@@ -54,9 +54,16 @@ class AiMatchResultsScreen extends ConsumerWidget {
           children: [
             Row(
               children: const [
-                Icon(Icons.auto_awesome_rounded, color: AppColors.primary, size: 24),
+                Icon(
+                  Icons.auto_awesome_rounded,
+                  color: AppColors.primary,
+                  size: 24,
+                ),
                 SizedBox(width: 8),
-                Text('3 High-Confidence Matches Found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(
+                  '3 High-Confidence Matches Found',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ],
             ),
             const SizedBox(height: 4),
@@ -81,7 +88,12 @@ class AiMatchResultsScreen extends ConsumerWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(14),
-                          child: Image.network(item['image'], width: 85, height: 85, fit: BoxFit.cover),
+                          child: Image.network(
+                            item['image'],
+                            width: 85,
+                            height: 85,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                         const SizedBox(width: 14),
                         Expanded(
@@ -89,25 +101,38 @@ class AiMatchResultsScreen extends ConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
                                       item['title'],
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: similarity > 90 ? Colors.green : AppColors.primary,
+                                      color: similarity > 90
+                                          ? Colors.green
+                                          : AppColors.primary,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
                                       '$similarity% Match',
-                                      style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -115,12 +140,19 @@ class AiMatchResultsScreen extends ConsumerWidget {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(Icons.location_on_outlined, size: 14, color: AppColors.outline),
+                                  const Icon(
+                                    Icons.location_on_outlined,
+                                    size: 14,
+                                    color: AppColors.outline,
+                                  ),
                                   const SizedBox(width: 4),
                                   Expanded(
                                     child: Text(
                                       item['location'],
-                                      style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.outline,
+                                      ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -129,12 +161,23 @@ class AiMatchResultsScreen extends ConsumerWidget {
                               ),
                               const SizedBox(height: 8),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(item['date'], style: const TextStyle(fontSize: 11, color: AppColors.outline)),
+                                  Text(
+                                    item['date'],
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: AppColors.outline,
+                                    ),
+                                  ),
                                   const Text(
                                     'Claim / Chat >',
-                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary,
+                                    ),
                                   ),
                                 ],
                               ),

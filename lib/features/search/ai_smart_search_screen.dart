@@ -9,7 +9,8 @@ class AiSmartSearchScreen extends ConsumerStatefulWidget {
   const AiSmartSearchScreen({super.key});
 
   @override
-  ConsumerState<AiSmartSearchScreen> createState() => _AiSmartSearchScreenState();
+  ConsumerState<AiSmartSearchScreen> createState() =>
+      _AiSmartSearchScreenState();
 }
 
 class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
@@ -32,7 +33,8 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
       if (mounted) {
         setState(() {
           _isListening = false;
-          _searchController.text = 'Black leather wallet lost near Dhanmondi Lake';
+          _searchController.text =
+              'Black leather wallet lost near Dhanmondi Lake';
         });
       }
     });
@@ -40,7 +42,6 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('AI Smart Search'),
@@ -70,9 +71,15 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 hintText: 'Describe your lost item in natural language...',
-                prefixIcon: const Icon(Icons.auto_awesome_rounded, color: AppColors.primary),
+                prefixIcon: const Icon(
+                  Icons.auto_awesome_rounded,
+                  color: AppColors.primary,
+                ),
                 suffixIcon: IconButton(
-                  icon: Icon(_isListening ? Icons.mic_none_rounded : Icons.mic_rounded, color: AppColors.primary),
+                  icon: Icon(
+                    _isListening ? Icons.mic_none_rounded : Icons.mic_rounded,
+                    color: AppColors.primary,
+                  ),
                   onPressed: _triggerVoiceSearch,
                 ),
               ),
@@ -82,16 +89,29 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
               const SizedBox(height: 8),
               Row(
                 children: const [
-                  SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2)),
+                  SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
                   SizedBox(width: 8),
-                  Text('Listening...', style: TextStyle(color: AppColors.primary, fontStyle: FontStyle.italic)),
+                  Text(
+                    'Listening...',
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
                 ],
               ),
             ],
             const SizedBox(height: 20),
 
             // AI Filters Block
-            const Text('AI Filtering Parameters', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const Text(
+              'AI Filtering Parameters',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
 
             GlassContainer(
@@ -102,26 +122,53 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
                   DropdownButtonFormField<String>(
                     value: _selectedCategory,
                     decoration: const InputDecoration(labelText: 'Category'),
-                    items: ['Electronics', 'Documents', 'Wallets', 'Pets', 'Accessories', 'Others']
-                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
-                        .toList(),
+                    items:
+                        [
+                              'Electronics',
+                              'Documents',
+                              'Wallets',
+                              'Pets',
+                              'Accessories',
+                              'Others',
+                            ]
+                            .map(
+                              (c) => DropdownMenuItem(value: c, child: Text(c)),
+                            )
+                            .toList(),
                     onChanged: (v) => setState(() => _selectedCategory = v!),
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
                     value: _selectedDateRange,
                     decoration: const InputDecoration(labelText: 'Time Window'),
-                    items: ['Last 24 Hours', 'Last 7 Days', 'Last 30 Days', 'All Time']
-                        .map((d) => DropdownMenuItem(value: d, child: Text(d)))
-                        .toList(),
+                    items:
+                        [
+                              'Last 24 Hours',
+                              'Last 7 Days',
+                              'Last 30 Days',
+                              'All Time',
+                            ]
+                            .map(
+                              (d) => DropdownMenuItem(value: d, child: Text(d)),
+                            )
+                            .toList(),
                     onChanged: (v) => setState(() => _selectedDateRange = v!),
                   ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Search Radius', style: TextStyle(fontWeight: FontWeight.w600)),
-                      Text('${_radius.round()} km', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Search Radius',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        '${_radius.round()} km',
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   Slider(
@@ -136,8 +183,17 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('Minimum Reward (BDT)', style: TextStyle(fontWeight: FontWeight.w600)),
-                      Text('৳ ${_minReward.round()}', style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Minimum Reward (BDT)',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        '৳ ${_minReward.round()}',
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ],
                   ),
                   Slider(
@@ -158,7 +214,9 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
               icon: Icons.auto_awesome_rounded,
               onPressed: () {
                 final query = _searchController.text.trim();
-                context.push('/search-results?query=$query&category=$_selectedCategory');
+                context.push(
+                  '/search-results?query=$query&category=$_selectedCategory',
+                );
               },
             ),
           ],

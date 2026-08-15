@@ -5,6 +5,7 @@ import '../models/post_model.dart';
 import '../models/chat_model.dart';
 import '../models/claim_model.dart';
 import '../models/recovery_models.dart';
+import '../models/campus_models.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -19,6 +20,8 @@ class FirestoreService {
   CollectionReference get _paymentsRef => _db.collection('payments');
   CollectionReference get _historyRef => _db.collection('history');
   CollectionReference get _walletRef => _db.collection('wallet');
+  CollectionReference get _campusesRef => _db.collection('campuses');
+  CollectionReference get _campusMembersRef => _db.collection('campus_members');
 
   // USER CRUD
   Future<void> saveUser(UserModel user) async {
@@ -1212,6 +1215,215 @@ class FirestoreService {
           return [...localFiltered, ...firestorePosts];
         })
         .handleError((_) => _localPosts);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // CAMPUS CRUD & STREAMS
+  // ─────────────────────────────────────────────────────────────
+  static final List<CampusModel> _localCampuses = [];
+  static final List<CampusMemberModel> _localCampusMembers = [];
+
+  Future<void> createCampus(CampusModel campus) async {
+    _localCampuses.removeWhere((c) => c.id == campus.id);
+    _localCampuses.insert(0, campus);
+
+    final memberId = '${campus.id}_${campus.creatorId}';
+    final member = CampusMemberModel(
+      id: memberId,
+      uid: campus.creatorId,
+      campusId: campus.id,
+      studentId: 'CREATOR',
+      role: 'author',
+      status: 'active',
+    );
+    _localCampusMembers.removeWhere((m) => m.id == memberId);
+    _localCampusMembers.insert(0, member);
+
+    try {
+      await _campusesRef.doc(campus.id).set(campus.toMap());
+      await _campusMembersRef.doc(memberId).set(member.toMap());
+    } catch (e) {
+      print('Firestore createCampus notice: $e');
+    }
+  }
+
+  Future<CampusModel?> getCampusByCode(String code) async {
+    final cleanCode = code.toUpperCase().trim();
+    for (final c in _localCampuses) {
+      if (c.code == cleanCode) return c;
+    }
+
+    try {
+      final snap = await _campusesRef.where('code', isEqualTo: cleanCode).get();
+      if (snap.docs.isNotEmpty) {
+        return CampusModel.fromMap(
+          snap.docs.first.data() as Map<String, dynamic>,
+          snap.docs.first.id,
+        );
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  Future<CampusModel?> getCampus(String campusId) async {
+    for (final c in _localCampuses) {
+      if (c.id == campusId) return c;
+    }
+
+    try {
+      final doc = await _campusesRef.doc(campusId).get();
+      if (doc.exists && doc.data() != null) {
+        return CampusModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  Future<void> joinCampus({
+    required String campusId,
+    required String uid,
+    required String studentId,
+    String role = 'student',
+  }) async {
+    final memberId = '${campusId}_${uid}';
+    final member = CampusMemberModel(
+      id: memberId,
+      uid: uid,
+      campusId: campusId,
+      studentId: studentId.trim(),
+      role: role,
+      status: 'active',
+    );
+
+    _localCampusMembers.removeWhere((m) => m.id == memberId);
+    _localCampusMembers.insert(0, member);
+
+    try {
+      await _campusMembersRef
+          .doc(memberId)
+          .set(member.toMap(), SetOptions(merge: true));
+    } catch (e) {
+      print('Firestore joinCampus notice: $e');
+    }
+  }
+
+  Stream<List<CampusModel>> streamAllCampuses() {
+    return _campusesRef
+        .snapshots()
+        .map((snapshot) {
+          final firestoreList = snapshot.docs
+              .map(
+                (doc) => CampusModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          final ids = firestoreList.map((c) => c.id).toSet();
+          final localFiltered = _localCampuses.where(
+            (lc) => !ids.contains(lc.id),
+          );
+          final combined = [...localFiltered, ...firestoreList];
+          combined.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return combined;
+        })
+        .handleError((_) => _localCampuses);
+  }
+
+  Stream<List<CampusMemberModel>> streamUserCampusMemberships(String userId) {
+    return _campusMembersRef
+        .where('uid', isEqualTo: userId)
+        .snapshots()
+        .map((snapshot) {
+          final firestoreList = snapshot.docs
+              .map(
+                (doc) => CampusMemberModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          final ids = firestoreList.map((m) => m.id).toSet();
+          final localFiltered = _localCampusMembers.where(
+            (lm) => lm.uid == userId && !ids.contains(lm.id),
+          );
+          return [...localFiltered, ...firestoreList];
+        })
+        .handleError(
+          (_) => _localCampusMembers.where((lm) => lm.uid == userId).toList(),
+        );
+  }
+
+  Stream<List<CampusMemberModel>> streamCampusMembers(String campusId) {
+    return _campusMembersRef
+        .where('campusId', isEqualTo: campusId)
+        .snapshots()
+        .map((snapshot) {
+          final firestoreList = snapshot.docs
+              .map(
+                (doc) => CampusMemberModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList();
+          final ids = firestoreList.map((m) => m.id).toSet();
+          final localFiltered = _localCampusMembers.where(
+            (lm) => lm.campusId == campusId && !ids.contains(lm.id),
+          );
+          return [...localFiltered, ...firestoreList];
+        })
+        .handleError(
+          (_) => _localCampusMembers
+              .where((lm) => lm.campusId == campusId)
+              .toList(),
+        );
+  }
+
+  Stream<List<PostModel>> streamCampusPosts(String campusId) {
+    return _postsRef
+        .where('campusId', isEqualTo: campusId)
+        .snapshots()
+        .map((snapshot) {
+          final firestorePosts = snapshot.docs
+              .map(
+                (doc) => PostModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .where(
+                (p) =>
+                    p.status != 'completed' &&
+                    p.status != 'resolved' &&
+                    p.status != 'archived' &&
+                    p.status != 'closed',
+              )
+              .toList();
+          final ids = firestorePosts.map((p) => p.id).toSet();
+          final localFiltered = _localPosts.where(
+            (lp) =>
+                lp.campusId == campusId &&
+                !ids.contains(lp.id) &&
+                lp.status != 'completed' &&
+                lp.status != 'resolved',
+          );
+          final combined = [...localFiltered, ...firestorePosts];
+          combined.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return combined;
+        })
+        .handleError((_) {
+          final localFiltered = _localPosts
+              .where(
+                (lp) =>
+                    lp.campusId == campusId &&
+                    lp.status != 'completed' &&
+                    lp.status != 'resolved',
+              )
+              .toList();
+          localFiltered.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+          return localFiltered;
+        });
   }
 
   // ─────────────────────────────────────────────────────────────

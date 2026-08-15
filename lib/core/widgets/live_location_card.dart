@@ -48,7 +48,10 @@ class LiveLocationCard extends ConsumerWidget {
                   children: [
                     const Text(
                       'Live Location Dashboard',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
                     Row(
                       children: [
@@ -75,7 +78,10 @@ class LiveLocationCard extends ConsumerWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.refresh_rounded, color: AppColors.primary),
+                icon: const Icon(
+                  Icons.refresh_rounded,
+                  color: AppColors.primary,
+                ),
                 tooltip: 'Refresh Current Location',
                 onPressed: () => liveNotifier.refreshCurrentLocation(),
               ),
@@ -98,7 +104,11 @@ class LiveLocationCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     'Private: Live location is only visible to you on your dashboard.',
-                    style: TextStyle(fontSize: 11, color: Colors.blue, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: Colors.blue,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
@@ -112,7 +122,9 @@ class LiveLocationCard extends ConsumerWidget {
             decoration: BoxDecoration(
               color: isDark ? AppColors.darkSurface : Colors.grey.shade50,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.outlineVariant.withOpacity(0.5)),
+              border: Border.all(
+                color: AppColors.outlineVariant.withOpacity(0.5),
+              ),
             ),
             child: Column(
               children: [
@@ -122,7 +134,10 @@ class LiveLocationCard extends ConsumerWidget {
                     _buildInfoColumn(
                       icon: Icons.my_location_rounded,
                       label: 'Coordinates',
-                      value: LocationUtils.formatCoordinates(liveState.latitude, liveState.longitude),
+                      value: LocationUtils.formatCoordinates(
+                        liveState.latitude,
+                        liveState.longitude,
+                      ),
                     ),
                     _buildInfoColumn(
                       icon: Icons.gps_fixed_rounded,
@@ -138,7 +153,8 @@ class LiveLocationCard extends ConsumerWidget {
                     _buildInfoColumn(
                       icon: Icons.map_rounded,
                       label: 'Latitude / Longitude',
-                      value: '${liveState.latitude.toStringAsFixed(4)}, ${liveState.longitude.toStringAsFixed(4)}',
+                      value:
+                          '${liveState.latitude.toStringAsFixed(4)}, ${liveState.longitude.toStringAsFixed(4)}',
                     ),
                     _buildInfoColumn(
                       icon: Icons.access_time_rounded,
@@ -161,12 +177,19 @@ class LiveLocationCard extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.warning_amber_rounded, size: 16, color: AppColors.error),
+                  const Icon(
+                    Icons.warning_amber_rounded,
+                    size: 16,
+                    color: AppColors.error,
+                  ),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(
                       liveState.errorMessage!,
-                      style: const TextStyle(fontSize: 11, color: AppColors.error),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.error,
+                      ),
                     ),
                   ),
                 ],
@@ -183,14 +206,18 @@ class LiveLocationCard extends ConsumerWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: liveState.trackingStatus == LiveTrackingStatus.active
+                    backgroundColor:
+                        liveState.trackingStatus == LiveTrackingStatus.active
                         ? AppColors.primary
                         : AppColors.primaryContainer,
-                    foregroundColor: liveState.trackingStatus == LiveTrackingStatus.active
+                    foregroundColor:
+                        liveState.trackingStatus == LiveTrackingStatus.active
                         ? Colors.white
                         : AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () async {
                     if (!liveState.isGpsEnabled) {
@@ -208,8 +235,13 @@ class LiveLocationCard extends ConsumerWidget {
                     size: 18,
                   ),
                   label: Text(
-                    liveState.trackingStatus == LiveTrackingStatus.active ? 'Live Active' : 'Enable Live',
-                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                    liveState.trackingStatus == LiveTrackingStatus.active
+                        ? 'Live Active'
+                        : 'Enable Live',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -219,18 +251,23 @@ class LiveLocationCard extends ConsumerWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: liveState.trackingStatus == LiveTrackingStatus.paused
+                    foregroundColor:
+                        liveState.trackingStatus == LiveTrackingStatus.paused
                         ? Colors.orange
                         : AppColors.outline,
                     side: BorderSide(
-                      color: liveState.trackingStatus == LiveTrackingStatus.paused
+                      color:
+                          liveState.trackingStatus == LiveTrackingStatus.paused
                           ? Colors.orange
                           : AppColors.outlineVariant,
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  onPressed: liveState.trackingStatus == LiveTrackingStatus.active
+                  onPressed:
+                      liveState.trackingStatus == LiveTrackingStatus.active
                       ? () => liveNotifier.pauseLiveLocation()
                       : null,
                   icon: const Icon(Icons.pause_rounded, size: 18),
@@ -247,10 +284,13 @@ class LiveLocationCard extends ConsumerWidget {
                 style: IconButton.styleFrom(
                   backgroundColor: AppColors.error.withOpacity(0.1),
                   foregroundColor: AppColors.error,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 tooltip: 'Stop Live Tracking',
-                onPressed: liveState.trackingStatus != LiveTrackingStatus.stopped
+                onPressed:
+                    liveState.trackingStatus != LiveTrackingStatus.stopped
                     ? () => liveNotifier.stopLiveLocation()
                     : null,
                 icon: const Icon(Icons.stop_rounded, size: 20),
@@ -279,12 +319,19 @@ class LiveLocationCard extends ConsumerWidget {
               children: [
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 10, color: AppColors.outline, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                    fontSize: 10,
+                    color: AppColors.outline,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -334,7 +381,10 @@ class LiveLocationCard extends ConsumerWidget {
     }
   }
 
-  void _showPermissionDialog(BuildContext context, LiveLocationNotifier notifier) {
+  void _showPermissionDialog(
+    BuildContext context,
+    LiveLocationNotifier notifier,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -360,14 +410,20 @@ class LiveLocationCard extends ConsumerWidget {
               await notifier.checkGpsAndPermissions();
               await notifier.enableLiveLocation();
             },
-            child: const Text('Grant Access', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Grant Access',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
     );
   }
 
-  void _showEnableGpsDialog(BuildContext context, LiveLocationNotifier notifier) {
+  void _showEnableGpsDialog(
+    BuildContext context,
+    LiveLocationNotifier notifier,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -393,7 +449,10 @@ class LiveLocationCard extends ConsumerWidget {
               await Geolocator.openLocationSettings();
               await notifier.checkGpsAndPermissions();
             },
-            child: const Text('Open Settings', style: TextStyle(color: Colors.white)),
+            child: const Text(
+              'Open Settings',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),

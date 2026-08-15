@@ -27,14 +27,29 @@ class OfficeDashboardScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: const [
-                  CircleAvatar(backgroundColor: AppColors.secondary, child: Icon(Icons.corporate_fare, color: Colors.white)),
+                  CircleAvatar(
+                    backgroundColor: AppColors.secondary,
+                    child: Icon(Icons.corporate_fare, color: Colors.white),
+                  ),
                   SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Gulshan Hub Security Desk', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text('Building 4, Level 1 Reception', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                        Text(
+                          'Gulshan Hub Security Desk',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          'Building 4, Level 1 Reception',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.outline,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -42,7 +57,10 @@ class OfficeDashboardScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-            const Text('Unclaimed Visitors Items', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Unclaimed Visitors Items',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             GlassContainer(
               borderRadius: 16,
@@ -55,8 +73,17 @@ class OfficeDashboardScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Dell USB-C Charger', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('Found in Conference Room B', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                        Text(
+                          'Dell USB-C Charger',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'Found in Conference Room B',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.outline,
+                          ),
+                        ),
                       ],
                     ),
                   ),

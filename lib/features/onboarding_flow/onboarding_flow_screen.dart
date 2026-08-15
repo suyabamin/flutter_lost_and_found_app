@@ -8,7 +8,8 @@ class OnboardingFlowScreen extends ConsumerStatefulWidget {
   const OnboardingFlowScreen({super.key});
 
   @override
-  ConsumerState<OnboardingFlowScreen> createState() => _OnboardingFlowScreenState();
+  ConsumerState<OnboardingFlowScreen> createState() =>
+      _OnboardingFlowScreenState();
 }
 
 class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
@@ -18,17 +19,20 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
   final List<Map<String, String>> _pages = [
     {
       'title': 'Find What You Lost',
-      'desc': "Whether it's your keys, wallet, or a beloved pet, our community helps you reunite with your valuables across Bangladesh.",
+      'desc':
+          "Whether it's your keys, wallet, or a beloved pet, our community helps you reunite with your valuables across Bangladesh.",
       'icon': 'find_in_page',
     },
     {
       'title': 'Help Others',
-      'desc': "Turn someone's bad day around. Report items you find and connect with owners safely through our verified platform.",
+      'desc':
+          "Turn someone's bad day around. Report items you find and connect with owners safely through our verified platform.",
       'icon': 'handshake',
     },
     {
       'title': 'AI-Powered Matching',
-      'desc': 'Our smart algorithms scan descriptions and photos instantly to find the best match for your lost or found items.',
+      'desc':
+          'Our smart algorithms scan descriptions and photos instantly to find the best match for your lost or found items.',
       'icon': 'auto_awesome',
     },
   ];
@@ -37,12 +41,21 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lost & Found BD', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'Lost & Found BD',
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         actions: [
           if (_currentPage < _pages.length - 1)
             TextButton(
               onPressed: () => context.go('/home'),
-              child: const Text('Skip', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+              child: const Text(
+                'Skip',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
             ),
         ],
       ),
@@ -72,8 +85,8 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                             index == 0
                                 ? Icons.search_rounded
                                 : index == 1
-                                    ? Icons.handshake_rounded
-                                    : Icons.auto_awesome_rounded,
+                                ? Icons.handshake_rounded
+                                : Icons.auto_awesome_rounded,
                             size: 90,
                             color: AppColors.primary,
                           ),
@@ -82,13 +95,20 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                         Text(
                           item['title']!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         const SizedBox(height: 16),
                         Text(
                           item['desc']!,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(fontSize: 15, color: AppColors.onSurfaceVariant, height: 1.4),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: AppColors.onSurfaceVariant,
+                            height: 1.4,
+                          ),
                         ),
                       ],
                     ),
@@ -111,7 +131,9 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                         width: _currentPage == index ? 32 : 8,
                         height: 8,
                         decoration: BoxDecoration(
-                          color: _currentPage == index ? AppColors.primary : AppColors.outlineVariant,
+                          color: _currentPage == index
+                              ? AppColors.primary
+                              : AppColors.outlineVariant,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       );
@@ -119,7 +141,9 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                   ),
                   const SizedBox(height: 32),
                   PrimaryButton(
-                    text: _currentPage == _pages.length - 1 ? 'Get Started' : 'Next',
+                    text: _currentPage == _pages.length - 1
+                        ? 'Get Started'
+                        : 'Next',
                     icon: Icons.arrow_forward_rounded,
                     onPressed: () {
                       if (_currentPage < _pages.length - 1) {

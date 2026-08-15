@@ -16,7 +16,8 @@ class LocationUtils {
     final double radLat1 = _degreesToRadians(lat1);
     final double radLat2 = _degreesToRadians(lat2);
 
-    final double a = sin(dLat / 2) * sin(dLat / 2) +
+    final double a =
+        sin(dLat / 2) * sin(dLat / 2) +
         sin(dLon / 2) * sin(dLon / 2) * cos(radLat1) * cos(radLat2);
     final double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 

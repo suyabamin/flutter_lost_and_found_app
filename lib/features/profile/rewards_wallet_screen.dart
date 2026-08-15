@@ -40,15 +40,35 @@ class RewardsWalletScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Total Reward Balance', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  const Text(
+                    'Total Reward Balance',
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  ),
                   const SizedBox(height: 8),
-                  const Text('৳ 3,500', style: TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold)),
+                  const Text(
+                    '৳ 3,500',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: const [
-                      Text('1,250 Community Points', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      Icon(Icons.military_tech_rounded, color: Colors.amber, size: 28),
+                      Text(
+                        '1,250 Community Points',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Icon(
+                        Icons.military_tech_rounded,
+                        color: Colors.amber,
+                        size: 28,
+                      ),
                     ],
                   ),
                 ],
@@ -62,7 +82,10 @@ class RewardsWalletScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Cash Out via bKash / Nagad', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const Text(
+                    'Cash Out via bKash / Nagad',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
                   const SizedBox(height: 12),
                   Row(
                     children: [
@@ -88,7 +111,10 @@ class RewardsWalletScreen extends ConsumerWidget {
 
             const Align(
               alignment: Alignment.centerLeft,
-              child: Text('Recent Transactions', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              child: Text(
+                'Recent Transactions',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
             ),
             const SizedBox(height: 12),
 
@@ -97,18 +123,36 @@ class RewardsWalletScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(14),
               child: Row(
                 children: const [
-                  CircleAvatar(backgroundColor: Colors.green, child: Icon(Icons.arrow_downward, color: Colors.white)),
+                  CircleAvatar(
+                    backgroundColor: Colors.green,
+                    child: Icon(Icons.arrow_downward, color: Colors.white),
+                  ),
                   SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Reward received for Wallet return', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('From Naimur Rahman', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                        Text(
+                          'Reward received for Wallet return',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          'From Naimur Rahman',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.outline,
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Text('+৳ 1,000', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green)),
+                  Text(
+                    '+৳ 1,000',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.green,
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -42,21 +42,33 @@ class WalletScreen extends ConsumerWidget {
               double monthCalc = 0.0;
 
               for (final p in payments) {
-                if (p.finderId == currentUid && (p.status == 'paid' || p.status == 'completed')) {
+                if (p.finderId == currentUid &&
+                    (p.status == 'paid' || p.status == 'completed')) {
                   totalCalc += p.amount;
-                  if (p.paidAt.year == now.year && p.paidAt.month == now.month && p.paidAt.day == now.day) {
+                  if (p.paidAt.year == now.year &&
+                      p.paidAt.month == now.month &&
+                      p.paidAt.day == now.day) {
                     todayCalc += p.amount;
                   }
-                  if (p.paidAt.year == now.year && p.paidAt.month == now.month) {
+                  if (p.paidAt.year == now.year &&
+                      p.paidAt.month == now.month) {
                     monthCalc += p.amount;
                   }
                 }
               }
 
-              final displayTotal = wallet.totalEarned > 0 ? wallet.totalEarned.toInt() : totalCalc.toInt();
-              final displayToday = wallet.todayEarned > 0 ? wallet.todayEarned.toInt() : todayCalc.toInt();
-              final displayMonthly = wallet.monthlyEarned > 0 ? wallet.monthlyEarned.toInt() : monthCalc.toInt();
-              final displayLifetime = wallet.lifetimeEarned > 0 ? wallet.lifetimeEarned.toInt() : totalCalc.toInt();
+              final displayTotal = wallet.totalEarned > 0
+                  ? wallet.totalEarned.toInt()
+                  : totalCalc.toInt();
+              final displayToday = wallet.todayEarned > 0
+                  ? wallet.todayEarned.toInt()
+                  : todayCalc.toInt();
+              final displayMonthly = wallet.monthlyEarned > 0
+                  ? wallet.monthlyEarned.toInt()
+                  : monthCalc.toInt();
+              final displayLifetime = wallet.lifetimeEarned > 0
+                  ? wallet.lifetimeEarned.toInt()
+                  : totalCalc.toInt();
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
@@ -86,15 +98,27 @@ class WalletScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 'Total Reward Earnings',
-                                style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                              Icon(Icons.account_balance_wallet_rounded, color: Colors.white, size: 24),
+                              Icon(
+                                Icons.account_balance_wallet_rounded,
+                                color: Colors.white,
+                                size: 24,
+                              ),
                             ],
                           ),
                           const SizedBox(height: 8),
                           Text(
                             '৳ $displayTotal',
-                            style: const TextStyle(color: Colors.white, fontSize: 36, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           const SizedBox(height: 16),
                           ElevatedButton.icon(
@@ -102,15 +126,27 @@ class WalletScreen extends ConsumerWidget {
                               backgroundColor: Colors.white,
                               foregroundColor: AppColors.primary,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
                             onPressed: () {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Payout request feature enabled for verified accounts.')),
+                                const SnackBar(
+                                  content: Text(
+                                    'Payout request feature enabled for verified accounts.',
+                                  ),
+                                ),
                               );
                             },
                             icon: const Icon(Icons.outbox_rounded, size: 18),
-                            label: const Text('Withdraw Earnings (Future Use)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                            label: const Text(
+                              'Withdraw Earnings (Future Use)',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -149,7 +185,13 @@ class WalletScreen extends ConsumerWidget {
                     const SizedBox(height: 24),
 
                     // Reward Payment History Section
-                    const Text('Transaction & Payment History', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text(
+                      'Transaction & Payment History',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 12),
 
                     if (payments.isEmpty)
@@ -159,11 +201,27 @@ class WalletScreen extends ConsumerWidget {
                         child: Center(
                           child: Column(
                             children: const [
-                              Icon(Icons.receipt_long_outlined, size: 48, color: AppColors.outline),
+                              Icon(
+                                Icons.receipt_long_outlined,
+                                size: 48,
+                                color: AppColors.outline,
+                              ),
                               SizedBox(height: 10),
-                              Text('No transactions yet.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                              Text(
+                                'No transactions yet.',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
                               SizedBox(height: 4),
-                              Text('Received and paid rewards will be listed here.', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                              Text(
+                                'Received and paid rewards will be listed here.',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.outline,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -186,28 +244,43 @@ class WalletScreen extends ConsumerWidget {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: isEarned ? Colors.green.withOpacity(0.12) : AppColors.error.withOpacity(0.12),
+                                    color: isEarned
+                                        ? Colors.green.withOpacity(0.12)
+                                        : AppColors.error.withOpacity(0.12),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Icon(
-                                    isEarned ? Icons.south_west_rounded : Icons.north_east_rounded,
-                                    color: isEarned ? Colors.green : AppColors.error,
+                                    isEarned
+                                        ? Icons.south_west_rounded
+                                        : Icons.north_east_rounded,
+                                    color: isEarned
+                                        ? Colors.green
+                                        : AppColors.error,
                                     size: 22,
                                   ),
                                 ),
                                 const SizedBox(width: 14),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        isEarned ? 'Reward Received (${p.method})' : 'Reward Paid (${p.method})',
-                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                                        isEarned
+                                            ? 'Reward Received (${p.method})'
+                                            : 'Reward Paid (${p.method})',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
                                         'TrxID: ${p.transactionId}',
-                                        style: const TextStyle(fontSize: 11, color: AppColors.outline),
+                                        style: const TextStyle(
+                                          fontSize: 11,
+                                          color: AppColors.outline,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -220,14 +293,21 @@ class WalletScreen extends ConsumerWidget {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15,
-                                        color: isEarned ? Colors.green : AppColors.error,
+                                        color: isEarned
+                                            ? Colors.green
+                                            : AppColors.error,
                                       ),
                                     ),
                                     const SizedBox(height: 2),
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: p.status == 'completed' ? Colors.green.withOpacity(0.15) : Colors.orange.withOpacity(0.15),
+                                        color: p.status == 'completed'
+                                            ? Colors.green.withOpacity(0.15)
+                                            : Colors.orange.withOpacity(0.15),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
@@ -235,7 +315,9 @@ class WalletScreen extends ConsumerWidget {
                                         style: TextStyle(
                                           fontSize: 9,
                                           fontWeight: FontWeight.bold,
-                                          color: p.status == 'completed' ? Colors.green : Colors.orange,
+                                          color: p.status == 'completed'
+                                              ? Colors.green
+                                              : Colors.orange,
                                         ),
                                       ),
                                     ),

@@ -23,7 +23,9 @@ class SearchResultsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(query.isNotEmpty ? 'Results for "$query"' : 'Search Results'),
+        title: Text(
+          query.isNotEmpty ? 'Results for "$query"' : 'Search Results',
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -32,7 +34,8 @@ class SearchResultsScreen extends ConsumerWidget {
       body: postsAsync.when(
         data: (posts) {
           final filtered = posts.where((p) {
-            final matchesQuery = query.isEmpty ||
+            final matchesQuery =
+                query.isEmpty ||
                 p.title.toLowerCase().contains(query.toLowerCase()) ||
                 p.description.toLowerCase().contains(query.toLowerCase());
             final matchesCategory = category == 'All' || p.category == category;
@@ -44,11 +47,21 @@ class SearchResultsScreen extends ConsumerWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.search_off_rounded, size: 72, color: AppColors.outline.withOpacity(0.5)),
+                  Icon(
+                    Icons.search_off_rounded,
+                    size: 72,
+                    color: AppColors.outline.withOpacity(0.5),
+                  ),
                   const SizedBox(height: 16),
-                  const Text('No matching items found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'No matching items found',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 8),
-                  const Text('Try adjusting your search terms or filters', style: TextStyle(color: AppColors.outline)),
+                  const Text(
+                    'Try adjusting your search terms or filters',
+                    style: TextStyle(color: AppColors.outline),
+                  ),
                 ],
               ),
             );
@@ -74,7 +87,10 @@ class SearchResultsScreen extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(14),
                           color: Colors.grey.shade200,
                           image: item.images.isNotEmpty
-                              ? DecorationImage(image: NetworkImage(item.images.first), fit: BoxFit.cover)
+                              ? DecorationImage(
+                                  image: NetworkImage(item.images.first),
+                                  fit: BoxFit.cover,
+                                )
                               : null,
                         ),
                       ),
@@ -89,20 +105,32 @@ class SearchResultsScreen extends ConsumerWidget {
                                 Expanded(
                                   child: Text(
                                     item.title,
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: item.type == 'lost' ? AppColors.error : AppColors.secondary,
+                                    color: item.type == 'lost'
+                                        ? AppColors.error
+                                        : AppColors.secondary,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     item.type.toUpperCase(),
-                                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -112,14 +140,27 @@ class SearchResultsScreen extends ConsumerWidget {
                               item.description,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.onSurfaceVariant,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             Row(
                               children: [
-                                const Icon(Icons.location_on_outlined, size: 14, color: AppColors.outline),
+                                const Icon(
+                                  Icons.location_on_outlined,
+                                  size: 14,
+                                  color: AppColors.outline,
+                                ),
                                 const SizedBox(width: 4),
-                                Text(item.location, style: const TextStyle(fontSize: 12, color: AppColors.outline)),
+                                Text(
+                                  item.location,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.outline,
+                                  ),
+                                ),
                               ],
                             ),
                           ],

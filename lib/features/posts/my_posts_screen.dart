@@ -39,9 +39,19 @@ class MyPostsScreen extends ConsumerWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.post_add_rounded, size: 72, color: AppColors.outline.withOpacity(0.5)),
+                        Icon(
+                          Icons.post_add_rounded,
+                          size: 72,
+                          color: AppColors.outline.withOpacity(0.5),
+                        ),
                         const SizedBox(height: 16),
-                        const Text('You have not reported any items yet.', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        const Text(
+                          'You have not reported any items yet.',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () => context.push('/create-post-step1'),
@@ -64,30 +74,57 @@ class MyPostsScreen extends ConsumerWidget {
                       child: Row(
                         children: [
                           AppImage(
-                              url: item.images.isNotEmpty ? item.images.first : '',
-                              bytes: FirestoreService.getLocalImageBytes(item.id)?.firstOrNull,
-                              width: 70,
-                              height: 70,
-                              fit: BoxFit.cover,
-                              placeholderSeed: item.id,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                            url: item.images.isNotEmpty
+                                ? item.images.first
+                                : '',
+                            bytes: FirestoreService.getLocalImageBytes(
+                              item.id,
+                            )?.firstOrNull,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                            placeholderSeed: item.id,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(item.title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                Text(
+                                  item.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15,
+                                  ),
+                                ),
                                 const SizedBox(height: 4),
-                                Text('Status: ${item.status.toUpperCase()}', style: const TextStyle(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.bold)),
+                                Text(
+                                  'Status: ${item.status.toUpperCase()}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 const SizedBox(height: 2),
-                                Text(item.location, style: const TextStyle(fontSize: 12, color: AppColors.outline)),
+                                Text(
+                                  item.location,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.outline,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.edit_outlined, color: AppColors.primary),
-                            onPressed: () => context.push('/item-details/${item.id}'),
+                            icon: const Icon(
+                              Icons.edit_outlined,
+                              color: AppColors.primary,
+                            ),
+                            onPressed: () =>
+                                context.push('/item-details/${item.id}'),
                           ),
                         ],
                       ),

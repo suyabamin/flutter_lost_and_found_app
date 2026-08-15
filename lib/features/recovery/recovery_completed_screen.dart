@@ -50,11 +50,18 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                 stream: firestoreService.streamPaymentForClaim(claimId),
                 builder: (context, paymentSnapshot) {
                   final payment = paymentSnapshot.data;
-                  final isPaid = payment != null && (payment.status == 'paid' || payment.status == 'completed');
-                  final isPaymentCompleted = payment != null && payment.status == 'completed';
+                  final isPaid =
+                      payment != null &&
+                      (payment.status == 'paid' ||
+                          payment.status == 'completed');
+                  final isPaymentCompleted =
+                      payment != null && payment.status == 'completed';
 
                   return StreamBuilder<RatingModel?>(
-                    stream: firestoreService.streamUserRatingForClaim(claimId, currentUid),
+                    stream: firestoreService.streamUserRatingForClaim(
+                      claimId,
+                      currentUid,
+                    ),
                     builder: (context, ratingSnapshot) {
                       final hasRated = ratingSnapshot.data != null;
 
@@ -71,22 +78,35 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                               decoration: BoxDecoration(
                                 color: Colors.green.withOpacity(0.15),
                                 shape: BoxShape.circle,
-                                border: Border.all(color: Colors.green, width: 3),
+                                border: Border.all(
+                                  color: Colors.green,
+                                  width: 3,
+                                ),
                               ),
                               child: const Center(
-                                child: Icon(Icons.verified_rounded, color: Colors.green, size: 64),
+                                child: Icon(
+                                  Icons.verified_rounded,
+                                  color: Colors.green,
+                                  size: 64,
+                                ),
                               ),
                             ),
                             const SizedBox(height: 16),
                             const Text(
                               'Item Successfully Recovered!',
-                              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 6),
                             const Text(
                               'Both parties have confirmed item handoff.',
-                              style: TextStyle(color: AppColors.onSurfaceVariant, fontSize: 13),
+                              style: TextStyle(
+                                color: AppColors.onSurfaceVariant,
+                                fontSize: 13,
+                              ),
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 24),
@@ -104,31 +124,51 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                         width: 56,
                                         height: 56,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                           color: Colors.grey.shade200,
-                                          image: post != null && post.images.isNotEmpty
-                                              ? DecorationImage(image: NetworkImage(post.images.first), fit: BoxFit.cover)
+                                          image:
+                                              post != null &&
+                                                  post.images.isNotEmpty
+                                              ? DecorationImage(
+                                                  image: NetworkImage(
+                                                    post.images.first,
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                )
                                               : null,
                                         ),
-                                        child: post == null || post.images.isEmpty
-                                            ? const Icon(Icons.category_rounded, color: AppColors.primary)
+                                        child:
+                                            post == null || post.images.isEmpty
+                                            ? const Icon(
+                                                Icons.category_rounded,
+                                                color: AppColors.primary,
+                                              )
                                             : null,
                                       ),
                                       const SizedBox(width: 14),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               post?.title ?? 'Recovered Item',
-                                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                             const SizedBox(height: 2),
                                             Text(
                                               'Category: ${post?.category ?? "General"}',
-                                              style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: AppColors.outline,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -137,50 +177,101 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                   ),
                                   const Divider(height: 24),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Claimer / Finder:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
-                                      Text(claim.claimerName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Reward Amount:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
-                                      Text(
-                                        rewardAmount > 0 ? '৳ ${rewardAmount.round()}' : 'No Reward Set',
+                                      const Text(
+                                        'Claimer / Finder:',
                                         style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.outline,
+                                        ),
+                                      ),
+                                      Text(
+                                        claim.claimerName,
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 14,
-                                          color: rewardAmount > 0 ? AppColors.secondary : AppColors.outline,
+                                          fontSize: 13,
                                         ),
                                       ),
                                     ],
                                   ),
                                   const SizedBox(height: 8),
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Payment Status:', style: TextStyle(fontSize: 12, color: AppColors.outline)),
+                                      const Text(
+                                        'Reward Amount:',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.outline,
+                                        ),
+                                      ),
+                                      Text(
+                                        rewardAmount > 0
+                                            ? '৳ ${rewardAmount.round()}'
+                                            : 'No Reward Set',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                          color: rewardAmount > 0
+                                              ? AppColors.secondary
+                                              : AppColors.outline,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'Payment Status:',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: AppColors.outline,
+                                        ),
+                                      ),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 3,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: (isPaymentCompleted || rewardAmount == 0)
+                                          color:
+                                              (isPaymentCompleted ||
+                                                  rewardAmount == 0)
                                               ? Colors.green.withOpacity(0.15)
-                                              : (isPaid ? Colors.orange.withOpacity(0.15) : AppColors.error.withOpacity(0.15)),
-                                          borderRadius: BorderRadius.circular(8),
+                                              : (isPaid
+                                                    ? Colors.orange.withOpacity(
+                                                        0.15,
+                                                      )
+                                                    : AppColors.error
+                                                          .withOpacity(0.15)),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
                                         child: Text(
                                           rewardAmount == 0
                                               ? 'No Reward'
-                                              : (isPaymentCompleted ? 'COMPLETED' : (isPaid ? 'PAID - PENDING CONFIRM' : 'UNPAID')),
+                                              : (isPaymentCompleted
+                                                    ? 'COMPLETED'
+                                                    : (isPaid
+                                                          ? 'PAID - PENDING CONFIRM'
+                                                          : 'UNPAID')),
                                           style: TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
-                                            color: (isPaymentCompleted || rewardAmount == 0)
+                                            color:
+                                                (isPaymentCompleted ||
+                                                    rewardAmount == 0)
                                                 ? Colors.green
-                                                : (isPaid ? Colors.orange : AppColors.error),
+                                                : (isPaid
+                                                      ? Colors.orange
+                                                      : AppColors.error),
                                           ),
                                         ),
                                       ),
@@ -196,7 +287,8 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                               PrimaryButton(
                                 text: 'Pay Reward (৳ ${rewardAmount.round()})',
                                 icon: Icons.payments_rounded,
-                                onPressed: () => context.push('/reward-payment/$claimId'),
+                                onPressed: () =>
+                                    context.push('/reward-payment/$claimId'),
                               ),
                               const SizedBox(height: 12),
                             ],
@@ -209,20 +301,38 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                   children: [
                                     Text(
                                       'Owner has sent ৳ ${payment?.amount.toInt()} via ${payment?.method}.',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                     const SizedBox(height: 4),
-                                    Text('Trx ID: ${payment?.transactionId}', style: const TextStyle(fontSize: 12, color: AppColors.outline)),
+                                    Text(
+                                      'Trx ID: ${payment?.transactionId}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: AppColors.outline,
+                                      ),
+                                    ),
                                     const SizedBox(height: 12),
                                     PrimaryButton(
                                       text: 'Confirm Reward Received',
                                       icon: Icons.check_circle_outline_rounded,
                                       onPressed: () async {
                                         if (payment != null) {
-                                          await firestoreService.confirmPaymentReceived(payment.paymentId);
+                                          await firestoreService
+                                              .confirmPaymentReceived(
+                                                payment.paymentId,
+                                              );
                                           if (context.mounted) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('🎉 Reward confirmed! Added to your wallet.')),
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              const SnackBar(
+                                                content: Text(
+                                                  '🎉 Reward confirmed! Added to your wallet.',
+                                                ),
+                                              ),
                                             );
                                           }
                                         }
@@ -239,11 +349,20 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                               OutlinedButton.icon(
                                 style: OutlinedButton.styleFrom(
                                   minimumSize: const Size(double.infinity, 50),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
                                 ),
-                                onPressed: () => context.push('/rating/$claimId'),
-                                icon: const Icon(Icons.star_rate_rounded, color: Colors.amber),
-                                label: const Text('Rate & Review User', style: TextStyle(fontWeight: FontWeight.bold)),
+                                onPressed: () =>
+                                    context.push('/rating/$claimId'),
+                                icon: const Icon(
+                                  Icons.star_rate_rounded,
+                                  color: Colors.amber,
+                                ),
+                                label: const Text(
+                                  'Rate & Review User',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
                               const SizedBox(height: 12),
                             ] else ...[
@@ -256,9 +375,19 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.check_circle_rounded, color: Colors.amber, size: 18),
+                                    Icon(
+                                      Icons.check_circle_rounded,
+                                      color: Colors.amber,
+                                      size: 18,
+                                    ),
                                     SizedBox(width: 8),
-                                    Text('You have submitted a review for this recovery.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                    Text(
+                                      'You have submitted a review for this recovery.',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -270,8 +399,12 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                               children: [
                                 Expanded(
                                   child: TextButton.icon(
-                                    onPressed: () => context.push('/recovery-history'),
-                                    icon: const Icon(Icons.history_rounded, size: 18),
+                                    onPressed: () =>
+                                        context.push('/recovery-history'),
+                                    icon: const Icon(
+                                      Icons.history_rounded,
+                                      size: 18,
+                                    ),
                                     label: const Text('Recovery History'),
                                   ),
                                 ),
@@ -279,7 +412,10 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                   Expanded(
                                     child: TextButton.icon(
                                       onPressed: () => context.push('/wallet'),
-                                      icon: const Icon(Icons.account_balance_wallet_rounded, size: 18),
+                                      icon: const Icon(
+                                        Icons.account_balance_wallet_rounded,
+                                        size: 18,
+                                      ),
                                       label: const Text('My Wallet'),
                                     ),
                                   ),

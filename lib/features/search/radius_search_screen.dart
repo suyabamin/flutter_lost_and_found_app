@@ -60,11 +60,17 @@ class RadiusSearchScreen extends ConsumerWidget {
                         radiusState.isEnabled
                             ? 'Nearby Items (${LocationUtils.formatDistance(radiusState.radiusKm)})'
                             : 'All Items Feed',
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
                         '${nearbyPostsWithDistance.length} item(s) found in selected radius',
-                        style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppColors.outline,
+                        ),
                       ),
                     ],
                   ),
@@ -73,7 +79,9 @@ class RadiusSearchScreen extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   onPressed: () => context.push('/map-view'),
                   icon: const Icon(Icons.map_rounded, size: 16),
@@ -93,18 +101,28 @@ class RadiusSearchScreen extends ConsumerWidget {
                         padding: const EdgeInsets.all(24),
                         child: Column(
                           children: [
-                            const Icon(Icons.location_off_rounded, size: 48, color: AppColors.outline),
+                            const Icon(
+                              Icons.location_off_rounded,
+                              size: 48,
+                              color: AppColors.outline,
+                            ),
                             const SizedBox(height: 10),
                             Text(
                               'No items found within ${LocationUtils.formatDistance(radiusState.radiusKm)} radius.',
                               textAlign: TextAlign.center,
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                             const SizedBox(height: 6),
                             const Text(
                               'Try increasing the search radius slider above or changing your search filters.',
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.onSurfaceVariant,
+                              ),
                             ),
                           ],
                         ),
@@ -138,7 +156,10 @@ class RadiusSearchScreen extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(14),
                                 color: Colors.grey.shade200,
                                 image: item.images.isNotEmpty
-                                    ? DecorationImage(image: NetworkImage(item.images.first), fit: BoxFit.cover)
+                                    ? DecorationImage(
+                                        image: NetworkImage(item.images.first),
+                                        fit: BoxFit.cover,
+                                      )
                                     : null,
                               ),
                               child: Stack(
@@ -147,14 +168,23 @@ class RadiusSearchScreen extends ConsumerWidget {
                                     top: 4,
                                     left: 4,
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: isLost ? AppColors.error : AppColors.secondary,
+                                        color: isLost
+                                            ? AppColors.error
+                                            : AppColors.secondary,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
                                         isLost ? 'LOST' : 'FOUND',
-                                        style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -167,30 +197,50 @@ class RadiusSearchScreen extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         child: Text(
                                           item.title,
-                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 15,
+                                          ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: AppColors.primaryContainer.withOpacity(0.5),
-                                          borderRadius: BorderRadius.circular(10),
+                                          color: AppColors.primaryContainer
+                                              .withOpacity(0.5),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            const Icon(Icons.near_me_rounded, color: AppColors.primary, size: 12),
+                                            const Icon(
+                                              Icons.near_me_rounded,
+                                              color: AppColors.primary,
+                                              size: 12,
+                                            ),
                                             const SizedBox(width: 4),
                                             Text(
-                                              LocationUtils.formatDistance(distKm),
-                                              style: const TextStyle(color: AppColors.primary, fontSize: 11, fontWeight: FontWeight.bold),
+                                              LocationUtils.formatDistance(
+                                                distKm,
+                                              ),
+                                              style: const TextStyle(
+                                                color: AppColors.primary,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -202,17 +252,27 @@ class RadiusSearchScreen extends ConsumerWidget {
                                     item.description,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.onSurfaceVariant,
+                                    ),
                                   ),
                                   const SizedBox(height: 6),
                                   Row(
                                     children: [
-                                      const Icon(Icons.location_on_outlined, size: 14, color: AppColors.outline),
+                                      const Icon(
+                                        Icons.location_on_outlined,
+                                        size: 14,
+                                        color: AppColors.outline,
+                                      ),
                                       const SizedBox(width: 4),
                                       Expanded(
                                         child: Text(
                                           item.location,
-                                          style: const TextStyle(fontSize: 12, color: AppColors.outline),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: AppColors.outline,
+                                          ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -220,7 +280,11 @@ class RadiusSearchScreen extends ConsumerWidget {
                                       if (item.rewardAmount > 0) ...[
                                         Text(
                                           '৳${item.rewardAmount.toInt()}',
-                                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.secondary),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: AppColors.secondary,
+                                          ),
                                         ),
                                       ],
                                     ],
@@ -236,7 +300,12 @@ class RadiusSearchScreen extends ConsumerWidget {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('Notice: $err', style: const TextStyle(color: AppColors.outline))),
+              error: (err, stack) => Center(
+                child: Text(
+                  'Notice: $err',
+                  style: const TextStyle(color: AppColors.outline),
+                ),
+              ),
             ),
             const SizedBox(height: 30),
           ],

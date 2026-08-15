@@ -48,7 +48,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     await Future.delayed(const Duration(seconds: 1));
     if (mounted) {
       setState(() => _isLoading = false);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully!')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile updated successfully!')),
+      );
       context.pop();
     }
   }
@@ -72,7 +74,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 children: [
                   const CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=60'),
+                    backgroundImage: NetworkImage(
+                      'https://i.pravatar.cc/150?img=60',
+                    ),
                   ),
                   Positioned(
                     bottom: 0,
@@ -82,7 +86,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       radius: 16,
                       child: IconButton(
                         padding: EdgeInsets.zero,
-                        icon: const Icon(Icons.camera_alt, size: 16, color: Colors.white),
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          size: 16,
+                          color: Colors.white,
+                        ),
                         onPressed: () {},
                       ),
                     ),

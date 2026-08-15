@@ -10,15 +10,18 @@ class HelpCenterScreen extends ConsumerWidget {
   final List<Map<String, String>> _faqs = const [
     {
       'question': 'How does AI Visual & Text Matching work?',
-      'answer': 'Gemini AI automatically processes uploaded image feature vectors, color histograms, and OCR text to calculate match confidence between lost and found reports.',
+      'answer':
+          'Gemini AI automatically processes uploaded image feature vectors, color histograms, and OCR text to calculate match confidence between lost and found reports.',
     },
     {
       'question': 'How do I claim a lost item safely?',
-      'answer': 'Verify your NID first, then open a direct realtime chat with the reporter. Provide proof of ownership before meeting in a safe public area or police thana.',
+      'answer':
+          'Verify your NID first, then open a direct realtime chat with the reporter. Provide proof of ownership before meeting in a safe public area or police thana.',
     },
     {
       'question': 'How does Bangladesh Police E-GD integration work?',
-      'answer': 'You can auto-fill a standardized e-GD form with your NID credentials and download a printable PDF to submit directly at your local police station.',
+      'answer':
+          'You can auto-fill a standardized e-GD form with your NID credentials and download a printable PDF to submit directly at your local police station.',
     },
   ];
 
@@ -42,11 +45,24 @@ class HelpCenterScreen extends ConsumerWidget {
             borderRadius: 18,
             padding: const EdgeInsets.all(16),
             child: ExpansionTile(
-              title: Text(item['question']!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              title: Text(
+                item['question']!,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                ),
+              ),
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 8),
-                  child: Text(item['answer']!, style: const TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant, height: 1.4)),
+                  child: Text(
+                    item['answer']!,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: AppColors.onSurfaceVariant,
+                      height: 1.4,
+                    ),
+                  ),
                 ),
               ],
             ),

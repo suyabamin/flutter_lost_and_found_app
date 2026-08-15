@@ -10,12 +10,16 @@ class OtpVerificationScreen extends ConsumerStatefulWidget {
   const OtpVerificationScreen({super.key});
 
   @override
-  ConsumerState<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+  ConsumerState<OtpVerificationScreen> createState() =>
+      _OtpVerificationScreenState();
 }
 
 class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
   final _phoneController = TextEditingController(text: '+8801712345678');
-  final List<TextEditingController> _otpControllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   bool _codeSent = false;
   bool _isLoading = false;
 
@@ -74,12 +78,21 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                     color: AppColors.primary.withOpacity(0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.mark_chat_unread_rounded, size: 48, color: AppColors.primary),
+                  child: const Icon(
+                    Icons.mark_chat_unread_rounded,
+                    size: 48,
+                    color: AppColors.primary,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  _codeSent ? 'Enter Verification Code' : 'Phone Authentication',
-                  style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  _codeSent
+                      ? 'Enter Verification Code'
+                      : 'Phone Authentication',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -87,7 +100,10 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       ? 'We sent a 6-digit code to ${_phoneController.text}'
                       : 'Enter your mobile number to receive a verification OTP code.',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
                 const SizedBox(height: 28),
 
@@ -122,11 +138,16 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                                 keyboardType: TextInputType.number,
                                 textAlign: TextAlign.center,
                                 maxLength: 1,
-                                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                                 decoration: InputDecoration(
                                   counterText: '',
                                   contentPadding: EdgeInsets.zero,
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                                 onChanged: (val) {
                                   if (val.isNotEmpty && index < 5) {

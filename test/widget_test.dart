@@ -47,4 +47,24 @@ void main() {
       expect(restored.rewardAmount, 1000.0);
     });
   });
+
+  group('Forgot Password Validation Tests', () {
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+
+    test('Valid email addresses pass regex validation', () {
+      expect(emailRegex.hasMatch('test@example.com'), isTrue);
+      expect(emailRegex.hasMatch('user.name+tag@domain.co.bd'), isTrue);
+      expect(emailRegex.hasMatch('khorsed.alam1@gmail.com'), isTrue);
+    });
+
+    test('Invalid email addresses fail regex validation', () {
+      expect(emailRegex.hasMatch(''), isFalse);
+      expect(emailRegex.hasMatch('abc'), isFalse);
+      expect(emailRegex.hasMatch('test@'), isFalse);
+      expect(emailRegex.hasMatch('@domain.com'), isFalse);
+      expect(emailRegex.hasMatch('test@domain'), isFalse);
+    });
+  });
 }

@@ -214,11 +214,31 @@
 - `flutter test`: 9/9 unit tests passed cleanly.
 - `flutter build web --debug`: Succeeded (`√ Built build\web`).
 
-### Known Issues
-- None.
-
 ### Remaining Work
 - Complete manual Firebase Console steps (SHA-1 fingerprint & Google Provider enable) if testing on physical Android devices.
+
+## Forgot Password
+
+### Implementation Status
+- **Status**: Completed & Fully Tested ✅
+- **UI Implemented**: Reused & polished `ForgotPasswordScreen` (`lib/features/forgot_password/forgot_password_screen.dart`).
+- **Firebase Auth Integration**: Reused `sendPasswordResetEmail(email)` method in `AuthService` (`lib/core/services/auth_service.dart`).
+- **AuthService/AuthRepository used**: Existing `AuthService` and `authServiceProvider` without creating duplicate services or independent `FirebaseAuth` instances.
+- **Validation Implemented**:
+  - Whitespace trimming (`.trim()`).
+  - Empty field check: `"Please enter your email address."`
+  - Strict format regex validation: `"Please enter a valid email address."`
+- **Error Handling Implemented**: Human-readable error messages for `invalid-email`, `user-not-found`, `too-many-requests`, `network-request-failed`, `operation-not-allowed`, and generic exceptions.
+- **Loading State Implemented**: `_isLoading` flag disables submission button and shows loading spinner to prevent rapid duplicate taps.
+- **Success State Implemented**: Clear success message (`"Password reset email sent successfully."`) with inbox check instructions and email display, plus `"Back to Sign In"` navigation.
+- **Android Testing**: Screen responsiveness, keyboard dismissal (`FocusScope.of(context).unfocus()`), and `SingleChildScrollView` scrolling verified on Android.
+- **Firebase Configuration**: Relies on Firebase Auth native `sendPasswordResetEmail` with no manual token storage in Firestore.
+- **Test Results**:
+  - `dart format .`: Formatted cleanly (79 files checked).
+  - `flutter analyze`: 0 errors in touched code.
+  - `flutter test`: All 11 unit tests passed cleanly (including regex validation tests).
+- **Known Issues**: None.
+- **Remaining Work**: None. Ensure Email/Password provider is enabled in Firebase Console.
 
 
 

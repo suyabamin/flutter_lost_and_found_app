@@ -210,10 +210,16 @@ class AuthService {
   // Password Reset
   // ─────────────────────────────────────────────
   Future<void> sendPasswordResetEmail(String email) async {
+    final normalizedEmail = email.trim().toLowerCase();
+    if (normalizedEmail.isEmpty) {
+      throw 'Please enter your email address.';
+    }
     try {
-      await _auth.sendPasswordResetEmail(email: email);
+      await _auth.sendPasswordResetEmail(email: normalizedEmail);
     } on FirebaseAuthException catch (e) {
       throw _handleFirebaseError(e);
+    } catch (e) {
+      throw 'একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।';
     }
   }
 

@@ -217,6 +217,7 @@ class RadiusSearchState {
   final String sortOption; // 'Nearest', 'Newest', 'Reward', 'AI Match'
   final String? filterType; // null for all, 'lost', 'found'
   final String? selectedPostId;
+  final String searchQuery;
 
   const RadiusSearchState({
     this.radiusKm = 5.0,
@@ -224,6 +225,7 @@ class RadiusSearchState {
     this.sortOption = 'Nearest',
     this.filterType,
     this.selectedPostId,
+    this.searchQuery = '',
   });
 
   RadiusSearchState copyWith({
@@ -232,6 +234,7 @@ class RadiusSearchState {
     String? sortOption,
     String? filterType,
     String? selectedPostId,
+    String? searchQuery,
     bool clearSelectedPost = false,
   }) {
     return RadiusSearchState(
@@ -242,6 +245,7 @@ class RadiusSearchState {
       selectedPostId: clearSelectedPost
           ? null
           : (selectedPostId ?? this.selectedPostId),
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 }
@@ -263,6 +267,10 @@ class RadiusSearchNotifier extends StateNotifier<RadiusSearchState> {
 
   void setFilterType(String? type) {
     state = state.copyWith(filterType: type);
+  }
+
+  void setSearchQuery(String query) {
+    state = state.copyWith(searchQuery: query);
   }
 
   void selectPost(String? postId) {
@@ -302,6 +310,7 @@ final filteredRadiusPostsProvider = Provider<List<PostWithDistance>>((ref) {
   final posts = postsAsync.value ?? <PostModel>[];
 
   final List<PostWithDistance> listWithDistance = [];
+  final String query = radiusState.searchQuery.trim().toLowerCase();
 
   for (final post in posts) {
     // 0. Active Status Filter: Remove completed/found/archived items from map
@@ -312,12 +321,23 @@ final filteredRadiusPostsProvider = Provider<List<PostWithDistance>>((ref) {
       continue;
     }
 
-    // 1. Category Filter
+    // 1. Text Search Filter (Title, Description, Category, Location)
+    if (query.isNotEmpty) {
+      final matchesTitle = post.title.toLowerCase().contains(query);
+      final matchesDesc = post.description.toLowerCase().contains(query);
+      final matchesLoc = post.location.toLowerCase().contains(query);
+      final matchesCat = post.category.toLowerCase().contains(query);
+      if (!matchesTitle && !matchesDesc && !matchesLoc && !matchesCat) {
+        continue;
+      }
+    }
+
+    // 2. Category Filter
     if (category != 'All' && post.category != category) {
       continue;
     }
 
-    // 2. Type Filter (Lost / Found)
+    // 3. Type Filter (Lost / Found)
     final activeType = radiusState.filterType ?? globalType;
     if (activeType != null && activeType.isNotEmpty && activeType != 'All') {
       if (post.type != activeType.toLowerCase()) {
@@ -325,15 +345,24 @@ final filteredRadiusPostsProvider = Provider<List<PostWithDistance>>((ref) {
       }
     }
 
-    // 3. Distance Calculation
+    // 4. Safe Coordinate Check (skip invalid coordinates safely)
+    final double lat = post.latitude;
+    final double lng = post.longitude;
+    final bool isValidCoords =
+        lat >= -90.0 && lat <= 90.0 && lng >= -180.0 && lng <= 180.0;
+    if (!isValidCoords) {
+      continue;
+    }
+
+    // 5. Distance Calculation
     final double distKm = LocationUtils.calculateHaversineDistance(
       liveLoc.latitude,
       liveLoc.longitude,
-      post.latitude,
-      post.longitude,
+      lat,
+      lng,
     );
 
-    // 4. Radius Filter
+    // 6. Radius Filter
     if (radiusState.isEnabled && distKm > radiusState.radiusKm) {
       continue;
     }
@@ -341,7 +370,7 @@ final filteredRadiusPostsProvider = Provider<List<PostWithDistance>>((ref) {
     listWithDistance.add(PostWithDistance(post: post, distanceKm: distKm));
   }
 
-  // 5. Sorting
+  // 7. Sorting
   if (radiusState.sortOption == 'Nearest') {
     listWithDistance.sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
   } else if (radiusState.sortOption == 'Newest') {

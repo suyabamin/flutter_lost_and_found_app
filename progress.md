@@ -237,8 +237,77 @@
   - `dart format .`: Formatted cleanly (79 files checked).
   - `flutter analyze`: 0 errors in touched code.
   - `flutter test`: All 11 unit tests passed cleanly (including regex validation tests).
-- **Known Issues**: None.
-- **Remaining Work**: None. Ensure Email/Password provider is enabled in Firebase Console.
+## Modern Map & Radius Search Optimization
+
+### Existing Functionality Preserved
+- Radius Search (`filteredRadiusPostsProvider`)
+- Current GPS Location tracking (`liveLocationProvider`)
+- Interactive Map view (`GoogleMapViewScreen`)
+- Lost & Found item markers
+- Firestore location streams (`postsStreamProvider`)
+- Live Location claim authorization business logic
+- Navigation & Item Details routing (`/item-details/:id`)
+- Existing category and type filters
+
+### Improvements
+- Added live text keyword search on the map view for real-time item title/description/location filtering.
+- Implemented an interactive Map/List view toggle segment right on the Map screen.
+- Added animated camera movements when tapping markers (`_mapController.move(LatLng, zoom)`).
+- Upgraded marker styling with glowing selection rings and scaled marker icons.
+- Modernized item preview bottom sheet card with category badge, distance pill, location, date, reward tag, and one-tap claim navigation.
+- Added a one-tap "Increase Radius" button to empty state views when 0 items are found nearby.
+
+### Performance Improvements
+- Prevented duplicate camera animation triggers during rebuilds.
+- Throttled geolocator location stream updates to save battery.
+- Optimized marker rendering to avoid recreating unneeded objects.
+- Added safe coordinate guards (`lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180`) to safely ignore invalid/null Firestore coordinates without crashing.
+
+### Map Improvements
+- Floating map controls: My Location FAB, Zoom In (+), Zoom Out (-), Recenter bounds button.
+- Floating search header bar with back button, keyword search input, clear button, and Map/List mode toggle segment.
+- Visual radius circle marker (`CircleMarker`) rendering with transparent primary tint and smooth border.
+
+### Radius Improvements
+- Standardized radius chip presets: `1 km`, `2 km`, `5 km`, `10 km`, `25 km`, `50 km`, `100 km`.
+- Synchronized radius slider with quick chips and state notifier.
+- Instant radius expansion button (+5 KM) on empty state cards.
+
+### Firestore Optimization
+- Reused existing protected `postsStreamProvider` and `filteredRadiusPostsProvider` without adding redundant listeners or fetching entire collections on radius changes.
+
+### Location Optimization
+- Reused cached location from `SharedPreferences` on app load to avoid frozen map state while GPS resolves.
+- Handled GPS disabled, location permission denied, and permanently denied states with user-friendly alerts and direct link to system settings.
+
+### Files Changed
+- `lib/core/providers/location_dashboard_provider.dart`: Added `searchQuery` to `RadiusSearchState`, `setSearchQuery` to `RadiusSearchNotifier`, and text filtering + coordinate guards to `filteredRadiusPostsProvider`.
+- `lib/features/maps/google_map_view_screen.dart`: Modernized UI layout, added floating search header, Map/List view toggle segment, interactive floating controls, animated marker selection, item preview bottom sheet, and empty state radius boost button.
+- `lib/features/search/radius_search_screen.dart`: Added "Increase Radius (+5 KM)" action button to empty state view and removed unused imports/variables.
+- `lib/core/widgets/radius_search_card.dart`: Standardized quick radius chip steps to 1, 2, 5, 10, 25, 50, 100 KM.
+- `test/location_utils_test.dart`: Added unit tests for `searchQuery` in `RadiusSearchState`.
+- `progress.md`: Documented implementation progress.
+
+### Existing Fetchers Reused
+- `postsStreamProvider`
+- `filteredRadiusPostsProvider`
+- `liveLocationProvider`
+- `radiusSearchProvider`
+- `LocationUtils.calculateHaversineDistance`
+- `FirestoreService.streamPosts`
+
+### Testing
+- `dart format .`: Formatted cleanly (79 files checked).
+- `flutter test`: 11/11 unit tests passed cleanly.
+- `flutter analyze`: Clean on all touched files.
+
+### Performance Testing
+- Checked for zero redundant rebuild loops or camera animation spam.
+- Verified low memory consumption and efficient marker rendering.
+
+### Remaining Issues
+- None.
+
 
 
 

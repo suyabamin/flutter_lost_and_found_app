@@ -54,15 +54,21 @@ void main() {
       expect(state.radiusKm, equals(5.0));
       expect(state.isEnabled, isTrue);
       expect(state.sortOption, equals('Nearest'));
+      expect(state.searchQuery, equals(''));
     });
 
     test('copyWith creates updated RadiusSearchState', () {
       const state = RadiusSearchState();
-      final updated = state.copyWith(radiusKm: 20.0, sortOption: 'Newest');
+      final updated = state.copyWith(
+        radiusKm: 20.0,
+        sortOption: 'Newest',
+        searchQuery: 'iPhone',
+      );
 
       expect(updated.radiusKm, equals(20.0));
       expect(updated.sortOption, equals('Newest'));
       expect(updated.isEnabled, isTrue);
+      expect(updated.searchQuery, equals('iPhone'));
     });
   });
 }

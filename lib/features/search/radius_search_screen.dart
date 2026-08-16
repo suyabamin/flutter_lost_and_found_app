@@ -14,7 +14,6 @@ class RadiusSearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final postsAsync = ref.watch(postsStreamProvider);
     final radiusState = ref.watch(radiusSearchProvider);
     final nearbyPostsWithDistance = ref.watch(filteredRadiusPostsProvider);
@@ -122,6 +121,37 @@ class RadiusSearchScreen extends ConsumerWidget {
                               style: TextStyle(
                                 fontSize: 12,
                                 color: AppColors.onSurfaceVariant,
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+                            ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              onPressed: () {
+                                final double nextRadius =
+                                    radiusState.radiusKm < 5
+                                    ? 5.0
+                                    : (radiusState.radiusKm < 10
+                                          ? 10.0
+                                          : (radiusState.radiusKm < 25
+                                                ? 25.0
+                                                : 50.0));
+                                ref
+                                    .read(radiusSearchProvider.notifier)
+                                    .setRadius(nextRadius);
+                              },
+                              icon: const Icon(
+                                Icons.add_circle_outline_rounded,
+                                size: 16,
+                              ),
+                              label: Text(
+                                'Increase Radius (${LocationUtils.formatDistance(radiusState.radiusKm < 5 ? 5.0 : radiusState.radiusKm + 5)})',
+                                style: const TextStyle(fontSize: 12),
                               ),
                             ),
                           ],

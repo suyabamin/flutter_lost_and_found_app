@@ -13,7 +13,7 @@ class RadiusSearchCard extends ConsumerWidget {
     2.0,
     5.0,
     10.0,
-    20.0,
+    25.0,
     50.0,
     100.0,
   ];

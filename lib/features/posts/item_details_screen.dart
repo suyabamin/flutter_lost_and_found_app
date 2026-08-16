@@ -10,6 +10,7 @@ import '../../core/models/post_model.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/services/firestore_service.dart';
+import 'report_post_sheet.dart';
 
 class ItemDetailsScreen extends ConsumerWidget {
   final String id;
@@ -373,6 +374,48 @@ class ItemDetailsScreen extends ConsumerWidget {
                               ],
                             ],
                           ),
+
+                          // Report Post — only shown to authenticated non-owners
+                          if (!isPostOwner && currentUid != null) ...[
+                            const SizedBox(height: 12),
+                            SizedBox(
+                              width: double.infinity,
+                              child: Semantics(
+                                label: 'Report this post',
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      48,
+                                    ),
+                                    foregroundColor: AppColors.error,
+                                    side: const BorderSide(
+                                      color: AppColors.error,
+                                      width: 1,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                  ),
+                                  onPressed: () => showReportPostSheet(
+                                    context,
+                                    postId: post?.id ?? id,
+                                    postTitle: title,
+                                  ),
+                                  icon: const Icon(
+                                    Icons.flag_outlined,
+                                    size: 18,
+                                  ),
+                                  label: const Text(
+                                    'Report Post',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),

@@ -11,6 +11,7 @@ import '../services/cloudinary_service.dart';
 import '../models/recovery_models.dart';
 
 import '../models/campus_models.dart';
+import '../models/report_model.dart';
 
 // Services
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
@@ -87,3 +88,26 @@ final campusMembersStreamProvider =
     StreamProvider.family<List<CampusMemberModel>, String>((ref, campusId) {
       return ref.watch(firestoreServiceProvider).streamCampusMembers(campusId);
     });
+
+// ── Report Providers (additive) ──────────────────────────────────────────────
+
+/// Streams all reports (newest first, page size 20) for the admin screen.
+final reportsStreamProvider = StreamProvider<List<ReportModel>>((ref) {
+  return ref.watch(firestoreServiceProvider).streamReports();
+});
+
+/// Streams reports filtered by status string (e.g. 'pending', 'reviewing').
+/// Pass 'All' or empty to stream every report.
+final reportsByStatusProvider =
+    StreamProvider.family<List<ReportModel>, String>((ref, status) {
+      return ref
+          .watch(firestoreServiceProvider)
+          .streamReports(status: status == 'All' ? null : status);
+    });
+
+/// Streams the total pending-report count for the Admin Dashboard stat card.
+final pendingReportCountProvider = StreamProvider<int>((ref) {
+  return ref
+      .watch(firestoreServiceProvider)
+      .streamReportCount(status: 'pending');
+});

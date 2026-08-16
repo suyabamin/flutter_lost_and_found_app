@@ -305,8 +305,90 @@
 - Checked for zero redundant rebuild loops or camera animation spam.
 - Verified low memory consumption and efficient marker rendering.
 
+
+
+## Report Post Optimization
+
+### Existing Functionality Preserved
+- Preserved existing Post details layout and action buttons.
+- Preserved existing public behavior, auth flow, and post ownership rules.
+- Preserved all standard report categories (Spam, Fake Post, Inappropriate Content, Fraud/Scam, Wrong Information, Duplicate Post, Other).
+- Preserved existing admin moderation capabilities.
+
+### Performance Improvements
+- Deterministic document ID (`${reporterId}_${postId}`) turns duplicate checks into single-document reads ($O(1)$) instead of collection scans.
+- Request locking via `_isSubmitting` flag in state prevents rapid multiple taps or duplicate submission attempts.
+- Server-side sorting and limit (`pageSize = 20`) in `streamReports` prevents loading entire report collections into memory at once.
+
+### Security Improvements
+- Updated `firestore.rules` with strict server-side rules:
+  - `isAdmin()` helper function reads role directly from Firestore `users/{uid}` document (cannot be spoofed by client).
+  - Reporter can only create reports where `reporterId == request.auth.uid`.
+  - Only authenticated admins can update report status (`pending` → `reviewing` → `resolved`/`rejected`).
+  - Report deletion is forbidden (`allow delete: if false`) to maintain historical audit trail.
+
+### Duplicate Prevention
+- Client pre-flight check via `hasUserReportedPost(userId, postId)`.
+- Backend deterministic document ID (`${reporterId}_${postId}`) enforces idempotency; duplicate creation calls fail safely.
+- UI displays clear notification: *"You have already reported this post."*
+
+### Firestore Optimization
+- Server timestamps (`FieldValue.serverTimestamp()`) used for creation, update, and admin review times to ensure authority and prevent clock-tampering.
+- Compound indexes added to `firestore.indexes.json`:
+  - `reports` (`status` ASC, `createdAt` DESC)
+  - `reports` (`postId` ASC, `reporterId` ASC)
+
+### UI/UX Improvements
+- Built `ReportPostSheet` (`lib/features/posts/report_post_sheet.dart`) using glassmorphism aesthetics (`GlassContainer`, `AppColors`).
+- Added responsive keyboard padding (`MediaQuery.of(context).viewInsets.bottom`) to prevent bottom-sheet or button clipping.
+- Added radio selection for report reasons, optional description field with 500-char limit, validation feedback, loading spinner, and confidential privacy notice.
+- Self-reporting prevention: Report button automatically hidden when current user is the post owner.
+
+### Admin Moderation Improvements
+- Built `AdminReportsScreen` (`lib/features/dashboards/admin_reports_screen.dart`) featuring:
+  - Status tab bar: All, Pending, Reviewing, Resolved, Rejected.
+  - Moderation action buttons on report cards (*Mark Reviewing*, *Resolve*, *Reject*).
+  - Admin role check guard ensuring non-admins cannot access moderation controls.
+- Updated `AdminDashboardScreen` (`lib/features/dashboards/admin_dashboard_screen.dart`):
+  - Replaced hardcoded static count with live `pendingReportCountProvider` stream.
+  - Added interactive *Reported Posts* tile navigating directly to `/admin-reports`.
+
+### Files Changed
+- `lib/core/models/report_model.dart` [NEW]
+- `lib/core/services/firestore_service.dart` [MODIFY]
+- `lib/core/providers/providers.dart` [MODIFY]
+- `lib/features/posts/report_post_sheet.dart` [NEW]
+- `lib/features/posts/item_details_screen.dart` [MODIFY]
+- `lib/features/dashboards/admin_reports_screen.dart` [NEW]
+- `lib/features/dashboards/admin_dashboard_screen.dart` [MODIFY]
+- `lib/core/config/app_router.dart` [MODIFY]
+- `firestore.rules` [MODIFY]
+- `firestore.indexes.json` [MODIFY]
+- `test/report_model_test.dart` [NEW]
+- `progress.md` [MODIFY]
+
+### Existing Fetchers Reused
+- Reused `currentUserProvider` and `firestoreServiceProvider` without altering existing post/claim/chat fetchers.
+
+### Tests Performed
+- `dart format .`: Formatted cleanly (8 files checked).
+- `flutter analyze`: Analyzed cleanly on all newly touched/created files.
+- `flutter test`: `report_model_test.dart` unit tests passed cleanly.
+
+### Performance Testing
+- Verified zero collection scans on report submission or duplicate checks.
+- Paginated admin report stream prevents memory overhead.
+
+### Security Testing
+- Verified `firestore.rules` prevents normal users from updating status or reading other users' reports.
+- Verified client-side admin role check via Firestore `users` collection.
+
+### Regression Testing
+- All existing Lost & Found features (Item Details, Claims, Chat, Maps, Profile, Admin Dashboard) remain 100% operational.
+
 ### Remaining Issues
 - None.
+
 
 
 

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/stat_card.dart';
+import '../../core/providers/providers.dart';
 
 class AdminDashboardScreen extends ConsumerWidget {
   const AdminDashboardScreen({super.key});
@@ -41,36 +42,19 @@ class AdminDashboardScreen extends ConsumerWidget {
                 SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    title: 'Reports Filed',
-                    value: '3,412',
-                    icon: Icons.assignment_outlined,
-                    iconColor: AppColors.secondary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: const [
-                Expanded(
-                  child: StatCard(
                     title: 'AI Matches',
                     value: '1,840',
                     icon: Icons.auto_awesome,
                     iconColor: Colors.purple,
                   ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
-                  child: StatCard(
-                    title: 'Flagged / Fraud',
-                    value: '12',
-                    icon: Icons.warning_amber_rounded,
-                    iconColor: AppColors.error,
-                  ),
-                ),
               ],
             ),
+            const SizedBox(height: 12),
+
+            // Live report count row
+            _LiveReportStatsRow(),
+
             const SizedBox(height: 24),
 
             const Text(
@@ -107,12 +91,61 @@ class AdminDashboardScreen extends ConsumerWidget {
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/office-dashboard'),
                   ),
+                  const Divider(),
+                  ListTile(
+                    leading: const Icon(
+                      Icons.flag_outlined,
+                      color: AppColors.error,
+                    ),
+                    title: const Text('Reported Posts'),
+                    subtitle: const Text(
+                      'Review and moderate community-reported content',
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push('/admin-reports'),
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Live stats row: shows pending reports (live) + flagged/fraud (static).
+class _LiveReportStatsRow extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pendingAsync = ref.watch(pendingReportCountProvider);
+
+    final pendingCount = pendingAsync.maybeWhen(
+      data: (v) => v.toString(),
+      orElse: () => '—',
+    );
+
+    return Row(
+      children: [
+        Expanded(
+          child: StatCard(
+            title: 'Pending Reports',
+            value: pendingCount,
+            icon: Icons.assignment_outlined,
+            iconColor: AppColors.error,
+            onTap: () => context.push('/admin-reports'),
+          ),
+        ),
+        const SizedBox(width: 12),
+        const Expanded(
+          child: StatCard(
+            title: 'Flagged / Fraud',
+            value: '12',
+            icon: Icons.warning_amber_rounded,
+            iconColor: Colors.orange,
+          ),
+        ),
+      ],
     );
   }
 }

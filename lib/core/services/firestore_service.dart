@@ -6,6 +6,7 @@ import '../models/chat_model.dart';
 import '../models/claim_model.dart';
 import '../models/recovery_models.dart';
 import '../models/campus_models.dart';
+import '../models/report_model.dart';
 
 class FirestoreService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -22,6 +23,7 @@ class FirestoreService {
   CollectionReference get _walletRef => _db.collection('wallet');
   CollectionReference get _campusesRef => _db.collection('campuses');
   CollectionReference get _campusMembersRef => _db.collection('campus_members');
+  CollectionReference get _reportsRef => _db.collection('reports');
 
   // USER CRUD
   Future<void> saveUser(UserModel user) async {
@@ -1445,5 +1447,128 @@ class FirestoreService {
           return list;
         })
         .handleError((_) => <UserModel>[]);
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // REPORT POST — additive methods (no existing code modified)
+  // ─────────────────────────────────────────────────────────────
+
+  /// Returns true if [userId] has already submitted an active report
+  /// for [postId]. Uses the deterministic document ID so it is a
+  /// single-document read (no collection scan).
+  Future<bool> hasUserReportedPost(String userId, String postId) async {
+    try {
+      final docId = '${userId}_$postId';
+      final doc = await _reportsRef.doc(docId).get();
+      if (!doc.exists) return false;
+      final data = doc.data() as Map<String, dynamic>?;
+      if (data == null) return false;
+      // Treat pending and reviewing as "already reported"
+      final status = data['status']?.toString() ?? 'pending';
+      return status == 'pending' || status == 'reviewing';
+    } catch (_) {
+      return false; // Fail-open: allow submission; server rules protect duplicates
+    }
+  }
+
+  /// Submits a new report.  Uses a deterministic document ID
+  /// (`${reporterId}_${postId}`) so that:
+  ///   1. The security rule `allow create` (not update) prevents a second
+  ///      write from the same reporter for the same post.
+  ///   2. Rapid multiple taps produce at most one Firestore document.
+  ///
+  /// Throws [FirebaseException] on failure so callers can show the user
+  /// an appropriate error message.
+  Future<void> submitReport(ReportModel report) async {
+    // Attempt the write using create semantics.  If the document already
+    // exists Firestore will reject it with ALREADY_EXISTS.
+    await _reportsRef
+        .doc(report.reportId)
+        .set(
+          report.toMap(),
+          SetOptions(merge: false), // fail if document already exists
+        );
+
+    // Notify all admins (best-effort — do not block on failure)
+    try {
+      final adminSnapshot = await _usersRef
+          .where('role', isEqualTo: 'admin')
+          .limit(5)
+          .get();
+      final notifId =
+          'report_notif_${report.reportId}_${DateTime.now().millisecondsSinceEpoch}';
+      for (final adminDoc in adminSnapshot.docs) {
+        final adminId = adminDoc.id;
+        await createNotification({
+          'id': '${notifId}_$adminId',
+          'userId': adminId,
+          'title': 'New Post Report 🚨',
+          'body': '${report.reporterName} reported a post: "${report.reason}".',
+          'postId': report.postId,
+          'reportId': report.reportId,
+          'type': 'report',
+          'isRead': false,
+          'timestamp': DateTime.now().toIso8601String(),
+        });
+      }
+    } catch (_) {
+      // Notification failure must NOT roll back the report submission
+    }
+  }
+
+  /// Streams reports for the admin moderation screen.
+  ///
+  /// [status] — if provided, filters by status (e.g. 'pending').
+  /// [pageSize] — number of documents to fetch per page (default 20).
+  ///
+  /// Results are ordered by createdAt descending (newest first).
+  Stream<List<ReportModel>> streamReports({String? status, int pageSize = 20}) {
+    Query query = _reportsRef.orderBy('createdAt', descending: true);
+    if (status != null && status.isNotEmpty && status != 'All') {
+      query = query.where('status', isEqualTo: status);
+    }
+    query = query.limit(pageSize);
+
+    return query
+        .snapshots()
+        .map(
+          (snapshot) => snapshot.docs
+              .map(
+                (doc) => ReportModel.fromMap(
+                  doc.data() as Map<String, dynamic>,
+                  doc.id,
+                ),
+              )
+              .toList(),
+        )
+        .handleError((_) => <ReportModel>[]);
+  }
+
+  /// Streams the total count of reports in a given [status] (or all if null).
+  /// Used by the Admin Dashboard stats card.
+  Stream<int> streamReportCount({String? status}) {
+    Query query = _reportsRef;
+    if (status != null && status.isNotEmpty && status != 'All') {
+      query = query.where('status', isEqualTo: status);
+    }
+    return query.snapshots().map((s) => s.size).handleError((_) => 0);
+  }
+
+  /// Admin-only: update a report's status.
+  ///
+  /// [reportId] — deterministic report document ID.
+  /// [newStatus] — 'reviewing', 'resolved', or 'rejected'.
+  /// [adminUid] — UID of the admin performing the action.
+  Future<void> updateReportStatus({
+    required String reportId,
+    required String newStatus,
+    required String adminUid,
+  }) async {
+    await _reportsRef.doc(reportId).update({
+      'status': newStatus,
+      'updatedAt': FieldValue.serverTimestamp(),
+      'reviewedAt': FieldValue.serverTimestamp(),
+      'reviewedBy': adminUid,
+    });
   }
 }

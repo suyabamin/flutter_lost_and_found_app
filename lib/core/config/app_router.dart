@@ -52,6 +52,7 @@ import '../../features/verification/police_gd_integration_screen.dart';
 import '../../features/dashboards/admin_dashboard_screen.dart';
 import '../../features/dashboards/university_dashboard_screen.dart';
 import '../../features/dashboards/office_dashboard_screen.dart';
+import '../../features/dashboards/admin_reports_screen.dart';
 
 import '../../features/settings/settings_screen.dart';
 import '../../features/settings/help_center_screen.dart';
@@ -263,6 +264,10 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/admin',
       builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    GoRoute(
+      path: '/admin-reports',
+      builder: (context, state) => const AdminReportsScreen(),
     ),
     GoRoute(
       path: '/university-dashboard',

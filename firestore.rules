@@ -7,6 +7,14 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // Checks Firestore for the user's role — NOT a client-supplied value.
+    // This is a server-side read so it cannot be spoofed by the client.
+    function isAdmin() {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
     function claimDoc(claimId) {
       return get(/databases/$(database)/documents/claims/$(claimId));
     }
@@ -172,6 +180,30 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // ── Reports ───────────────────────────────────────────────────────────────
+    // Deterministic document ID: '${reporterId}_${postId}'
+    // Security guarantees:
+    //   - A user can only CREATE a report where they are the reporter (uid verified).
+    //   - A user can READ only their own reports; admins can read all.
+    //   - Only admins (role verified server-side from users collection) can UPDATE status.
+    //   - Nobody can DELETE reports (preserve moderation history).
+    //   - Normal users cannot change report status, impersonate admin, or
+    //     access another user's report.
+    match /reports/{reportId} {
+      // Reporter reads their own; admin reads all
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.reporterId ||
+        isAdmin()
+      );
+      // Reporter can create — uid must match reporterId field (cannot impersonate)
+      allow create: if isSignedIn() &&
+        request.auth.uid == request.resource.data.reporterId;
+      // Only admin can update (change status, mark reviewed)
+      allow update: if isAdmin();
+      // Reports are never deleted — preserved for audit history
+      allow delete: if false;
+    }
+
     // ── Default deny ──────────────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
@@ -179,4 +211,3 @@ service cloud.firestore {
 
   }
 }
-

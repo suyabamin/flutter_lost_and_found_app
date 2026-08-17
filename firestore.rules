@@ -49,7 +49,7 @@ service cloud.firestore {
         request.auth.uid == userId ||
         isOtherClaimParticipant(request.resource.data.updatedViaClaimId, userId)
       );
-      allow delete: if false;
+      allow delete: if isSignedIn() && request.auth.uid == userId;
     }
 
     // ── Posts ─────────────────────────────────────────────────────────────────

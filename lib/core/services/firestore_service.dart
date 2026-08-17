@@ -58,6 +58,58 @@ class FirestoreService {
         .handleError((_) => null);
   }
 
+  /// Update user profile details in Firestore (displayName, photoUrl, phoneNumber, location).
+  /// Leaves protected fields (role, rewardPoints, trustScore, etc.) untouched.
+  Future<void> updateUserProfile({
+    required String uid,
+    String? displayName,
+    String? photoUrl,
+    String? phoneNumber,
+    String? location,
+  }) async {
+    final Map<String, dynamic> updateData = {};
+    if (displayName != null) updateData['displayName'] = displayName;
+    if (photoUrl != null) updateData['photoUrl'] = photoUrl;
+    if (phoneNumber != null) updateData['phoneNumber'] = phoneNumber;
+    if (location != null) updateData['location'] = location;
+
+    if (updateData.isNotEmpty) {
+      await _usersRef.doc(uid).set(updateData, SetOptions(merge: true));
+    }
+  }
+
+  /// Delete user profile document from Firestore (`users/{uid}`).
+  Future<void> deleteUserData(String uid) async {
+    try {
+      await _usersRef.doc(uid).delete();
+    } catch (e) {
+      print('Firestore deleteUserData notice: $e');
+      rethrow;
+    }
+  }
+
+  /// Delete a post owned by `userId` from Firestore and local cache.
+  Future<void> deletePost({
+    required String postId,
+    required String userId,
+  }) async {
+    final postDoc = await _postsRef.doc(postId).get();
+    if (postDoc.exists) {
+      final data = postDoc.data() as Map<String, dynamic>?;
+      final postOwnerId = data?['userId'];
+      if (postOwnerId != null && postOwnerId != userId) {
+        throw 'You are not authorized to delete this post.';
+      }
+    }
+
+    // 1. Remove from local memory store
+    _localPosts.removeWhere((p) => p.id == postId);
+    _localImageBytes.remove(postId);
+
+    // 2. Delete from Cloud Firestore
+    await _postsRef.doc(postId).delete();
+  }
+
   // In-memory local posts cache to ensure newly posted items are immediately available
   static final List<PostModel> _localPosts = [];
 

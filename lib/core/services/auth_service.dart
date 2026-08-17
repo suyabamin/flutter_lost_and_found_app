@@ -224,6 +224,68 @@ class AuthService {
   }
 
   // ─────────────────────────────────────────────
+  // Update Auth Profile
+  // ─────────────────────────────────────────────
+  Future<void> updateAuthDisplayName(String displayName) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.updateDisplayName(displayName);
+    }
+  }
+
+  Future<void> updateAuthPhotoUrl(String photoUrl) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      await user.updatePhotoURL(photoUrl);
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // Re-authentication & Account Deletion
+  // ─────────────────────────────────────────────
+  Future<void> reauthenticateEmailPassword(String password) async {
+    final user = _auth.currentUser;
+    if (user == null || user.email == null) {
+      throw 'No authenticated user found for re-authentication.';
+    }
+    final credential = EmailAuthProvider.credential(
+      email: user.email!,
+      password: password,
+    );
+    try {
+      await user.reauthenticateWithCredential(credential);
+    } on FirebaseAuthException catch (e) {
+      throw _handleFirebaseError(e);
+    }
+  }
+
+  Future<void> reauthenticateGoogle() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw 'No authenticated user found for re-authentication.';
+    }
+    final cred = await signInWithGoogle();
+    if (cred != null && cred.credential != null) {
+      await user.reauthenticateWithCredential(cred.credential!);
+    }
+  }
+
+  Future<void> deleteAuthAccount() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw 'No authenticated user found to delete.';
+    }
+    try {
+      await user.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        throw 'requires-recent-login';
+      }
+      throw _handleFirebaseError(e);
+    }
+  }
+
+  // ─────────────────────────────────────────────
   // Sign Out
   // ─────────────────────────────────────────────
   Future<void> signOut() async {

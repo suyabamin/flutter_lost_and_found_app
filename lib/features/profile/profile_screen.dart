@@ -39,12 +39,64 @@ class ProfileScreen extends ConsumerWidget {
                   Stack(
                     alignment: Alignment.bottomRight,
                     children: [
-                      CircleAvatar(
-                        radius: 46,
-                        backgroundImage: NetworkImage(
-                          user?.photoUrl.isNotEmpty == true
-                              ? user!.photoUrl
-                              : 'https://i.pravatar.cc/150?img=60',
+                      Container(
+                        width: 92,
+                        height: 92,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          border: Border.all(
+                            color: AppColors.primary,
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: user?.photoUrl.isNotEmpty == true
+                              ? NetworkImage(user!.photoUrl) != null
+                                    ? Image.network(
+                                        user.photoUrl,
+                                        width: 92,
+                                        height: 92,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => Center(
+                                          child: Text(
+                                            user.displayName.isNotEmpty
+                                                ? user.displayName[0]
+                                                      .toUpperCase()
+                                                : 'U',
+                                            style: const TextStyle(
+                                              fontSize: 34,
+                                              fontWeight: FontWeight.bold,
+                              ? Image.network(
+                                  user!.photoUrl,
+                                  width: 92,
+                                  height: 92,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Center(
+                                    child: Text(
+                                      user.displayName.isNotEmpty
+                                          ? user.displayName[0].toUpperCase()
+                                          : 'U',
+                                      style: const TextStyle(
+                                        fontSize: 34,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Center(
+                                  child: Text(
+                                    user?.displayName.isNotEmpty == true
+                                        ? user!.displayName[0].toUpperCase()
+                                        : 'U',
+                                    style: const TextStyle(
+                                      fontSize: 34,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.primary,
+                                    ),
+                                  ),
+                                ),
                         ),
                       ),
                       CircleAvatar(

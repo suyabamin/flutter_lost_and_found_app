@@ -474,6 +474,92 @@
 ### Remaining Issues
 - None.
 
+## Profile & Account Management
+
+### Profile Issues Found
+- `EditProfileScreen` used a mock function with `Future.delayed` timer instead of calling `FirestoreService`.
+- Profile image picker & camera buttons had empty callbacks with no `ImagePicker` or `CloudinaryService` connection.
+- `ProfileScreen` and `EditProfileScreen` displayed hardcoded Pravatar images instead of `user.photoUrl` and clean initials fallback.
+- `MyPostsScreen` and `ItemDetailsScreen` lacked post deletion actions and safety guards for active claims.
+- `SettingsScreen` lacked account deletion and re-authentication options.
+- `firestore.rules` prohibited document deletion for `/users/{userId}` (`allow delete: if false;`).
+
+### Edit Profile
+- Fully connected `EditProfileScreen` form controllers (`displayName`, `phoneNumber`, `location`) to `currentUserProvider`.
+- Added `FirestoreService.updateUserProfile` to update non-protected profile fields in Firestore while preserving protected fields (`role`, `rewardPoints`, `trustScore`, `isNidVerified`, `createdAt`).
+- Synchronized Firebase Auth user profile (`displayName` and `photoUrl`) via `AuthService`.
+- Added loading state indicator ("Uploading profile image...", "Saving profile...") and navigation pop protection (`PopScope`).
+
+### Profile Image
+- Added image selection from Camera and Gallery using `ImagePicker` with automatic image compression (`maxWidth: 800`, `maxHeight: 800`, `imageQuality: 75`).
+- Supported image preview, "Add Profile Image", "Change Profile Image", and "Remove Profile Image".
+- Updated `ProfileScreen` and `EditProfileScreen` to display clean user initials when no profile image exists.
+
+### Cloudinary Integration
+- Reused existing `CloudinaryService.uploadXFile` with safe unsigned upload preset.
+- Uploaded profile images under `profiles/` folder.
+- Preserved existing photo URL fallback if Cloudinary is unconfigured.
+- Kept Cloudinary API Secret strictly protected (zero credentials in client code).
+
+### Delete Own Post
+- Added Delete Post action button (trash icon) to `MyPostsScreen` and `ItemDetailsScreen` for post owners.
+- Verified ownership using Firebase Auth UID (`request.auth.uid == resource.data.userId`).
+- Enforced active claim guard: prevents post deletion if an approved claim or active recovery is in progress.
+- Added confirmation dialog ("Delete this post?") and invoked `FirestoreService.deletePost`.
+
+### Delete Account
+- Added "Account Actions" section with a "Delete Account" button on `SettingsScreen`.
+- Displayed strong confirmation dialog warning that account deletion is permanent.
+- Implemented `FirestoreService.deleteUserData(uid)` to remove the user's Firestore document.
+- Implemented `AuthService.deleteAuthAccount()` to delete the user's Firebase Auth account.
+
+### Security Rules
+- Updated `firestore.rules` under `match /users/{userId}`: `allow delete: if isSignedIn() && request.auth.uid == userId;`.
+- Verified post deletion rule `allow delete: if isSignedIn() && request.auth.uid == resource.data.userId;`.
+
+### Authentication / Reauthentication
+- Handled `requires-recent-login` exceptions during sensitive account deletion.
+- Added password re-authentication dialog for email users (`AuthService.reauthenticateEmailPassword`).
+- Added Google OAuth re-authentication for Google users (`AuthService.reauthenticateGoogle`).
+
+### Files Changed
+- `firestore.rules` [MODIFY]
+- `lib/core/services/firestore_service.dart` [MODIFY]
+- `lib/core/services/auth_service.dart` [MODIFY]
+- `lib/features/profile/edit_profile_screen.dart` [MODIFY]
+- `lib/features/profile/profile_screen.dart` [MODIFY]
+- `lib/features/posts/my_posts_screen.dart` [MODIFY]
+- `lib/features/posts/item_details_screen.dart` [MODIFY]
+- `lib/features/settings/settings_screen.dart` [MODIFY]
+- `test/profile_and_account_test.dart` [NEW]
+- `progress.md` [MODIFY]
+
+### Existing Fetchers Reused
+- `currentUserProvider`
+- `firestoreServiceProvider`
+- `authServiceProvider`
+- `cloudinaryServiceProvider`
+- `FirestoreService.streamUserPosts`
+- `FirestoreService.streamClaimsForPost`
+
+### Testing
+- `dart format .`: Formatted cleanly (85 files checked).
+- `flutter analyze`: 0 errors in touched files.
+- `flutter test`: All 21/21 unit tests passed cleanly (including `test/profile_and_account_test.dart`).
+
+### Security Testing
+- Verified users can only update and delete their own user document.
+- Verified users can only delete their own posts.
+- Verified non-owners cannot delete other users' posts or profiles.
+- Verified Cloudinary API Secret is NOT exposed in client code.
+
+### Regression Testing
+- Verified Login, Register, Google Sign-In, Forgot Password, Profile, Edit Profile, My Posts, Item Details, Claim Item, Chat, Notifications, Maps, Leaderboard, and Admin Dashboard features remain 100% operational.
+
+### Known Limitations
+- Server-side Cloudinary asset deletion for deleted posts/profile images requires a backend Cloud Function, as client-side deletion using API Secret is forbidden for security.
+
+
 
 
 

@@ -234,8 +234,34 @@ class FirestoreService {
   }
 
   // CLAIMS CRUD & WORKFLOW
+  Future<bool> hasActiveClaim(String claimerId, String postId) async {
+    try {
+      final snapshot = await _claimsRef
+          .where('postId', isEqualTo: postId)
+          .where('claimerId', isEqualTo: claimerId)
+          .get();
+
+      for (final doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>?;
+        final status = data?['status'] as String? ?? 'pending';
+        if (status != 'rejected') {
+          return true;
+        }
+      }
+    } catch (_) {}
+    return false;
+  }
+
   Future<void> createClaim(ClaimModel claim) async {
     try {
+      final alreadyClaimed = await hasActiveClaim(
+        claim.claimerId,
+        claim.postId,
+      );
+      if (alreadyClaimed) {
+        throw Exception('You have already submitted a claim for this item.');
+      }
+
       await _claimsRef.doc(claim.claimId).set(claim.toMap());
 
       final now = DateTime.now().toIso8601String();

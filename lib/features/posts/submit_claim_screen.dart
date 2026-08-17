@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +19,9 @@ class SubmitClaimScreen extends ConsumerStatefulWidget {
 
   const SubmitClaimScreen({super.key, required this.postId});
 
+  /// Easy-to-configure maximum proof image limit for claims
+  static const int maxClaimImages = 5;
+
   @override
   ConsumerState<SubmitClaimScreen> createState() => _SubmitClaimScreenState();
 }
@@ -37,8 +39,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
   double _latitude = 23.8103;
   double _longitude = 90.4125;
   final List<XFile> _pickedImages = [];
-  final List<Uint8List> _pickedBytes = []; // raw bytes for local display
+  final List<Uint8List> _pickedBytes = [];
   bool _isSubmitting = false;
+  String _uploadStatusMessage = '';
 
   @override
   void initState() {
@@ -81,71 +84,148 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
     } catch (_) {}
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImages() async {
+    if (_pickedImages.length >= SubmitClaimScreen.maxClaimImages) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Maximum ${SubmitClaimScreen.maxClaimImages} proof images allowed.',
+          ),
+        ),
+      );
+      return;
+    }
+
     try {
       final picker = ImagePicker();
-      final picked = await picker.pickImage(
-        source: ImageSource.gallery,
-        maxWidth: 600,
-        maxHeight: 600,
-        imageQuality: 50,
+      final List<XFile> selected = await picker.pickMultiImage(
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 70,
       );
-      if (picked != null) {
-        final bytes = await picked.readAsBytes();
-        setState(() {
-          _pickedImages.add(picked);
-          _pickedBytes.add(bytes);
-        });
+
+      if (selected.isNotEmpty) {
+        final availableSlots =
+            SubmitClaimScreen.maxClaimImages - _pickedImages.length;
+        final toAdd = selected.take(availableSlots).toList();
+
+        for (final xfile in toAdd) {
+          final bytes = await xfile.readAsBytes();
+          if (mounted) {
+            setState(() {
+              _pickedImages.add(xfile);
+              _pickedBytes.add(bytes);
+            });
+          }
+        }
+
+        if (selected.length > availableSlots && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Only the first $availableSlots images were added to stay within the ${SubmitClaimScreen.maxClaimImages}-image limit.',
+              ),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Could not pick image: $e')));
+        ).showSnackBar(SnackBar(content: Text('Could not pick images: $e')));
       }
+    }
+  }
+
+  void _removeImage(int index) {
+    if (index >= 0 && index < _pickedImages.length) {
+      setState(() {
+        _pickedImages.removeAt(index);
+        if (index < _pickedBytes.length) {
+          _pickedBytes.removeAt(index);
+        }
+      });
     }
   }
 
   Future<void> _handleSubmitClaim() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
-    setState(() => _isSubmitting = true);
+    final authUser = FirebaseAuth.instance.currentUser;
+    final currentUid = authUser?.uid;
+
+    if (currentUid == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('You must be signed in to submit a claim.'),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+      _uploadStatusMessage = 'Validating post & claim permissions...';
+    });
 
     try {
-      // Use FirebaseAuth directly (synchronous) — avoids the async StreamProvider
-      // null bug where claimerId becomes 'claimer_timestamp' instead of real uid,
-      // causing the Firestore read rule to deny access right after creation.
-      final authUser = FirebaseAuth.instance.currentUser;
-      final currentUid = authUser?.uid;
-
-      if (currentUid == null) {
-        throw Exception('You must be signed in to submit a claim.');
-      }
-
-      // Also read the Riverpod user for display name / email fallbacks
-      final user = ref.read(currentUserProvider).value;
-      final post = await ref
-          .read(firestoreServiceProvider)
-          .getPost(widget.postId);
+      final firestoreService = ref.read(firestoreServiceProvider);
+      final post = await firestoreService.getPost(widget.postId);
 
       if (post == null) {
         throw Exception('Original post not found.');
       }
 
-      // Upload proof images if provided
-      final cloudinaryService = ref.read(cloudinaryServiceProvider);
+      if (post.status == 'closed' || post.status == 'completed') {
+        throw Exception('This post is no longer active.');
+      }
+
+      if (post.userId == currentUid) {
+        throw Exception('You cannot submit a claim for your own post.');
+      }
+
+      // Pre-flight duplicate claim check
+      final alreadyClaimed = await firestoreService.hasActiveClaim(
+        currentUid,
+        widget.postId,
+      );
+      if (alreadyClaimed) {
+        throw Exception('You have already submitted a claim for this item.');
+      }
+
+      // Upload proof images to Cloudinary with controlled concurrency
       List<String> imageUrls = [];
       if (_pickedImages.isNotEmpty) {
-        imageUrls = await cloudinaryService.uploadMultipleXFiles(_pickedImages);
-      }
-      // Empty list is fine — claim images are optional proof documents
+        setState(() {
+          _uploadStatusMessage = 'Preparing image upload...';
+        });
 
-      final claimId = 'claim_${DateTime.now().millisecondsSinceEpoch}';
+        final cloudinaryService = ref.read(cloudinaryServiceProvider);
+        imageUrls = await cloudinaryService.uploadMultipleXFiles(
+          _pickedImages,
+          maxConcurrency: 3,
+          onProgress: (completed, total, message) {
+            if (mounted) {
+              setState(() {
+                _uploadStatusMessage = message;
+              });
+            }
+          },
+        );
+      }
+
+      setState(() {
+        _uploadStatusMessage = 'Saving claim document...';
+      });
+
+      final user = ref.read(currentUserProvider).value;
+      final claimId = 'claim_${currentUid}_${widget.postId}';
+
       final newClaim = ClaimModel(
         claimId: claimId,
         postId: widget.postId,
         postOwnerId: post.userId,
-        // Always use the real Firebase Auth UID — never a guest/timestamp fallback
         claimerId: currentUid,
         claimerName: _nameController.text.trim().isNotEmpty
             ? _nameController.text.trim()
@@ -164,9 +244,8 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
         status: 'pending',
       );
 
-      await ref.read(firestoreServiceProvider).createClaim(newClaim);
+      await firestoreService.createClaim(newClaim);
 
-      // Store bytes so claim details screen can show the actual photo immediately
       if (_pickedBytes.isNotEmpty) {
         FirestoreService.storeLocalClaimImageBytes(
           claimId,
@@ -182,16 +261,22 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
             ),
           ),
         );
-        context.push('/claim-details/$claimId');
+        context.pushReplacement('/claim-details/$claimId');
       }
     } catch (e) {
       if (mounted) {
+        final cleanMsg = e.toString().replaceAll('Exception: ', '');
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Error submitting claim: $e')));
+        ).showSnackBar(SnackBar(content: Text('Error: $cleanMsg')));
       }
     } finally {
-      if (mounted) setState(() => _isSubmitting = false);
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+          _uploadStatusMessage = '';
+        });
+      }
     }
   }
 
@@ -209,184 +294,278 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       _phoneController.text = user!.phoneNumber;
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Claim Item'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => context.pop(),
+    return PopScope(
+      canPop: !_isSubmitting,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop && _isSubmitting) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                'Upload in progress. Please wait until claim submission completes.',
+              ),
+            ),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Claim Item'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded),
+            onPressed: _isSubmitting ? null : () => context.pop(),
+          ),
         ),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Submit Item Claim',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                'Provide ownership details or discovery location to claim this item.',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.onSurfaceVariant,
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Submit Item Claim',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 4),
+                const Text(
+                  'Provide ownership details or discovery location to claim this item.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(height: 20),
 
-              GlassContainer(
-                borderRadius: 20,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    CustomTextField(
-                      controller: _nameController,
-                      labelText: 'Full Name',
-                      hintText: 'Tanvir Ahmed',
-                      prefixIcon: Icons.person_outline,
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Enter your full name'
-                          : null,
-                    ),
-                    const SizedBox(height: 14),
-                    CustomTextField(
-                      controller: _phoneController,
-                      labelText: 'Phone Number',
-                      hintText: '+8801700000000',
-                      prefixIcon: Icons.phone_outlined,
-                      keyboardType: TextInputType.phone,
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Enter contact phone'
-                          : null,
-                    ),
-                    const SizedBox(height: 14),
-                    CustomTextField(
-                      controller: _emailController,
-                      labelText: 'Email Address',
-                      hintText: 'name@example.com',
-                      prefixIcon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 14),
-                    CustomTextField(
-                      controller: _addressController,
-                      labelText: 'Current Address',
-                      hintText: 'Dhanmondi, Dhaka',
-                      prefixIcon: Icons.location_on_outlined,
-                      suffixIcon: IconButton(
-                        icon: const Icon(
-                          Icons.my_location_rounded,
-                          color: AppColors.primary,
+                GlassContainer(
+                  borderRadius: 20,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      CustomTextField(
+                        controller: _nameController,
+                        labelText: 'Full Name',
+                        hintText: 'Tanvir Ahmed',
+                        prefixIcon: Icons.person_outline,
+                        validator: (v) => v == null || v.trim().isEmpty
+                            ? 'Enter your full name'
+                            : null,
+                      ),
+                      const SizedBox(height: 14),
+                      CustomTextField(
+                        controller: _phoneController,
+                        labelText: 'Phone Number',
+                        hintText: '+8801700000000',
+                        prefixIcon: Icons.phone_outlined,
+                        keyboardType: TextInputType.phone,
+                        validator: (v) => v == null || v.trim().isEmpty
+                            ? 'Enter contact phone'
+                            : null,
+                      ),
+                      const SizedBox(height: 14),
+                      CustomTextField(
+                        controller: _emailController,
+                        labelText: 'Email Address',
+                        hintText: 'name@example.com',
+                        prefixIcon: Icons.email_outlined,
+                        keyboardType: TextInputType.emailAddress,
+                      ),
+                      const SizedBox(height: 14),
+                      CustomTextField(
+                        controller: _addressController,
+                        labelText: 'Current Address',
+                        hintText: 'Dhanmondi, Dhaka',
+                        prefixIcon: Icons.location_on_outlined,
+                        suffixIcon: IconButton(
+                          icon: const Icon(
+                            Icons.my_location_rounded,
+                            color: AppColors.primary,
+                          ),
+                          onPressed: _fetchCurrentGpsLocation,
                         ),
-                        onPressed: _fetchCurrentGpsLocation,
+                      ),
+                      const SizedBox(height: 14),
+                      CustomTextField(
+                        controller: _descController,
+                        labelText: 'Claim Description',
+                        hintText:
+                            'Explain when & where you lost/found this item...',
+                        maxLines: 3,
+                        validator: (v) => v == null || v.trim().isEmpty
+                            ? 'Provide claim description'
+                            : null,
+                      ),
+                      const SizedBox(height: 14),
+                      CustomTextField(
+                        controller: _proofController,
+                        labelText: 'Proof of Ownership / Identifiers',
+                        hintText:
+                            'Serial number, unique marks, wallpaper photo details...',
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: 14),
+                      CustomTextField(
+                        controller: _rewardController,
+                        labelText: 'Reward Expectation (BDT Optional)',
+                        hintText: '0',
+                        prefixIcon: Icons.card_giftcard_rounded,
+                        keyboardType: TextInputType.number,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Upload Proof Images',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(height: 14),
-                    CustomTextField(
-                      controller: _descController,
-                      labelText: 'Claim Description',
-                      hintText:
-                          'Explain when & where you lost/found this item...',
-                      maxLines: 3,
-                      validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Provide claim description'
-                          : null,
-                    ),
-                    const SizedBox(height: 14),
-                    CustomTextField(
-                      controller: _proofController,
-                      labelText: 'Proof of Ownership / Identifiers',
-                      hintText:
-                          'Serial number, unique marks, wallpaper photo details...',
-                      maxLines: 2,
-                    ),
-                    const SizedBox(height: 14),
-                    CustomTextField(
-                      controller: _rewardController,
-                      labelText: 'Reward Expectation (BDT Optional)',
-                      hintText: '0',
-                      prefixIcon: Icons.card_giftcard_rounded,
-                      keyboardType: TextInputType.number,
+                    Text(
+                      '${_pickedImages.length}/${SubmitClaimScreen.maxClaimImages}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
-              const Text(
-                'Upload Proof Images & Documents',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              const SizedBox(height: 10),
-
-              SizedBox(
-                height: 90,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _pickedImages.length + 1,
-                  separatorBuilder: (_, __) => const SizedBox(width: 10),
-                  itemBuilder: (context, index) {
-                    if (index == _pickedImages.length) {
-                      return InkWell(
-                        onTap: _pickImage,
-                        borderRadius: BorderRadius.circular(16),
-                        child: Container(
-                          width: 90,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3),
+                SizedBox(
+                  height: 105,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount:
+                        _pickedImages.length < SubmitClaimScreen.maxClaimImages
+                        ? _pickedImages.length + 1
+                        : _pickedImages.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      if (index == _pickedImages.length &&
+                          _pickedImages.length <
+                              SubmitClaimScreen.maxClaimImages) {
+                        return InkWell(
+                          onTap: _isSubmitting ? null : _pickImages,
+                          borderRadius: BorderRadius.circular(16),
+                          child: Container(
+                            width: 95,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: AppColors.primary.withOpacity(0.3),
+                              ),
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_rounded,
+                                  color: AppColors.primary,
+                                  size: 26,
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Add Proof',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: AppColors.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_a_photo, color: AppColors.primary),
-                              SizedBox(height: 4),
-                              Text(
-                                'Add Proof',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: AppColors.primary,
+                        );
+                      }
+
+                      final xfile = _pickedImages[index];
+                      return Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(16),
+                            child: AppImage(
+                              url: xfile.path,
+                              bytes: index < _pickedBytes.length
+                                  ? _pickedBytes[index]
+                                  : null,
+                              width: 95,
+                              height: 105,
+                              fit: BoxFit.cover,
+                              placeholderSeed: 'claim_$index',
+                            ),
+                          ),
+                          if (!_isSubmitting)
+                            Positioned(
+                              top: 4,
+                              right: 4,
+                              child: GestureDetector(
+                                onTap: () => _removeImage(index),
+                                child: Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.7),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.close_rounded,
+                                    size: 14,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
-                            ],
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                if (_isSubmitting && _uploadStatusMessage.isNotEmpty) ...[
+                  GlassContainer(
+                    borderRadius: 16,
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            _uploadStatusMessage,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.primary,
+                            ),
                           ),
                         ),
-                      );
-                    }
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
 
-                    final xfile = _pickedImages[index];
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: AppImage(
-                        url: xfile.path,
-                        bytes: index < _pickedBytes.length
-                            ? _pickedBytes[index]
-                            : null,
-                        width: 90,
-                        height: 90,
-                        fit: BoxFit.cover,
-                        placeholderSeed: 'claim_$index',
-                      ),
-                    );
-                  },
+                PrimaryButton(
+                  text: _isSubmitting
+                      ? 'Submitting Claim...'
+                      : 'Submit Claim to Owner',
+                  icon: Icons.send_rounded,
+                  isLoading: _isSubmitting,
+                  onPressed: _isSubmitting ? null : _handleSubmitClaim,
                 ),
-              ),
-              const SizedBox(height: 28),
-
-              PrimaryButton(
-                text: 'Submit Claim to Owner',
-                icon: Icons.send_rounded,
-                isLoading: _isSubmitting,
-                onPressed: _handleSubmitClaim,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

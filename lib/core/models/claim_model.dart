@@ -77,6 +77,7 @@ class ClaimModel {
       'proofDescription': proofDescription,
       'rewardRequested': rewardRequested,
       'claimImages': claimImages,
+      'imageUrls': claimImages,
       'claimDocuments': claimDocuments,
       'status': status,
       'recoveryStatus': recoveryStatus,
@@ -109,7 +110,9 @@ class ClaimModel {
       description: map['description'] ?? '',
       proofDescription: map['proofDescription'] ?? '',
       rewardRequested: (map['rewardRequested'] as num?)?.toDouble() ?? 0.0,
-      claimImages: List<String>.from(map['claimImages'] ?? []),
+      claimImages: List<String>.from(
+        map['claimImages'] ?? map['imageUrls'] ?? [],
+      ),
       claimDocuments: List<String>.from(map['claimDocuments'] ?? []),
       status: map['status'] ?? 'pending',
       recoveryStatus: map['recoveryStatus'] ?? 'in_progress',

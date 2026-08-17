@@ -1,7 +1,28 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:image_picker/image_picker.dart';
+
+enum ImageUploadStatus { pending, uploading, success, failed }
+
+class ImageUploadTask {
+  final String id;
+  final XFile xfile;
+  final Uint8List bytes;
+  ImageUploadStatus status;
+  String? uploadedUrl;
+  String? errorMessage;
+
+  ImageUploadTask({
+    required this.id,
+    required this.xfile,
+    required this.bytes,
+    this.status = ImageUploadStatus.pending,
+    this.uploadedUrl,
+    this.errorMessage,
+  });
+}
 
 class CloudinaryService {
   late final CloudinaryPublic? _cloudinary;
@@ -58,13 +79,69 @@ class CloudinaryService {
     return 'data:$mimeType;base64,$base64String';
   }
 
-  /// Upload multiple XFiles safely for Firestore document storage
+  /// Upload multiple XFiles safely for Firestore document storage using controlled concurrency
   Future<List<String>> uploadMultipleXFiles(
     List<XFile> xfiles, {
     String folder = 'lost_and_found',
+    int maxConcurrency = 3,
+    void Function(int completed, int total, String statusMessage)? onProgress,
   }) async {
     if (xfiles.isEmpty) return [];
-    final tasks = xfiles.map((file) => uploadXFile(file, folder: folder));
-    return await Future.wait(tasks);
+
+    return await uploadMultipleXFilesWithConcurrency(
+      xfiles,
+      folder: folder,
+      maxConcurrency: maxConcurrency,
+      onProgress: onProgress,
+    );
+  }
+
+  /// Upload multiple XFiles using a pool worker to limit maximum parallel uploads (e.g., max 3 at a time)
+  Future<List<String>> uploadMultipleXFilesWithConcurrency(
+    List<XFile> xfiles, {
+    String folder = 'lost_and_found',
+    int maxConcurrency = 3,
+    void Function(int completed, int total, String statusMessage)? onProgress,
+  }) async {
+    if (xfiles.isEmpty) return [];
+
+    final results = List<String?>.filled(xfiles.length, null);
+    int completedCount = 0;
+    onProgress?.call(0, xfiles.length, 'Preparing images...');
+
+    int nextIndex = 0;
+    Future<void> worker() async {
+      while (nextIndex < xfiles.length) {
+        final currentIndex = nextIndex++;
+        final file = xfiles[currentIndex];
+        onProgress?.call(
+          completedCount,
+          xfiles.length,
+          'Uploading image ${currentIndex + 1} of ${xfiles.length}...',
+        );
+
+        try {
+          final url = await uploadXFile(file, folder: folder);
+          results[currentIndex] = url;
+        } catch (e) {
+          results[currentIndex] = null;
+        } finally {
+          completedCount++;
+          onProgress?.call(
+            completedCount,
+            xfiles.length,
+            'Uploaded $completedCount of ${xfiles.length} images',
+          );
+        }
+      }
+    }
+
+    final workerCount = xfiles.length < maxConcurrency
+        ? xfiles.length
+        : maxConcurrency;
+    final workers = List.generate(workerCount, (_) => worker());
+    await Future.wait(workers);
+
+    return results.whereType<String>().toList();
   }
 }

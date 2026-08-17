@@ -73,12 +73,16 @@ service cloud.firestore {
         request.auth.uid == resource.data.postOwnerId ||
         request.auth.uid == resource.data.claimerId
       );
-      // Any signed-in user can submit a claim
-      allow create: if isSignedIn();
-      // Owner can approve/reject; claimer can update live location or confirm recovery
+      // Authenticated user can submit a claim where they are the claimer
+      allow create: if isSignedIn() &&
+        request.auth.uid == request.resource.data.claimerId;
+      // Post owner can approve/reject status or update location/confirmation;
+      // Claimer can update live location or confirmation, but CANNOT alter status.
       allow update: if isSignedIn() && (
         request.auth.uid == resource.data.postOwnerId ||
-        request.auth.uid == resource.data.claimerId
+        (request.auth.uid == resource.data.claimerId &&
+         (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']) ||
+          request.resource.data.status == resource.data.status))
       );
       allow delete: if false;
     }

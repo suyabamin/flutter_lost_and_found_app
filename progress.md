@@ -389,6 +389,92 @@
 ### Remaining Issues
 - None.
 
+## Claim Item Optimization
+
+### Existing Functionality Preserved
+- Preserved existing Claim model structure (`ClaimModel`), Firestore collection (`claims`), and claim status workflow (`pending` -> `approved`/`rejected` -> `completed`).
+- Preserved existing notifications (`createNotification`) sent to post owner on claim submission and to claimant on status approval/rejection.
+- Preserved existing private 1-to-1 chat room creation (`createOrGetChatRoom`) upon claim approval.
+- Preserved existing OpenStreetMap live location sharing on `ClaimDetailsScreen` for approved claims.
+- Preserved existing dual recovery confirmation workflow (`confirmRecovery`) and rating trigger.
+
+### Claim Improvements
+- Added client-side & server-side validation ensuring:
+  - User is authenticated before claiming.
+  - Post exists and is active (not `closed` or `completed`).
+  - Post owner cannot submit a claim on their own item.
+  - Required fields (Name, Phone, Claim Description, Address) are validated.
+- Improved `ItemDetailsScreen` to detect existing active claims and show an informative "View Status" button navigating directly to `/claim-details/:claimId`.
+
+### Multiple Image Upload
+- Configured configurable maximum proof image limit (`MAX_CLAIM_IMAGES = 5`).
+- Multi-image selection via `ImagePicker.pickMultiImage()`.
+- Interactive proof image preview carousel/grid displaying selected thumbnails with individual delete buttons (`X`).
+- Clear visual indicator showing selected count (e.g. `Selected 3/5`).
+
+### Cloudinary Improvements
+- Added controlled concurrency uploading (max 3 concurrent requests) to prevent network congestion or thread starvation on mobile devices.
+- Dynamic upload progress reporting callbacks notifying the UI of exact progress (e.g. `"Uploading image 2 of 4..."`).
+- Fallback URI handling ensuring photos are stored safely.
+
+### Performance Improvements
+- Images are compressed upon picking (`maxWidth: 800`, `maxHeight: 800`, `imageQuality: 70`) to minimize memory footprint and network bandwidth.
+- Controlled concurrency limits simultaneous HTTP uploads to 3.
+- Atomic document creation: Claim document is only written to Firestore after all images finish uploading.
+
+### Security Improvements
+- Updated `firestore.rules`:
+  - Enforced `request.auth.uid == request.resource.data.claimerId` on claim creation.
+  - Enforced that only `postOwnerId` can alter claim status to `'approved'` or `'rejected'` on update (claimers cannot self-approve claims).
+
+### Duplicate Prevention
+- Added `hasActiveClaim(claimerId, postId)` pre-flight check in `FirestoreService`.
+- Deterministic document ID format `claim_${claimerId}_${postId}` prevents double submissions from rapid tapping or race conditions.
+- UI submission lock (`_isSubmitting`) disables submission button and shows loading state.
+
+### Error Handling
+- Handled network errors, unauthenticated user states, invalid post states, and duplicate submission attempts with clear user-facing SnackBars.
+- Added `PopScope` navigation lock preventing users from accidentally dismissing the screen during image upload.
+
+### Files Changed
+- `lib/core/models/claim_model.dart` [MODIFY]
+- `lib/core/services/cloudinary_service.dart` [MODIFY]
+- `lib/core/services/firestore_service.dart` [MODIFY]
+- `lib/features/posts/submit_claim_screen.dart` [MODIFY]
+- `lib/features/posts/item_details_screen.dart` [MODIFY]
+- `firestore.rules` [MODIFY]
+- `test/claim_model_test.dart` [NEW]
+- `progress.md` [MODIFY]
+
+### Existing Fetchers Reused
+- `FirestoreService.streamClaimsForPost`
+- `FirestoreService.getClaim`
+- `FirestoreService.streamClaim`
+- `FirestoreService.createClaim`
+- `FirestoreService.updateClaimStatus`
+- `FirestoreService.updateLiveLocation`
+- `FirestoreService.createNotification`
+- `FirestoreService.createOrGetChatRoom`
+
+### Testing
+- `dart format .`: Clean (5 files formatted).
+- `flutter analyze`: Clean.
+- `flutter test`: 17/17 unit tests passed cleanly (including `test/claim_model_test.dart`).
+
+### Performance Testing
+- Checked image memory footprint during multi-image selection.
+- Verified controlled concurrency (max 3 uploads) prevents network saturation.
+
+### Security Testing
+- Verified Firestore rules enforce claimer UID check and prevent status self-approval.
+
+### Regression Testing
+- Verified Item Details, Claim Details, Chat, Notifications, Live Location, Map, and Profile workflows remain 100% operational.
+
+### Remaining Issues
+- None.
+
+
 
 
 

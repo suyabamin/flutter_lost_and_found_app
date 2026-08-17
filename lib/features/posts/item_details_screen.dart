@@ -62,14 +62,17 @@ class ItemDetailsScreen extends ConsumerWidget {
               final bool hasApprovedClaim = claims.any(
                 (c) => c.claimerId == currentUid && c.status == 'approved',
               );
-              final bool hasPendingOrApprovedClaim = claims.any(
-                (c) => c.claimerId == currentUid,
-              );
+              final existingUserClaim = claims
+                  .where(
+                    (c) => c.claimerId == currentUid && c.status != 'rejected',
+                  )
+                  .firstOrNull;
+              final bool hasPendingOrApprovedClaim = existingUserClaim != null;
 
               // Poster can never claim, and user cannot claim twice
               final bool canClaim =
                   !isPostOwner &&
-                  (post?.status != 'closed') &&
+                  (post?.status != 'closed' && post?.status != 'completed') &&
                   !hasPendingOrApprovedClaim;
 
               // Only show messaging if user is post owner OR claim has been approved
@@ -337,6 +340,37 @@ class ItemDetailsScreen extends ConsumerWidget {
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                          ] else if (!isPostOwner &&
+                              existingUserClaim != null) ...[
+                            GlassContainer(
+                              borderRadius: 20,
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.info_outline_rounded,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  const Expanded(
+                                    child: Text(
+                                      'You have already submitted a claim for this item.',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () => context.push(
+                                      '/claim-details/${existingUserClaim.claimId}',
+                                    ),
+                                    child: const Text('View Status'),
+                                  ),
+                                ],
                               ),
                             ),
                             const SizedBox(height: 16),

@@ -1041,7 +1041,10 @@ class FirestoreService {
         await _historyRef.doc(historyId).set(history.toMap());
 
         // Update post status to resolved and remove from local active feed
-        await _postsRef.doc(postId).update({'status': 'resolved'});
+        await _postsRef.doc(postId).update({
+          'status': 'resolved',
+          'completedClaimId': claimId,
+        });
         _localPosts.removeWhere((p) => p.id == postId);
 
         // Increment completed recoveries count on both users

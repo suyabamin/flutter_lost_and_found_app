@@ -125,28 +125,41 @@ class MyPostsScreen extends ConsumerWidget {
                 final userPosts = snapshot.data ?? [];
                 if (userPosts.isEmpty) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.post_add_rounded,
-                          size: 72,
-                          color: AppColors.outline.withOpacity(0.5),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'You have not reported any items yet.',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    child: Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.post_add_rounded,
+                            size: 72,
+                            color: AppColors.outline.withValues(alpha: 0.5),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () => context.push('/create-post-step1'),
-                          child: const Text('Create New Report'),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          const Text(
+                            'No Posts Yet',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            'Your lost and found posts will appear here.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: AppColors.outline,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ElevatedButton.icon(
+                            onPressed: () => context.push('/create-post-step1'),
+                            icon: const Icon(Icons.add_rounded),
+                            label: const Text('Create Post'),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
@@ -157,82 +170,90 @@ class MyPostsScreen extends ConsumerWidget {
                   separatorBuilder: (_, __) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = userPosts[index];
-                    return GlassContainer(
-                      borderRadius: 18,
-                      padding: const EdgeInsets.all(14),
-                      child: Row(
-                        children: [
-                          AppImage(
-                            url: item.images.isNotEmpty
-                                ? item.images.first
-                                : '',
-                            bytes: FirestoreService.getLocalImageBytes(
-                              item.id,
-                            )?.firstOrNull,
-                            width: 70,
-                            height: 70,
-                            fit: BoxFit.cover,
-                            placeholderSeed: item.id,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    return InkWell(
+                      onTap: () => context.push('/item-details/${item.id}'),
+                      borderRadius: BorderRadius.circular(18),
+                      child: GlassContainer(
+                        borderRadius: 18,
+                        padding: const EdgeInsets.all(14),
+                        child: Row(
+                          children: [
+                            AppImage(
+                              url: item.images.isNotEmpty
+                                  ? item.images.first
+                                  : '',
+                              bytes: FirestoreService.getLocalImageBytes(
+                                item.id,
+                              )?.firstOrNull,
+                              width: 70,
+                              height: 70,
+                              fit: BoxFit.cover,
+                              placeholderSeed: item.id,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    item.title,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'Status: ${item.status.toUpperCase()}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: item.status == 'completed'
+                                          ? Colors.green
+                                          : AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    item.location,
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.outline,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                Text(
-                                  item.title,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Status: ${item.status.toUpperCase()}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.edit_outlined,
                                     color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
                                   ),
+                                  tooltip: 'Edit Post',
+                                  onPressed: () =>
+                                      context.push('/edit-post/${item.id}'),
                                 ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  item.location,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: AppColors.outline,
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete_outline_rounded,
+                                    color: AppColors.error,
+                                  ),
+                                  tooltip: 'Delete Post',
+                                  onPressed: () => _confirmAndDeletePost(
+                                    context,
+                                    ref,
+                                    item,
+                                    user.uid,
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.edit_outlined,
-                                  color: AppColors.primary,
-                                ),
-                                onPressed: () =>
-                                    context.push('/item-details/${item.id}'),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete_outline_rounded,
-                                  color: AppColors.error,
-                                ),
-                                onPressed: () => _confirmAndDeletePost(
-                                  context,
-                                  ref,
-                                  item,
-                                  user.uid,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },

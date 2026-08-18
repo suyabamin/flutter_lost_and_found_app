@@ -162,6 +162,72 @@ class FirestoreService {
     }
   }
 
+  /// Update an existing post owned by `userId` in Firestore and local memory store.
+  Future<void> updatePost({
+    required String postId,
+    required String userId,
+    required String title,
+    required String description,
+    required String category,
+    required String type,
+    required String location,
+    required double latitude,
+    required double longitude,
+    required double rewardAmount,
+    required List<String> images,
+  }) async {
+    final postDoc = await _postsRef.doc(postId).get();
+    if (postDoc.exists) {
+      final data = postDoc.data() as Map<String, dynamic>?;
+      final postOwnerId = data?['userId'];
+      if (postOwnerId != null && postOwnerId != userId) {
+        throw 'You are not authorized to edit this post.';
+      }
+    }
+
+    final updates = <String, dynamic>{
+      'title': title,
+      'description': description,
+      'category': category,
+      'type': type,
+      'location': location,
+      'latitude': latitude,
+      'longitude': longitude,
+      'rewardAmount': rewardAmount,
+      'images': images,
+      'updatedAt': FieldValue.serverTimestamp(),
+    };
+
+    // Update in local feed memory store
+    final localIdx = _localPosts.indexWhere((p) => p.id == postId);
+    if (localIdx != -1) {
+      final old = _localPosts[localIdx];
+      _localPosts[localIdx] = PostModel(
+        id: old.id,
+        title: title,
+        description: description,
+        category: category,
+        type: type,
+        location: location,
+        latitude: latitude,
+        longitude: longitude,
+        date: old.date,
+        images: images,
+        userId: old.userId,
+        userName: old.userName,
+        userAvatar: old.userAvatar,
+        status: old.status,
+        rewardAmount: rewardAmount,
+        similarityScore: old.similarityScore,
+        campusId: old.campusId,
+        createdAt: old.createdAt,
+      );
+    }
+
+    // Persist updates to Cloud Firestore
+    await _postsRef.doc(postId).update(updates);
+  }
+
   Stream<List<PostModel>> streamPosts({String? category, String? type}) {
     Query query = _postsRef;
     if (category != null && category != 'All') {

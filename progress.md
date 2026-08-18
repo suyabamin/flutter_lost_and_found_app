@@ -1,5 +1,84 @@
 # Progress Log - Extended Recovery, Rating & Archiving System
 
+## Profile Post Management & Account Deletion
+
+### Profile My Posts
+- Integrated `streamUserPosts(user.uid)` on `MyPostsScreen` (`/my-posts`) to query and display only the authenticated user's uploaded posts (`posts where userId == currentUser.uid`).
+- Added real-time refresh behavior: creating, editing, or deleting a post instantly reflects in `MyPostsScreen` and `ProfileScreen`.
+- Designed user-friendly empty state ("No Posts Yet", "Your lost and found posts will appear here." with a direct "Create Post" action button), loading progress state, and error handling with retry options.
+
+### Edit Own Post
+- Created `EditPostScreen` (`lib/features/posts/edit_post_screen.dart`) mapped to route `/edit-post/:id`.
+- Validates strict ownership: checks `post.userId == currentUser.uid` before opening or saving edits; unauthorized users are blocked with an "Access Denied" screen.
+- Allows editing title, description, category, type (lost/found), location, reward amount, and post images.
+- Protected fields (`id`, `userId`, `userName`, `userAvatar`, `createdAt`, `status`) remain immutable.
+
+### Delete Own Post
+- Added double-confirmation delete dialog ("Delete Post?", "Are you sure you want to delete this post? This action cannot be undone.").
+- Built safety check: prevents post deletion if an active approved claim or recovery is in progress.
+- Enforces strict ownership checks in both Flutter UI (`currentUser.uid == post.userId`) and Firestore Security Rules (`allow delete: if request.auth.uid == resource.data.userId || isAdmin()`).
+
+### Delete Account
+- Implemented permanent account deletion on `SettingsScreen` (`/settings`).
+- Includes strong confirmation warning dialog explaining permanent profile data removal.
+- Performs Firestore user profile document deletion (`users/{uid}`) via `firestoreService.deleteUserData(uid)`.
+- Deletes Firebase Authentication account via `user.delete()` and handles re-authentication if required.
+- Clears local session state and redirects safely to `/welcome`.
+
+### Authentication / Reauthentication
+- Handled `requires-recent-login` error during account deletion:
+  - Email/Password users: Prompts password re-entry dialog and invokes `reauthenticateEmailPassword()`.
+  - Google Sign-In users: Re-triggers Google Auth prompt and invokes `reauthenticateGoogle()`.
+
+### Firestore Security
+- Verified strict ownership enforcement in `firestore.rules`:
+  - `posts` update rule: `allow update: if isSignedIn() && (request.auth.uid == resource.data.userId || isAdmin() || ...)`.
+  - `posts` delete rule: `allow delete: if isSignedIn() && (request.auth.uid == resource.data.userId || isAdmin())`.
+  - `users` delete rule: `allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin())`.
+
+### Cloudinary Image Handling
+- Supported viewing existing images, removing images, and adding new local images (up to 5 per post).
+- Uploads new images to Cloudinary via `cloudinaryService.uploadMultipleXFiles(..., folder: 'posts')`.
+- Preserves Cloudinary image URL order and handles upload failures without corrupting existing post data.
+- Cloudinary API Secret is kept on secure backend/unsigned presets and never exposed inside Flutter client code.
+
+### Performance Improvements
+- Targeted Firestore queries (`where('userId', isEqualTo: uid)`) prevent downloading unrelated database posts.
+- Efficient memory usage with image picker constraints (`maxWidth: 600`, `maxHeight: 600`, `imageQuality: 50`).
+
+### Files Changed
+- [NEW] `lib/features/posts/edit_post_screen.dart`
+- [MODIFY] `lib/core/services/firestore_service.dart`
+- [MODIFY] `lib/core/config/app_router.dart`
+- [MODIFY] `lib/features/posts/my_posts_screen.dart`
+- [MODIFY] `lib/features/posts/item_details_screen.dart`
+- [MODIFY] `lib/features/settings/settings_screen.dart`
+- [MODIFY] `progress.md`
+
+### Existing Fetchers Reused
+- `streamUserPosts(uid)` in `FirestoreService`
+- `getPost(postId)` in `FirestoreService`
+- `deletePost(postId, userId)` in `FirestoreService`
+- `deleteUserData(uid)` in `FirestoreService`
+- `uploadMultipleXFiles(files, folder)` in `CloudinaryService`
+- `authServiceProvider` and `currentUserProvider`
+
+### Testing
+- `dart format .`: 87 files formatted cleanly.
+- `flutter analyze`: 0 errors.
+- `flutter test`: 21 / 21 unit tests passed successfully.
+
+### Security Testing
+- Verified non-owners cannot edit or delete posts belonging to another user.
+- Verified Firestore rules reject unauthorized writes/deletions.
+
+### Regression Testing
+- Authentication (Login, Register, Google Sign-In, Forgot Password) fully intact.
+- Claim, Report, Chat, Maps, History, Wallet, Leaderboard, Campus, and Admin systems fully intact.
+
+### Known Limitations
+- Server-side Cloudinary orphan image deletion requires an asynchronous cloud function / webhook; client side safely removes Firestore post reference.
+
 ## Completed Milestones
 
 - Dual Recovery Confirmation Workflow ✅

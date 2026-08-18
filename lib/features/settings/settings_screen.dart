@@ -17,7 +17,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Future<void> _confirmAndDeleteAccount(BuildContext context) async {
     final authService = ref.read(authServiceProvider);
-    final firestoreService = ref.read(firestoreServiceProvider);
     final currentUser = authService.currentUser;
 
     if (currentUser == null) {

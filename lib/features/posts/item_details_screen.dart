@@ -188,6 +188,21 @@ class ItemDetailsScreen extends ConsumerWidget {
                               : Colors.white70,
                           child: IconButton(
                             icon: const Icon(
+                              Icons.edit_outlined,
+                              color: AppColors.primary,
+                            ),
+                            tooltip: 'Edit Post',
+                            onPressed: () =>
+                                context.push('/edit-post/${post?.id}'),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        CircleAvatar(
+                          backgroundColor: isDark
+                              ? Colors.black54
+                              : Colors.white70,
+                          child: IconButton(
+                            icon: const Icon(
                               Icons.delete_outline_rounded,
                               color: AppColors.error,
                             ),

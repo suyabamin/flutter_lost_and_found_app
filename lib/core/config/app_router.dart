@@ -22,6 +22,7 @@ import '../../features/posts/create_lost_post_step_1_screen.dart';
 import '../../features/posts/preview_publish_report_screen.dart';
 import '../../features/posts/item_details_screen.dart';
 import '../../features/posts/my_posts_screen.dart';
+import '../../features/posts/edit_post_screen.dart';
 import '../../features/posts/submit_claim_screen.dart';
 import '../../features/posts/claim_details_screen.dart';
 
@@ -163,6 +164,13 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/my-posts',
       builder: (context, state) => const MyPostsScreen(),
+    ),
+    GoRoute(
+      path: '/edit-post/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return EditPostScreen(postId: id);
+      },
     ),
 
     GoRoute(

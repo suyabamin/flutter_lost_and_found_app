@@ -223,8 +223,9 @@ service cloud.firestore {
     //   - Only admins (role verified server-side from users collection) can UPDATE status.
     //   - Nobody can DELETE reports (preserve moderation history).
     match /reports/{reportId} {
-      // Reporter reads their own; admin reads all
+      // Reporter reads their own (or non-existent check); admin reads all
       allow read: if isSignedIn() && (
+        resource == null ||
         request.auth.uid == resource.data.reporterId ||
         isAdmin()
       );

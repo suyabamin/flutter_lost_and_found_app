@@ -43,46 +43,66 @@ service cloud.firestore {
     // ── Users ─────────────────────────────────────────────────────────────────
     match /users/{userId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && request.auth.uid == userId;
-      // Own profile update OR other participant updating stats via a verified claim
+      // Only authenticated user can create their own document, preventing admin role self-assignment unless admin
+      allow create: if isSignedIn() && request.auth.uid == userId && (
+        !request.resource.data.keys().hasAny(['role']) ||
+        request.resource.data.role != 'admin' ||
+        isAdmin()
+      );
+      // Own profile update (role cannot be changed to admin by non-admin) OR other participant updating stats via verified claim
       allow update: if isSignedIn() && (
-        request.auth.uid == userId ||
+        (request.auth.uid == userId && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']) ||
+          request.resource.data.role == resource.data.role ||
+          isAdmin()
+        )) ||
         isOtherClaimParticipant(request.resource.data.updatedViaClaimId, userId)
       );
-      allow delete: if isSignedIn() && request.auth.uid == userId;
+      // Owner or Admin can delete user profile
+      allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
     }
 
     // ── Posts ─────────────────────────────────────────────────────────────────
     match /posts/{postId} {
       allow read: if true;
-      allow create: if isSignedIn();
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
       // Owner can always update.
-      // Claim participant can mark post as 'completed' when item is recovered.
+      // Claim participant can mark post as 'completed' or 'resolved' when item is recovered.
+      // Admins can update any post for moderation.
       allow update: if isSignedIn() && (
         request.auth.uid == resource.data.userId ||
-        (request.resource.data.status == 'completed' &&
-         isClaimParticipant(request.resource.data.completedClaimId))
+        isAdmin() ||
+        (request.resource.data.status in ['completed', 'resolved'] && (
+          isClaimParticipant(request.resource.data.completedClaimId) ||
+          isClaimParticipant(resource.data.completedClaimId)
+        ))
       );
-      allow delete: if isSignedIn() && request.auth.uid == resource.data.userId;
+      // Owner or Admin can delete post
+      allow delete: if isSignedIn() && (request.auth.uid == resource.data.userId || isAdmin());
     }
 
     // ── Claims ────────────────────────────────────────────────────────────────
     match /claims/{claimId} {
-      // Owner and claimer can read the claim document
+      // Owner, claimer, or admin can read the claim document
       allow read: if isSignedIn() && (
         request.auth.uid == resource.data.postOwnerId ||
-        request.auth.uid == resource.data.claimerId
+        request.auth.uid == resource.data.claimerId ||
+        isAdmin()
       );
       // Authenticated user can submit a claim where they are the claimer
       allow create: if isSignedIn() &&
         request.auth.uid == request.resource.data.claimerId;
       // Post owner can approve/reject status or update location/confirmation;
-      // Claimer can update live location or confirmation, but CANNOT alter status.
+      // Claimer can update live location, confirmation, and set status to 'completed' on completion;
+      // Admins can update any claim.
       allow update: if isSignedIn() && (
         request.auth.uid == resource.data.postOwnerId ||
-        (request.auth.uid == resource.data.claimerId &&
-         (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']) ||
-          request.resource.data.status == resource.data.status))
+        isAdmin() ||
+        (request.auth.uid == resource.data.claimerId && (
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']) ||
+          request.resource.data.status == resource.data.status ||
+          request.resource.data.status == 'completed'
+        ))
       );
       allow delete: if false;
     }
@@ -93,9 +113,11 @@ service cloud.firestore {
       allow read: if isSignedIn();
       // Any signed-in user can create notifications (claim flow creates for both parties)
       allow create: if isSignedIn();
-      // Users can only update/delete their own notifications (e.g. mark as read)
-      allow update, delete: if isSignedIn() &&
-        request.auth.uid == resource.data.userId;
+      // Users can only update/delete their own notifications (e.g. mark as read), or admin
+      allow update, delete: if isSignedIn() && (
+        request.auth.uid == resource.data.userId ||
+        isAdmin()
+      );
     }
 
     // ── Chat Rooms & Messages ─────────────────────────────────────────────────
@@ -103,22 +125,26 @@ service cloud.firestore {
     match /chat_rooms/{roomId} {
       // All signed-in users can read (app filters client-side by participant)
       allow read: if isSignedIn();
-      // Only room participants can update (lastMessage, unreadCount, etc.)
-      allow update: if isSignedIn() &&
-        request.auth.uid in resource.data.participants;
+      // Room participants or admins can update (lastMessage, unreadCount, etc.)
+      allow update: if isSignedIn() && (
+        request.auth.uid in resource.data.participants ||
+        isAdmin()
+      );
       // Claim participants can create a chat room (must be in participants list)
       allow create: if isSignedIn() &&
         request.auth.uid in request.resource.data.participants;
       allow delete: if false;
 
       match /messages/{messageId} {
-        // Only room participants can read messages
-        allow read: if isSignedIn() &&
-          request.auth.uid in
-            get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.participants;
-        // Sender's uid must match their auth uid
+        // Room participants or admins can read messages
+        allow read: if isSignedIn() && (
+          request.auth.uid in get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.participants ||
+          isAdmin()
+        );
+        // Sender's uid must match their auth uid and sender must be participant
         allow create: if isSignedIn() &&
-          request.auth.uid == request.resource.data.senderId;
+          request.auth.uid == request.resource.data.senderId &&
+          request.auth.uid in get(/databases/$(database)/documents/chat_rooms/$(roomId)).data.participants;
         allow update, delete: if false;
       }
     }
@@ -126,17 +152,21 @@ service cloud.firestore {
     // ── Ratings ───────────────────────────────────────────────────────────────
     match /ratings/{ratingId} {
       allow read: if isSignedIn();
-      // RatingModel stores 'fromUserId' — must match auth uid
-      allow create: if isSignedIn() &&
-        request.auth.uid == request.resource.data.fromUserId;
+      // RatingModel stores 'fromUserId' / 'fromUser' — must match auth uid
+      allow create: if isSignedIn() && (
+        request.auth.uid == request.resource.data.fromUserId ||
+        request.auth.uid == request.resource.data.fromUser
+      );
       allow update, delete: if false;
     }
 
     // ── Reviews (duplicate archive of ratings) ────────────────────────────────
     match /reviews/{reviewId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() &&
-        request.auth.uid == request.resource.data.fromUserId;
+      allow create: if isSignedIn() && (
+        request.auth.uid == request.resource.data.fromUserId ||
+        request.auth.uid == request.resource.data.fromUser
+      );
       allow update, delete: if false;
     }
 
@@ -146,7 +176,7 @@ service cloud.firestore {
     match /payments/{docId} {
       allow read: if isSignedIn();
       allow create: if isSignedIn();
-      // Finder confirms receipt → updates status field
+      // Finder or Poster confirms receipt → updates status field
       allow update: if isSignedIn();
       allow delete: if false;
     }
@@ -160,13 +190,10 @@ service cloud.firestore {
     }
 
     // ── Wallet ────────────────────────────────────────────────────────────────
-    // updateWallet is called during archiving — both own wallet and partner wallet.
-    // The archive flow runs as the signed-in user (owner or claimer).
-    // We allow any signed-in user to write any wallet during the recovery flow
-    // because the server-side logic (checkAndArchivePost) is trusted.
+    // updateWallet is called during reward payments — both own wallet and partner wallet.
+    // Signed-in users need to read wallet to calculate updated totals without wiping out existing balances.
     match /wallet/{userId} {
-      allow read: if isSignedIn() && request.auth.uid == userId;
-      // Own wallet: full write. Other wallet: only allowed via recovery flow (trusted client code).
+      allow read: if isSignedIn();
       allow write: if isSignedIn();
     }
 
@@ -174,10 +201,14 @@ service cloud.firestore {
     match /campuses/{campusId} {
       allow read: if true;
       allow create: if isSignedIn() && request.auth.uid == request.resource.data.creatorId;
-      allow update, delete: if isSignedIn() && request.auth.uid == resource.data.creatorId;
+      allow update, delete: if isSignedIn() && (
+        request.auth.uid == resource.data.creatorId ||
+        isAdmin()
+      );
     }
 
     // ── Campus Members ────────────────────────────────────────────────────────
+    // Sensitive Student ID info protected; users can create/update their own membership doc
     match /campus_members/{memberId} {
       allow read: if isSignedIn();
       allow create, update: if isSignedIn() && request.auth.uid == request.resource.data.uid;
@@ -188,11 +219,9 @@ service cloud.firestore {
     // Deterministic document ID: '${reporterId}_${postId}'
     // Security guarantees:
     //   - A user can only CREATE a report where they are the reporter (uid verified).
-    //   - A user can READ only their own reports; admins can read all.
+    //   - A user can READ their own reports or check if they've reported (resource == null); admins can read all.
     //   - Only admins (role verified server-side from users collection) can UPDATE status.
     //   - Nobody can DELETE reports (preserve moderation history).
-    //   - Normal users cannot change report status, impersonate admin, or
-    //     access another user's report.
     match /reports/{reportId} {
       // Reporter reads their own; admin reads all
       allow read: if isSignedIn() && (

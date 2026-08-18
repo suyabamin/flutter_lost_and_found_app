@@ -53,9 +53,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     try {
       final pickedFile = await _picker.pickImage(
         source: source,
-        maxWidth: 800,
-        maxHeight: 800,
-        imageQuality: 75,
+        maxWidth: 400,
+        maxHeight: 400,
+        imageQuality: 50,
       );
 
       if (pickedFile != null) {
@@ -209,7 +209,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       // 3. Synchronize Firebase Auth User Profile
       final authService = ref.read(authServiceProvider);
       await authService.updateAuthDisplayName(newName);
-      await authService.updateAuthPhotoUrl(updatedPhotoUrl);
+      // Firebase Auth only accepts http/https URLs for photoURL.
+      // Base64 data URIs are stored in Firestore only — skip Auth sync for them.
+      if (updatedPhotoUrl.isEmpty || updatedPhotoUrl.startsWith('http')) {
+        await authService.updateAuthPhotoUrl(updatedPhotoUrl);
+      }
 
       if (mounted) {
         setState(() {

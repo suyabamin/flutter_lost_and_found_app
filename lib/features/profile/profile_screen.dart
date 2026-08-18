@@ -52,21 +52,6 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         child: ClipOval(
                           child: user?.photoUrl.isNotEmpty == true
-                              ? NetworkImage(user!.photoUrl) != null
-                                    ? Image.network(
-                                        user.photoUrl,
-                                        width: 92,
-                                        height: 92,
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (_, __, ___) => Center(
-                                          child: Text(
-                                            user.displayName.isNotEmpty
-                                                ? user.displayName[0]
-                                                      .toUpperCase()
-                                                : 'U',
-                                            style: const TextStyle(
-                                              fontSize: 34,
-                                              fontWeight: FontWeight.bold,
                               ? Image.network(
                                   user!.photoUrl,
                                   width: 92,

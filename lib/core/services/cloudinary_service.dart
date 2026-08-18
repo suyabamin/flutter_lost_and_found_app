@@ -73,10 +73,19 @@ class CloudinaryService {
       }
     }
 
-    // 2. Always return the user's actual photo as Base64 Data URI
+    // 2. Return the user's photo as Base64 Data URI with safety guard for Firestore limits
     final base64String = base64Encode(bytes);
     final mimeType = xfile.mimeType ?? 'image/jpeg';
-    return 'data:$mimeType;base64,$base64String';
+    final dataUrl = 'data:$mimeType;base64,$base64String';
+
+    // Firestore string property limit is 1,048,487 bytes (~1MB)
+    if (dataUrl.length > 900000) {
+      throw Exception(
+        'Selected photo is too large (${(dataUrl.length / 1024).toStringAsFixed(0)} KB). Please choose a smaller image or crop it before uploading.',
+      );
+    }
+
+    return dataUrl;
   }
 
   /// Upload multiple XFiles safely for Firestore document storage using controlled concurrency

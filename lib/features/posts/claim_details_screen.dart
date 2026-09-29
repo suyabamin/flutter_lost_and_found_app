@@ -13,6 +13,7 @@ import '../../core/widgets/app_image.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/services/firestore_service.dart';
+import '../../core/utils/app_localizations.dart';
 
 class ClaimDetailsScreen extends ConsumerStatefulWidget {
   final String claimId;
@@ -81,6 +82,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
   }
 
   Future<void> _handleApprove(ClaimModel claim) async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     setState(() => _isUpdating = true);
     try {
       await ref
@@ -88,8 +92,12 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
           .updateClaimStatus(claim.claimId, 'approved');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🎉 Claim Approved! Private 1-to-1 Chat created.'),
+          SnackBar(
+            content: Text(
+              isBn
+                  ? '🎉 দাবি অনুমোদিত! ব্যক্তিগত ১-টু-১ চ্যাট তৈরি হয়েছে।'
+                  : '🎉 Claim Approved! Private 1-to-1 Chat created.',
+            ),
           ),
         );
       }
@@ -105,6 +113,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
   }
 
   Future<void> _handleReject(ClaimModel claim) async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     setState(() => _isUpdating = true);
     try {
       await ref
@@ -113,7 +124,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text('Claim rejected.')));
+        ).showSnackBar(SnackBar(content: Text(isBn ? 'দাবি প্রত্যাখ্যান করা হয়েছে।' : 'Claim rejected.')));
       }
     } catch (e) {
       if (mounted) {
@@ -128,12 +139,15 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final user = ref.watch(currentUserProvider).value;
     final firestoreService = ref.watch(firestoreServiceProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Claim Details'),
+        title: Text(isBn ? 'দাবির বিবরণ' : 'Claim Details'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -148,7 +162,11 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
 
           final claim = snapshot.data;
           if (claim == null) {
-            return const Center(child: Text('Claim record not found.'));
+            return Center(
+              child: Text(
+                isBn ? 'দাবির কোনো তথ্য পাওয়া যায়নি।' : 'Claim record not found.',
+              ),
+            );
           }
 
           final authUser = FirebaseAuth.instance.currentUser;
@@ -220,6 +238,15 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
             );
           }
 
+          String displayStatus;
+          if (claim.status == 'approved') {
+            displayStatus = isBn ? 'অনুমোদিত' : 'APPROVED';
+          } else if (claim.status == 'rejected') {
+            displayStatus = isBn ? 'প্রত্যাখ্যাত' : 'REJECTED';
+          } else {
+            displayStatus = isBn ? 'অপেক্ষমাণ' : 'PENDING';
+          }
+
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -235,16 +262,16 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Claim Status',
-                            style: TextStyle(
+                          Text(
+                            isBn ? 'দাবির অবস্থা' : 'Claim Status',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.outline,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            claim.status.toUpperCase(),
+                            displayStatus,
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -265,7 +292,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                                   posterId: claim.postOwnerId,
                                   claimerId: claim.claimerId,
                                   postId: claim.postId,
-                                  postTitle: 'Approved Claim Chat',
+                                  postTitle: isBn ? 'অনুমোদিত দাবি চ্যাট' : 'Approved Claim Chat',
                                   postImage: claim.claimImages.isNotEmpty
                                       ? claim.claimImages.first
                                       : '',
@@ -275,7 +302,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             }
                           },
                           icon: const Icon(Icons.chat_rounded, size: 18),
-                          label: const Text('Open Private Chat'),
+                          label: Text(isBn ? 'ব্যক্তিগত চ্যাট খুলুন' : 'Open Private Chat'),
                         ),
                     ],
                   ),
@@ -334,9 +361,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                         ],
                       ),
                       const SizedBox(height: 14),
-                      const Text(
-                        'Address:',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Text(
+                        isBn ? 'ঠিকানা:' : 'Address:',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
                         claim.address,
@@ -356,9 +383,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Claim Description:',
-                        style: TextStyle(
+                      Text(
+                        isBn ? 'দাবির বিবরণ:' : 'Claim Description:',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -372,9 +399,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       ),
                       if (claim.proofDescription.isNotEmpty) ...[
                         const SizedBox(height: 12),
-                        const Text(
-                          'Proof Identifiers:',
-                          style: TextStyle(
+                        Text(
+                          isBn ? 'প্রমাণের চিহ্ন:' : 'Proof Identifiers:',
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
                           ),
@@ -390,7 +417,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       if (claim.rewardRequested > 0) ...[
                         const SizedBox(height: 12),
                         Text(
-                          'Reward Expectation: ৳ ${claim.rewardRequested.round()}',
+                          '${isBn ? 'পুরস্কার প্রত্যাশা:' : 'Reward Expectation:'} ৳ ${claim.rewardRequested.round()}',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Colors.green,
@@ -404,9 +431,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
 
                 // Proof Images
                 if (claim.claimImages.isNotEmpty) ...[
-                  const Text(
-                    'Proof Images',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  Text(
+                    isBn ? 'প্রমাণের ছবি' : 'Proof Images',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 10),
                   SizedBox(
@@ -452,16 +479,18 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Row(
+                            Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.location_searching_rounded,
                                   color: AppColors.primary,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'Live Location Sharing (Free Map)',
-                                  style: TextStyle(
+                                  isBn
+                                      ? 'লাইভ লোকেশন শেয়ারিং (ম্যাপ)'
+                                      : 'Live Location Sharing (Free Map)',
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15,
                                   ),
@@ -477,9 +506,11 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                           ],
                         ),
                         const SizedBox(height: 6),
-                        const Text(
-                          'Share real-time GPS location securely to coordinate handoff.',
-                          style: TextStyle(
+                        Text(
+                          isBn
+                              ? 'হস্তান্তর সমন্বয় করতে রিয়েল-টাইম জিপিএস লোকেশন শেয়ার করুন।'
+                              : 'Share real-time GPS location securely to coordinate handoff.',
+                          style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.onSurfaceVariant,
                           ),
@@ -518,14 +549,14 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                 // Approved Claim Actions & Dual Recovery Confirmation
                 if (isApproved) ...[
                   PrimaryButton(
-                    text: 'Open Private 1-to-1 Chat',
+                    text: isBn ? 'ব্যক্তিগত ১-টু-১ চ্যাট খুলুন' : 'Open Private 1-to-1 Chat',
                     icon: Icons.chat_rounded,
                     onPressed: () async {
                       final roomId = await firestoreService.createOrGetChatRoom(
                         posterId: claim.postOwnerId,
                         claimerId: claim.claimerId,
                         postId: claim.postId,
-                        postTitle: 'Approved Claim Chat',
+                        postTitle: isBn ? 'অনুমোদিত দাবি চ্যাট' : 'Approved Claim Chat',
                         postImage: claim.claimImages.isNotEmpty
                             ? claim.claimImages.first
                             : '',
@@ -552,18 +583,20 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            const Row(
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.verified_rounded,
                                   color: Colors.green,
                                   size: 24,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'Recovery Confirmed by Both Parties!',
-                                  style: TextStyle(
+                                  isBn
+                                      ? 'উভয় পক্ষ দ্বারা পুনরুদ্ধার নিশ্চিত হয়েছে!'
+                                      : 'Recovery Confirmed by Both Parties!',
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
                                     color: Colors.green,
@@ -573,7 +606,9 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             ),
                             const SizedBox(height: 12),
                             PrimaryButton(
-                              text: 'View Recovery Completed & Rewards',
+                              text: isBn
+                                  ? 'সম্পন্ন পুনরুদ্ধার ও পুরস্কার দেখুন'
+                                  : 'View Recovery Completed & Rewards',
                               icon: Icons.emoji_events_rounded,
                               onPressed: () => context.push(
                                 '/recovery-completed/${claim.claimId}',
@@ -590,17 +625,21 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Item Return & Recovery Confirmation',
-                            style: TextStyle(
+                          Text(
+                            isBn
+                                ? 'আইটেম ফেরত ও পুনরুদ্ধার নিশ্চিতকরণ'
+                                : 'Item Return & Recovery Confirmation',
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
-                            'Both owner and finder must confirm after meeting in person.',
-                            style: TextStyle(
+                          Text(
+                            isBn
+                                ? 'সরাসরি সাক্ষাতের পর মালিক এবং সন্ধানকারী উভয়কেই নিশ্চিত করতে হবে।'
+                                : 'Both owner and finder must confirm after meeting in person.',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.onSurfaceVariant,
                             ),
@@ -629,9 +668,11 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                                 }
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                        '✅ Item receipt confirmed! Please rate the Finder.',
+                                        isBn
+                                            ? '✅ আইটেম প্রাপ্তি নিশ্চিত হয়েছে! সন্ধানকারীকে রেটিং দিন।'
+                                            : '✅ Item receipt confirmed! Please rate the Finder.',
                                       ),
                                     ),
                                   );
@@ -645,8 +686,8 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                               ),
                               label: Text(
                                 hasOwnerConfirmed
-                                    ? 'Owner Confirmed Item Received ✓'
-                                    : 'I Received My Item',
+                                    ? (isBn ? 'মালিক নিশ্চিত করেছেন আইটেম প্রাপ্তি ✓' : 'Owner Confirmed Item Received ✓')
+                                    : (isBn ? 'আমি আমার আইটেম পেয়েছি' : 'I Received My Item'),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -677,9 +718,11 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                                 }
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
+                                    SnackBar(
                                       content: Text(
-                                        '✅ Item return confirmed! Please rate the Owner.',
+                                        isBn
+                                            ? '✅ আইটেম ফেরত নিশ্চিত হয়েছে! মালিককে রেটিং দিন।'
+                                            : '✅ Item return confirmed! Please rate the Owner.',
                                       ),
                                     ),
                                   );
@@ -693,8 +736,8 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                               ),
                               label: Text(
                                 hasFinderConfirmed
-                                    ? 'Finder Confirmed Item Returned ✓'
-                                    : 'I Successfully Returned This Item',
+                                    ? (isBn ? 'সন্ধানকারী নিশ্চিত করেছেন ফেরত দেওয়া হয়েছে ✓' : 'Finder Confirmed Item Returned ✓')
+                                    : (isBn ? 'আমি সফলভাবে আইটেমটি ফেরত দিয়েছি' : 'I Successfully Returned This Item'),
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -727,13 +770,13 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                               ? null
                               : () => _handleReject(claim),
                           icon: const Icon(Icons.close_rounded),
-                          label: const Text('Reject Claim'),
+                          label: Text(isBn ? 'দাবি প্রত্যাখ্যান করুন' : 'Reject Claim'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: PrimaryButton(
-                          text: 'Approve Claim',
+                          text: isBn ? 'দাবি অনুমোদন করুন' : 'Approve Claim',
                           icon: Icons.check_circle_rounded,
                           isLoading: _isUpdating,
                           onPressed: () => _handleApprove(claim),
@@ -756,18 +799,22 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                           color: AppColors.primary,
                         ),
                         const SizedBox(height: 12),
-                        const Text(
-                          'Claim Submitted — Awaiting Owner Review',
-                          style: TextStyle(
+                        Text(
+                          isBn
+                              ? 'দাবি জমা হয়েছে — মালিকের পর্যালোচনার অপেক্ষায়'
+                              : 'Claim Submitted — Awaiting Owner Review',
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
                           ),
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'The item owner will review your claim and approve or reject it. You will be notified once a decision is made.',
-                          style: TextStyle(
+                        Text(
+                          isBn
+                              ? 'আইটেমের মালিক আপনার দাবিটি পর্যালোচনা করবেন এবং অনুমোদন বা প্রত্যাখ্যান করবেন। সিদ্ধান্ত হলে আপনাকে জানানো হবে।'
+                              : 'The item owner will review your claim and approve or reject it. You will be notified once a decision is made.',
+                          style: const TextStyle(
                             fontSize: 13,
                             color: AppColors.onSurfaceVariant,
                           ),

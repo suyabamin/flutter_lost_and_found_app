@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
+import '../../core/utils/app_localizations.dart';
 
 class OtpVerificationScreen extends ConsumerStatefulWidget {
   const OtpVerificationScreen({super.key});
@@ -59,6 +60,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -87,8 +91,10 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                 const SizedBox(height: 20),
                 Text(
                   _codeSent
-                      ? 'Enter Verification Code'
-                      : 'Phone Authentication',
+                      ? (isBn
+                            ? 'যাচাইকরণ কোড লিখুন'
+                            : 'Enter Verification Code')
+                      : (isBn ? 'ফোন নম্বর যাচাই' : 'Phone Authentication'),
                   style: const TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -97,8 +103,12 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                 const SizedBox(height: 8),
                 Text(
                   _codeSent
-                      ? 'We sent a 6-digit code to ${_phoneController.text}'
-                      : 'Enter your mobile number to receive a verification OTP code.',
+                      ? (isBn
+                            ? 'আমরা ${_phoneController.text} নম্বরে ৬-সংখ্যার কোড পাঠিয়েছি'
+                            : 'We sent a 6-digit code to ${_phoneController.text}')
+                      : (isBn
+                            ? 'একটি ওটিপি যাচাইকরণ কোড পেতে আপনার মোবাইল নম্বর দিন।'
+                            : 'Enter your mobile number to receive a verification OTP code.'),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 14,
@@ -115,13 +125,15 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                       if (!_codeSent) ...[
                         CustomTextField(
                           controller: _phoneController,
-                          labelText: 'Mobile Phone Number',
+                          labelText: isBn
+                              ? 'মোবাইল ফোন নম্বর'
+                              : 'Mobile Phone Number',
                           prefixIcon: Icons.phone_android_rounded,
                           keyboardType: TextInputType.phone,
                         ),
                         const SizedBox(height: 20),
                         PrimaryButton(
-                          text: 'Send OTP Code',
+                          text: isBn ? 'ওটিপি কোড পাঠান' : 'Send OTP Code',
                           icon: Icons.sms_outlined,
                           isLoading: _isLoading,
                           onPressed: _sendOtp,
@@ -160,7 +172,9 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         ),
                         const SizedBox(height: 24),
                         PrimaryButton(
-                          text: 'Verify & Continue',
+                          text: isBn
+                              ? 'যাচাই করে এগিয়ে যান'
+                              : 'Verify & Continue',
                           icon: Icons.check_circle_outline,
                           isLoading: _isLoading,
                           onPressed: _verifyOtp,
@@ -168,7 +182,11 @@ class _OtpVerificationScreenState extends ConsumerState<OtpVerificationScreen> {
                         const SizedBox(height: 16),
                         TextButton(
                           onPressed: () => setState(() => _codeSent = false),
-                          child: const Text('Change Phone Number'),
+                          child: Text(
+                            isBn
+                                ? 'ফোন নম্বর পরিবর্তন করুন'
+                                : 'Change Phone Number',
+                          ),
                         ),
                       ],
                     ],

@@ -9,6 +9,7 @@ import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import '../../core/widgets/app_image.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -50,6 +51,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _pickImage(ImageSource source) async {
+    final loc = AppLocalizations.of(context);
     try {
       final pickedFile = await _picker.pickImage(
         source: source,
@@ -70,7 +72,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to select image: ${e.toString()}'),
+            content: Text(
+              loc.isBangla
+                  ? 'ছবি নির্বাচন ব্যর্থ হয়েছে: ${e.toString()}'
+                  : 'Failed to select image: ${e.toString()}',
+            ),
             backgroundColor: AppColors.error,
           ),
         );
@@ -79,6 +85,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   void _showImagePickerOptions(BuildContext context, String currentPhotoUrl) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
     final hasImage =
         !_removeImage &&
         (_selectedImageBytes != null || currentPhotoUrl.isNotEmpty);
@@ -94,9 +102,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                'Profile Photo Options',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Text(
+                isBn ? 'প্রোফাইল ছবির বিকল্প' : 'Profile Photo Options',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               ListTile(
@@ -104,7 +112,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   Icons.photo_library_rounded,
                   color: AppColors.primary,
                 ),
-                title: const Text('Choose from Gallery'),
+                title: Text(isBn ? 'গ্যালারি থেকে নির্বাচন করুন' : 'Choose from Gallery'),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickImage(ImageSource.gallery);
@@ -115,7 +123,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   Icons.camera_alt_rounded,
                   color: AppColors.primary,
                 ),
-                title: const Text('Take a Photo'),
+                title: Text(isBn ? 'ছবি তুলুন' : 'Take a Photo'),
                 onTap: () {
                   Navigator.pop(ctx);
                   _pickImage(ImageSource.camera);
@@ -127,9 +135,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     Icons.delete_outline_rounded,
                     color: AppColors.error,
                   ),
-                  title: const Text(
-                    'Remove Profile Photo',
-                    style: TextStyle(color: AppColors.error),
+                  title: Text(
+                    isBn ? 'প্রোফাইল ছবি সরান' : 'Remove Profile Photo',
+                    style: const TextStyle(color: AppColors.error),
                   ),
                   onTap: () {
                     Navigator.pop(ctx);
@@ -148,11 +156,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   }
 
   Future<void> _saveProfile() async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
     final user = ref.read(currentUserProvider).value;
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please sign in to update your profile.'),
+        SnackBar(
+          content: Text(
+            isBn
+                ? 'প্রোফাইল আপডেট করতে অনুগ্রহ করে সাইন ইন করুন।'
+                : 'Please sign in to update your profile.',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -162,8 +176,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final newName = _nameController.text.trim();
     if (newName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Display name cannot be empty.'),
+        SnackBar(
+          content: Text(
+            isBn ? 'নাম খালি রাখা যাবে না।' : 'Display name cannot be empty.',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -173,7 +189,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     FocusScope.of(context).unfocus();
     setState(() {
       _isLoading = true;
-      _statusMessage = 'Updating profile...';
+      _statusMessage = isBn ? 'প্রোফাইল আপডেট হচ্ছে...' : 'Updating profile...';
     });
 
     try {
@@ -182,7 +198,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       // 1. Upload new image if selected
       if (_selectedImage != null && !_removeImage) {
         setState(() {
-          _statusMessage = 'Uploading profile image...';
+          _statusMessage = isBn ? 'ছবি আপলোড হচ্ছে...' : 'Uploading profile image...';
         });
         final cloudinaryService = ref.read(cloudinaryServiceProvider);
         updatedPhotoUrl = await cloudinaryService.uploadXFile(
@@ -195,7 +211,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
       // 2. Update Firestore user document
       setState(() {
-        _statusMessage = 'Saving user details...';
+        _statusMessage = isBn ? 'তথ্য সংরক্ষণ করা হচ্ছে...' : 'Saving user details...';
       });
       final firestoreService = ref.read(firestoreServiceProvider);
       await firestoreService.updateUserProfile(
@@ -209,8 +225,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       // 3. Synchronize Firebase Auth User Profile
       final authService = ref.read(authServiceProvider);
       await authService.updateAuthDisplayName(newName);
-      // Firebase Auth only accepts http/https URLs for photoURL.
-      // Base64 data URIs are stored in Firestore only — skip Auth sync for them.
       if (updatedPhotoUrl.isEmpty || updatedPhotoUrl.startsWith('http')) {
         await authService.updateAuthPhotoUrl(updatedPhotoUrl);
       }
@@ -220,8 +234,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully!'),
+          SnackBar(
+            content: Text(
+              isBn ? 'প্রোফাইল সফলভাবে আপডেট করা হয়েছে!' : 'Profile updated successfully!',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -235,7 +251,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Failed to update profile: ${e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()}',
+              '${isBn ? 'ব্যর্থ হয়েছে:' : 'Failed to update profile:'} ${e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()}',
             ),
             backgroundColor: AppColors.error,
           ),
@@ -246,6 +262,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final user = ref.watch(currentUserProvider).value;
     final currentPhotoUrl = user?.photoUrl ?? '';
 
@@ -253,7 +272,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       canPop: !_isLoading,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Profile'),
+          title: Text(isBn ? 'প্রোফাইল সম্পাদনা' : 'Edit Profile'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: _isLoading ? null : () => context.pop(),
@@ -350,11 +369,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 icon: const Icon(Icons.edit, size: 16),
                 label: Text(
                   _removeImage
-                      ? 'Add Profile Image'
+                      ? (isBn ? 'প্রোফাইল ছবি যোগ করুন' : 'Add Profile Image')
                       : (currentPhotoUrl.isNotEmpty ||
                                 _selectedImageBytes != null
-                            ? 'Change Profile Image'
-                            : 'Add Profile Image'),
+                            ? (isBn ? 'প্রোফাইল ছবি পরিবর্তন করুন' : 'Change Profile Image')
+                            : (isBn ? 'প্রোফাইল ছবি যোগ করুন' : 'Add Profile Image')),
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -392,14 +411,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   children: [
                     CustomTextField(
                       controller: _nameController,
-                      labelText: 'Full Name',
+                      labelText: isBn ? 'পুরো নাম' : 'Full Name',
                       prefixIcon: Icons.person_outline,
                       enabled: !_isLoading,
                     ),
                     const SizedBox(height: 14),
                     CustomTextField(
                       controller: _phoneController,
-                      labelText: 'Phone Number',
+                      labelText: isBn ? 'ফোন নম্বর' : 'Phone Number',
                       prefixIcon: Icons.phone_outlined,
                       keyboardType: TextInputType.phone,
                       enabled: !_isLoading,
@@ -407,7 +426,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     const SizedBox(height: 14),
                     CustomTextField(
                       controller: _locationController,
-                      labelText: 'Location / City',
+                      labelText: isBn ? 'অবস্থান / শহর' : 'Location / City',
                       prefixIcon: Icons.location_on_outlined,
                       enabled: !_isLoading,
                     ),
@@ -417,7 +436,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               const SizedBox(height: 28),
 
               PrimaryButton(
-                text: 'Save Changes',
+                text: isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes',
                 icon: Icons.check,
                 isLoading: _isLoading,
                 onPressed: _isLoading ? null : _saveProfile,

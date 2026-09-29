@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/models/chat_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class ChatConversationScreen extends ConsumerStatefulWidget {
   final String id;
@@ -63,9 +64,14 @@ class _ChatConversationScreenState
       _scrollToBottom();
     } catch (_) {
       if (mounted) {
+        final loc = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Could not send message. Please check connection.'),
+          SnackBar(
+            content: Text(
+              loc.isBangla
+                  ? 'বার্তা পাঠানো যায়নি। সংযোগ পরীক্ষা করুন।'
+                  : 'Could not send message. Please check connection.',
+            ),
           ),
         );
       }
@@ -119,6 +125,8 @@ class _ChatConversationScreenState
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final firestoreService = ref.watch(firestoreServiceProvider);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     // Use FirebaseAuth directly (synchronous) — avoids async StreamProvider null bug
     // where isMe is always false and all messages appear on the same side.
@@ -130,7 +138,7 @@ class _ChatConversationScreenState
         final chatRoom = chatRoomSnapshot.data;
         final String roomTitle = chatRoom?.postTitle.isNotEmpty == true
             ? chatRoom!.postTitle
-            : 'Private 1-to-1 Handoff Chat';
+            : (isBn ? 'ব্যক্তিগত ১-টু-১ হস্তান্তর চ্যাট' : 'Private 1-to-1 Handoff Chat');
         final String roomImage = chatRoom?.postImage.isNotEmpty == true
             ? chatRoom!.postImage
             : 'https://i.pravatar.cc/100?img=12';
@@ -168,9 +176,11 @@ class _ChatConversationScreenState
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const Text(
-                        'Online • Private 1-to-1 Room',
-                        style: TextStyle(fontSize: 11, color: Colors.green),
+                      Text(
+                        isBn
+                            ? 'অনলাইন • ব্যক্তিগত ১-টু-১ রুম'
+                            : 'Online • Private 1-to-1 Room',
+                        style: const TextStyle(fontSize: 11, color: Colors.green),
                       ),
                     ],
                   ),
@@ -186,9 +196,11 @@ class _ChatConversationScreenState
                 icon: const Icon(Icons.info_outline_rounded),
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
+                    SnackBar(
                       content: Text(
-                        'Private chat room end-to-end coordinated for lost/found item return.',
+                        isBn
+                            ? 'হারানো/পাওয়া আইটেম হস্তান্তরের জন্য শেষ থেকে শেষ সমন্বিত ব্যক্তিগত চ্যাট রুম।'
+                            : 'Private chat room end-to-end coordinated for lost/found item return.',
                       ),
                     ),
                   );
@@ -211,8 +223,9 @@ class _ChatConversationScreenState
                             ChatMessageModel(
                               id: 'system_welcome',
                               senderId: 'system',
-                              text:
-                                  '?? Claim Approved! You can now chat in private to coordinate item handoff.',
+                              text: isBn
+                                  ? '🎉 দাবি অনুমোদিত! আইটেম হস্তান্তরের সমন্বয় করতে আপনারা এখন গোপনে চ্যাট করতে পারেন।'
+                                  : '🎉 Claim Approved! You can now chat in private to coordinate item handoff.',
                               timestamp: DateTime.now(),
                             ),
                           ]
@@ -239,13 +252,18 @@ class _ChatConversationScreenState
                         // System announcement bubble (centered)
                         if (isSystem) {
                           return Container(
-                            margin: const EdgeInsets.symmetric(vertical: 12),
-                            padding: const EdgeInsets.all(14),
+                            margin: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                            padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              color: AppColors.secondary.withValues(alpha: 0.15),
+                              color: AppColors.secondary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: AppColors.secondary.withValues(alpha: 0.3),
+                                color: AppColors.secondary.withValues(
+                                  alpha: 0.3,
+                                ),
                               ),
                             ),
                             child: Row(
@@ -448,10 +466,12 @@ class _ChatConversationScreenState
                           child: TextField(
                             controller: _msgController,
                             textInputAction: TextInputAction.send,
-                            decoration: const InputDecoration(
-                              hintText: 'Type a message...',
+                            decoration: InputDecoration(
+                              hintText: isBn
+                                  ? 'একটি বার্তা লিখুন...'
+                                  : 'Type a message...',
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(
+                              contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 10,
                               ),

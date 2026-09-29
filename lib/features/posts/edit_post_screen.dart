@@ -11,6 +11,7 @@ import '../../core/widgets/app_image.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/utils/post_delete_helper.dart';
+import '../../core/utils/app_localizations.dart';
 
 class EditPostScreen extends ConsumerStatefulWidget {
   final String postId;
@@ -109,11 +110,18 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
   }
 
   Future<void> _pickNewImages() async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final totalImages = _existingImages.length + _newPickedFiles.length;
     if (totalImages >= 5) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Maximum 5 images allowed per post.'),
+        SnackBar(
+          content: Text(
+            isBn
+                ? 'প্রতি পোস্টে সর্বোচ্চ ৫টি ছবি দেওয়া যাবে।'
+                : 'Maximum 5 images allowed per post.',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -146,7 +154,11 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Could not pick images: ${e.toString()}'),
+            content: Text(
+              isBn
+                  ? 'ছবি নির্বাচন করা যায়নি: ${e.toString()}'
+                  : 'Could not pick images: ${e.toString()}',
+            ),
             backgroundColor: AppColors.error,
           ),
         );
@@ -170,11 +182,18 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
   Future<void> _savePostChanges() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final user = ref.read(currentUserProvider).value;
     if (user == null || _post == null || _post!.userId != user.uid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You are not authorized to edit this post.'),
+        SnackBar(
+          content: Text(
+            isBn
+                ? 'আপনি এই পোস্টটি সম্পাদনা করার অধিকারী নন।'
+                : 'You are not authorized to edit this post.',
+          ),
           backgroundColor: AppColors.error,
         ),
       );
@@ -184,7 +203,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
     FocusScope.of(context).unfocus();
     setState(() {
       _isSaving = true;
-      _statusMessage = 'Preparing updates...';
+      _statusMessage = isBn ? 'আপডেটের প্রস্তুতি চলছে...' : 'Preparing updates...';
     });
 
     try {
@@ -193,7 +212,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
       // 1. Upload newly selected images to Cloudinary
       if (_newPickedFiles.isNotEmpty) {
         setState(() {
-          _statusMessage = 'Uploading new images...';
+          _statusMessage = isBn ? 'নতুন ছবি আপলোড হচ্ছে...' : 'Uploading new images...';
         });
         final cloudinaryService = ref.read(cloudinaryServiceProvider);
         final uploadedUrls = await cloudinaryService.uploadMultipleXFiles(
@@ -212,7 +231,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
 
       // 2. Persist post update to Firestore & local store
       setState(() {
-        _statusMessage = 'Saving post changes...';
+        _statusMessage = isBn ? 'পোস্ট সংরক্ষণ হচ্ছে...' : 'Saving post changes...';
       });
 
       final reward = double.tryParse(_rewardController.text.trim()) ?? 0.0;
@@ -237,8 +256,10 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
           _isSaving = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Post updated successfully!'),
+          SnackBar(
+            content: Text(
+              isBn ? 'পোস্ট সফলভাবে আপডেট করা হয়েছে!' : 'Post updated successfully!',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -252,7 +273,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Failed to update post: ${e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()}',
+              '${isBn ? 'ব্যর্থ হয়েছে:' : 'Failed to update post:'} ${e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()}',
             ),
             backgroundColor: AppColors.error,
           ),
@@ -264,17 +285,19 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider).value;
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     if (_isLoadingPost) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Edit Post')),
+        appBar: AppBar(title: Text(isBn ? 'পোস্ট সম্পাদনা' : 'Edit Post')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_post == null || (user != null && _post!.userId != user.uid)) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Edit Post')),
+        appBar: AppBar(title: Text(isBn ? 'পোস্ট সম্পাদনা' : 'Edit Post')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -285,16 +308,20 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                 color: AppColors.error,
               ),
               const SizedBox(height: 16),
-              const Text(
-                'Access Denied',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                isBn ? 'প্রবেশাধিকার নেই' : 'Access Denied',
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              const Text('You are not authorized to edit this post.'),
+              Text(
+                isBn
+                    ? 'আপনি এই পোস্টটি সম্পাদনা করার অধিকারী নন।'
+                    : 'You are not authorized to edit this post.',
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => context.pop(),
-                child: const Text('Go Back'),
+                child: Text(isBn ? 'ফিরে যান' : 'Go Back'),
               ),
             ],
           ),
@@ -306,7 +333,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
       canPop: !_isSaving,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Edit Post'),
+          title: Text(isBn ? 'পোস্ট সম্পাদনা' : 'Edit Post'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: _isSaving ? null : () => context.pop(),
@@ -318,7 +345,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                   Icons.delete_outline_rounded,
                   color: AppColors.error,
                 ),
-                tooltip: 'Delete Post',
+                tooltip: isBn ? 'পোস্ট মুছুন' : 'Delete Post',
                 onPressed: _isSaving
                     ? null
                     : () => PostDeleteHelper.confirmAndDeletePost(
@@ -345,10 +372,10 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                     children: [
                       Expanded(
                         child: ChoiceChip(
-                          label: const Center(
+                          label: Center(
                             child: Text(
-                              'LOST ITEM',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              isBn ? 'হারানো আইটেম' : 'LOST ITEM',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           selected: _selectedType == 'lost',
@@ -365,10 +392,10 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: ChoiceChip(
-                          label: const Center(
+                          label: Center(
                             child: Text(
-                              'FOUND ITEM',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                              isBn ? 'পাওয়া আইটেম' : 'FOUND ITEM',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
                           selected: _selectedType == 'found',
@@ -395,13 +422,13 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                     children: [
                       CustomTextField(
                         controller: _titleController,
-                        labelText: 'Item Title',
-                        hintText: 'e.g. Lost iPhone 13 Pro',
+                        labelText: isBn ? 'আইটেমের শিরোনাম' : 'Item Title',
+                        hintText: isBn ? 'যেমন: হারানো আইফোন ১৩ প্রো' : 'e.g. Lost iPhone 13 Pro',
                         prefixIcon: Icons.title_rounded,
                         enabled: !_isSaving,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
-                            return 'Title is required';
+                            return isBn ? 'শিরোনাম আবশ্যক' : 'Title is required';
                           }
                           return null;
                         },
@@ -411,14 +438,17 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                       DropdownButtonFormField<String>(
                         initialValue: _selectedCategory,
                         decoration: InputDecoration(
-                          labelText: 'Category',
+                          labelText: isBn ? 'বিভাগ' : 'Category',
                           prefixIcon: const Icon(Icons.category_outlined),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
                         items: _categories.map((cat) {
-                          return DropdownMenuItem(value: cat, child: Text(cat));
+                          return DropdownMenuItem(
+                            value: cat,
+                            child: Text(loc.translateCategory(cat)),
+                          );
                         }).toList(),
                         onChanged: _isSaving
                             ? null
@@ -432,13 +462,13 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
 
                       CustomTextField(
                         controller: _locationController,
-                        labelText: 'Location / Area',
-                        hintText: 'e.g. Dhanmondi 32, Dhaka',
+                        labelText: isBn ? 'অবস্থান / এলাকা' : 'Location / Area',
+                        hintText: isBn ? 'যেমন: ধানমন্ডি ৩২, ঢাকা' : 'e.g. Dhanmondi 32, Dhaka',
                         prefixIcon: Icons.location_on_outlined,
                         enabled: !_isSaving,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
-                            return 'Location is required';
+                            return isBn ? 'অবস্থান আবশ্যক' : 'Location is required';
                           }
                           return null;
                         },
@@ -447,8 +477,8 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
 
                       CustomTextField(
                         controller: _rewardController,
-                        labelText: 'Reward Amount (৳)',
-                        hintText: 'Optional reward offer',
+                        labelText: isBn ? 'পুরস্কারের পরিমাণ (৳)' : 'Reward Amount (৳)',
+                        hintText: isBn ? 'ঐচ্ছিক পুরস্কারের প্রস্তাব' : 'Optional reward offer',
                         prefixIcon: Icons.attach_money_rounded,
                         keyboardType: TextInputType.number,
                         enabled: !_isSaving,
@@ -457,14 +487,16 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
 
                       CustomTextField(
                         controller: _descController,
-                        labelText: 'Detailed Description',
-                        hintText: 'Describe color, marks, time lost/found...',
+                        labelText: isBn ? 'বিস্তারিত বিবরণ' : 'Detailed Description',
+                        hintText: isBn
+                            ? 'রং, চিহ্ন, হারানোর/পাওয়ার সময় উল্লেখ করুন...'
+                            : 'Describe color, marks, time lost/found...',
                         prefixIcon: Icons.description_outlined,
                         maxLines: 4,
                         enabled: !_isSaving,
                         validator: (val) {
                           if (val == null || val.trim().isEmpty) {
-                            return 'Description is required';
+                            return isBn ? 'বিবরণ আবশ্যক' : 'Description is required';
                           }
                           return null;
                         },
@@ -484,9 +516,9 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Post Images',
-                            style: TextStyle(
+                          Text(
+                            isBn ? 'পোস্টের ছবি' : 'Post Images',
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
@@ -603,18 +635,18 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                                       alpha: 0.08,
                                     ),
                                   ),
-                                  child: const Column(
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.add_a_photo_outlined,
                                         color: AppColors.primary,
                                         size: 26,
                                       ),
-                                      SizedBox(height: 4),
+                                      const SizedBox(height: 4),
                                       Text(
-                                        'Add Photo',
-                                        style: TextStyle(
+                                        isBn ? 'ছবি যোগ' : 'Add Photo',
+                                        style: const TextStyle(
                                           fontSize: 11,
                                           color: AppColors.primary,
                                           fontWeight: FontWeight.bold,
@@ -658,7 +690,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                 ],
 
                 PrimaryButton(
-                  text: 'Save Post Changes',
+                  text: isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Post Changes',
                   icon: Icons.check_circle_outline,
                   isLoading: _isSaving,
                   onPressed: _isSaving ? null : _savePostChanges,
@@ -683,7 +715,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                             onSuccess: () => context.pop(),
                           ),
                     icon: const Icon(Icons.delete_outline_rounded),
-                    label: const Text('Delete Post'),
+                    label: Text(isBn ? 'পোস্ট মুছুন' : 'Delete Post'),
                   ),
                 ],
               ],

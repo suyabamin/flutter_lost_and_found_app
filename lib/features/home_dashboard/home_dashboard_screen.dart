@@ -9,6 +9,7 @@ import '../../core/providers/providers.dart';
 import '../../core/models/post_model.dart';
 import '../../core/widgets/app_image.dart';
 import '../../core/services/firestore_service.dart';
+import '../../core/utils/app_localizations.dart';
 
 // All posts (unfiltered) provider — used for dashboard stats & AI match banner
 final allPostsStreamProvider = StreamProvider<List<PostModel>>((ref) {
@@ -114,6 +115,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final postsAsync = ref.watch(postsStreamProvider);
     final allPostsAsync = ref.watch(allPostsStreamProvider);
@@ -181,7 +183,9 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                   ),
                   const SizedBox(height: 1),
                   Text(
-                    'Reuniting People • Restoring Smiles',
+                    l10n.isBangla
+                        ? 'মানুষকে মেলানো • মুখে হাসি ফোটানো'
+                        : 'Reuniting People • Restoring Smiles',
                     style: TextStyle(
                       fontSize: 10.5,
                       fontWeight: FontWeight.w500,
@@ -300,8 +304,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                                     : AppColors.onSurface,
                               ),
                               decoration: InputDecoration(
-                                hintText:
-                                    'Search keys, pets, wallets, documents...',
+                                hintText: l10n.t('search_items_hint'),
                                 hintStyle: TextStyle(
                                   color: isDark
                                       ? Colors.white.withValues(alpha: 0.4)
@@ -402,7 +405,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                           final cat = _categories[index];
                           final isSelected = selectedCategory == cat;
                           return CategoryChip(
-                            label: cat,
+                            label: l10n.translateCategory(cat),
                             isSelected: isSelected,
                             onTap: () {
                               ref
@@ -460,8 +463,8 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
               children: [
                 Text(
                   selectedCategory == 'All'
-                      ? 'Recent Reported Feed'
-                      : '$selectedCategory Items',
+                      ? (l10n.isBangla ? 'সাম্প্রতিক রিপোর্টকৃত ফিড' : 'Recent Reported Feed')
+                      : (l10n.isBangla ? '${l10n.translateCategory(selectedCategory)} আইটেম' : '$selectedCategory Items'),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -474,7 +477,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                   child: Row(
                     children: [
                       Text(
-                        'See All',
+                        l10n.t('see_all'),
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           fontSize: 13,
@@ -532,7 +535,9 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'No $selectedCategory items found',
+                              l10n.isBangla
+                                  ? 'কোনো ${l10n.translateCategory(selectedCategory)} পাওয়া যায়নি'
+                                  : 'No $selectedCategory items found',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15,
@@ -543,7 +548,9 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'Be the first to report an item in this category.',
+                              l10n.isBangla
+                                  ? 'এই বিভাগে প্রথম আইটেমটি রিপোর্ট করুন।'
+                                  : 'Be the first to report an item in this category.',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: isDark
@@ -629,13 +636,13 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
               children: [
                 _NavItem(
                   icon: Icons.home_rounded,
-                  label: 'Home',
+                  label: l10n.t('home'),
                   isSelected: _currentNavIndex == 0,
                   onTap: () => setState(() => _currentNavIndex = 0),
                 ),
                 _NavItem(
                   icon: Icons.search_rounded,
-                  label: 'Search',
+                  label: l10n.t('search'),
                   isSelected: _currentNavIndex == 1,
                   onTap: () {
                     setState(() => _currentNavIndex = 1);
@@ -644,7 +651,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                 ),
                 _NavItem(
                   icon: Icons.chat_bubble_outline_rounded,
-                  label: 'Chat',
+                  label: l10n.t('chat'),
                   isSelected: _currentNavIndex == 2,
                   onTap: () {
                     setState(() => _currentNavIndex = 2);
@@ -653,7 +660,7 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                 ),
                 _NavItem(
                   icon: Icons.person_outline_rounded,
-                  label: 'Profile',
+                  label: l10n.t('profile'),
                   isSelected: _currentNavIndex == 3,
                   onTap: () {
                     setState(() => _currentNavIndex = 3);
@@ -889,6 +896,7 @@ class _InteractiveMapTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -939,7 +947,7 @@ class _InteractiveMapTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Interactive Search Map',
+                      l10n.isBangla ? 'ইন্টারেক্টিভ অনুসন্ধান ম্যাপ' : 'Interactive Search Map',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -948,7 +956,9 @@ class _InteractiveMapTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'View nearby item markers & search circle on map',
+                      l10n.isBangla
+                          ? 'ম্যাপে কাছাকাছি আইটেম মার্কার ও অনুসন্ধানের এলাকা দেখুন'
+                          : 'View nearby item markers & search circle on map',
                       style: TextStyle(
                         fontSize: 11,
                         color: isDark
@@ -982,6 +992,7 @@ class _CampusPortalTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -1032,7 +1043,7 @@ class _CampusPortalTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Campus & University Portal',
+                      l10n.isBangla ? 'ক্যাম্পাস ও বিশ্ববিদ্যালয় পোর্টাল' : 'Campus & University Portal',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -1041,7 +1052,9 @@ class _CampusPortalTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      'Join with Student ID or open a campus desk',
+                      l10n.isBangla
+                          ? 'স্টুডেন্ট আইডি দিয়ে যুক্ত হোন বা ক্যাম্পাস ডেস্ক খুলুন'
+                          : 'Join with Student ID or open a campus desk',
                       style: TextStyle(
                         fontSize: 11,
                         color: isDark
@@ -1122,6 +1135,7 @@ class _StaggeredFeedCardState extends State<_StaggeredFeedCard>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final item = widget.item;
     final isLost = item.type == 'lost';
 
@@ -1201,7 +1215,7 @@ class _StaggeredFeedCardState extends State<_StaggeredFeedCard>
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                isLost ? 'LOST' : 'FOUND',
+                                isLost ? l10n.t('lost').toUpperCase() : l10n.t('found').toUpperCase(),
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
@@ -1264,7 +1278,7 @@ class _StaggeredFeedCardState extends State<_StaggeredFeedCard>
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
-                                      item.category,
+                                      l10n.translateCategory(item.category),
                                       style: TextStyle(
                                         fontSize: 10,
                                         fontWeight: FontWeight.w500,
@@ -1301,7 +1315,7 @@ class _StaggeredFeedCardState extends State<_StaggeredFeedCard>
                                     ),
                                     const SizedBox(width: 3),
                                     Text(
-                                      '2 hours ago',
+                                      l10n.isBangla ? '২ ঘণ্টা আগে' : '2 hours ago',
                                       style: TextStyle(
                                         fontSize: 9.5,
                                         color: widget.isDark
@@ -1484,9 +1498,9 @@ class _AnimatedReportFabState extends State<_AnimatedReportFab> {
             });
           },
           icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
-          label: const Text(
-            'Report Item',
-            style: TextStyle(
+          label: Text(
+            AppLocalizations.of(context).t('report_item'),
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w800,
               fontSize: 13.5,
@@ -1509,6 +1523,7 @@ class _AiMatchBanner extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentUid = FirebaseAuth.instance.currentUser?.uid;
+    final l10n = AppLocalizations.of(context);
 
     return allPostsAsync.when(
       loading: () => const SizedBox.shrink(),
@@ -1556,7 +1571,9 @@ class _AiMatchBanner extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'AI Match Found! ($pct% Match)',
+                          l10n.isBangla
+                              ? 'এআই ম্যাচ পাওয়া গেছে! ($pct% মিল)'
+                              : 'AI Match Found! ($pct% Match)',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -1565,7 +1582,9 @@ class _AiMatchBanner extends ConsumerWidget {
                         ),
                         const SizedBox(height: 2),
                         Text(
-                          '"${best.title}" found at ${best.location} matches your report.',
+                          l10n.isBangla
+                              ? '${best.location}-এ পাওয়া "${best.title}" আপনার রিপোর্টের সাথে মিলেছে।'
+                              : '"${best.title}" found at ${best.location} matches your report.',
                           style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.onSurfaceVariant,
@@ -1714,7 +1733,7 @@ class _LiveStatsRow extends ConsumerWidget {
                         },
                       ),
                       Text(
-                        'Items Recovered',
+                        AppLocalizations.of(context).t('items_recovered'),
                         style: TextStyle(
                           fontSize: 11,
                           color: isDark
@@ -1780,7 +1799,7 @@ class _LiveStatsRow extends ConsumerWidget {
                         },
                       ),
                       Text(
-                        'Active Reports',
+                        AppLocalizations.of(context).t('active_reports'),
                         style: TextStyle(
                           fontSize: 11,
                           color: isDark

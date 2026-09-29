@@ -8,25 +8,33 @@ import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/utils/post_delete_helper.dart';
+import '../../core/utils/app_localizations.dart';
 
 class MyPostsScreen extends ConsumerWidget {
   const MyPostsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final user = ref.watch(currentUserProvider).value;
     final firestoreService = ref.watch(firestoreServiceProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Reported Posts'),
+        title: Text(l10n.t('my_reported_posts')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
         ),
       ),
       body: user == null
-          ? const Center(child: Text('Please sign in to view your posts'))
+          ? Center(
+              child: Text(
+                l10n.isBangla
+                    ? 'আপনার পোস্ট দেখতে অনুগ্রহ করে সাইন ইন করুন'
+                    : 'Please sign in to view your posts',
+              ),
+            )
           : StreamBuilder<List<PostModel>>(
               stream: firestoreService.streamUserPosts(user.uid),
               builder: (context, snapshot) {
@@ -48,18 +56,18 @@ class MyPostsScreen extends ConsumerWidget {
                             color: AppColors.outline.withValues(alpha: 0.5),
                           ),
                           const SizedBox(height: 16),
-                          const Text(
-                            'No Posts Yet',
-                            style: TextStyle(
+                          Text(
+                            l10n.t('no_posts_yet'),
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 6),
-                          const Text(
-                            'Your lost and found posts will appear here.',
+                          Text(
+                            l10n.t('your_posts_appear_here'),
                             textAlign: TextAlign.center,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 14,
                               color: AppColors.onSurfaceVariant,
                             ),
@@ -68,7 +76,7 @@ class MyPostsScreen extends ConsumerWidget {
                           ElevatedButton.icon(
                             onPressed: () => context.push('/create-post-step1'),
                             icon: const Icon(Icons.add_rounded),
-                            label: const Text('Create Post'),
+                            label: Text(l10n.t('create_post')),
                           ),
                         ],
                       ),
@@ -117,7 +125,7 @@ class MyPostsScreen extends ConsumerWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    'Status: ${item.status.toUpperCase()}',
+                                    '${l10n.t('status')}: ${item.status.toUpperCase()}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: item.status == 'completed'
@@ -145,7 +153,7 @@ class MyPostsScreen extends ConsumerWidget {
                                     Icons.edit_outlined,
                                     color: AppColors.primary,
                                   ),
-                                  tooltip: 'Edit Post',
+                                  tooltip: l10n.t('edit_post'),
                                   onPressed: () =>
                                       context.push('/edit-post/${item.id}'),
                                 ),
@@ -154,7 +162,7 @@ class MyPostsScreen extends ConsumerWidget {
                                     Icons.delete_outline_rounded,
                                     color: AppColors.error,
                                   ),
-                                  tooltip: 'Delete Post',
+                                  tooltip: l10n.t('delete_post'),
                                   onPressed: () =>
                                       PostDeleteHelper.confirmAndDeletePost(
                                         context: context,

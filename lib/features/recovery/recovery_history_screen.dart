@@ -7,6 +7,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/category_chip.dart';
 import '../../core/models/recovery_models.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class RecoveryHistoryScreen extends ConsumerStatefulWidget {
   const RecoveryHistoryScreen({super.key});
@@ -18,8 +19,7 @@ class RecoveryHistoryScreen extends ConsumerStatefulWidget {
 
 class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _selectedFilter =
-      'All'; // 'All', 'Recovered (Poster)', 'Returned (Finder)'
+  String _selectedFilter = 'All';
 
   @override
   void dispose() {
@@ -33,10 +33,18 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
     final firestoreService = ref.watch(firestoreServiceProvider);
     final authUser = FirebaseAuth.instance.currentUser;
     final currentUid = authUser?.uid ?? 'guest';
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
+    final filterOptions = [
+      {'key': 'All', 'label': isBn ? 'সব' : 'All'},
+      {'key': 'Recovered Items', 'label': isBn ? 'উদ্ধারকৃত আইটেম' : 'Recovered Items'},
+      {'key': 'Returned Items', 'label': isBn ? 'ফেরতকৃত আইটেম' : 'Returned Items'},
+    ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recovery History Archive'),
+        title: Text(isBn ? 'পুনরুদ্ধারের ইতিহাস আর্কাইভ' : 'Recovery History Archive'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -52,7 +60,9 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                 TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    hintText: 'Search recovered items, locations...',
+                    hintText: isBn
+                        ? 'উদ্ধারকৃত আইটেম, অবস্থান খুঁজুন...'
+                        : 'Search recovered items, locations...',
                     prefixIcon: const Icon(
                       Icons.search,
                       color: AppColors.primary,
@@ -74,16 +84,16 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                   height: 38,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: ['All', 'Recovered Items', 'Returned Items'].map((
-                      filter,
-                    ) {
-                      final isSelected = _selectedFilter == filter;
+                    children: filterOptions.map((opt) {
+                      final key = opt['key']!;
+                      final label = opt['label']!;
+                      final isSelected = _selectedFilter == key;
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: CategoryChip(
-                          label: filter,
+                          label: label,
                           isSelected: isSelected,
-                          onTap: () => setState(() => _selectedFilter = filter),
+                          onTap: () => setState(() => _selectedFilter = key),
                         ),
                       );
                     }).toList(),
@@ -140,23 +150,27 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.history_toggle_off_rounded,
                             size: 64,
                             color: AppColors.onSurfaceVariant,
                           ),
                           const SizedBox(height: 12),
-                          const Text(
-                            'No recovery history found.',
-                            style: TextStyle(
+                          Text(
+                            isBn
+                                ? 'কোনো পুনরুদ্ধারের ইতিহাস পাওয়া যায়নি।'
+                                : 'No recovery history found.',
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                             ),
                           ),
                           const SizedBox(height: 4),
-                          const Text(
-                            'Completed recoveries will be permanently archived here.',
-                            style: TextStyle(
+                          Text(
+                            isBn
+                                ? 'সম্পন্ন পুনরুদ্ধার এখানে স্থায়ীভাবে সংরক্ষিত থাকবে।'
+                                : 'Completed recoveries will be permanently archived here.',
+                            style: const TextStyle(
                               color: AppColors.onSurfaceVariant,
                               fontSize: 12,
                             ),
@@ -220,7 +234,9 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(
-                                        isPoster ? 'RECOVERED' : 'RETURNED',
+                                        isPoster
+                                            ? (isBn ? 'উদ্ধারকৃত' : 'RECOVERED')
+                                            : (isBn ? 'ফেরতকৃত' : 'RETURNED'),
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 10,
@@ -250,7 +266,7 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  'Location: ${item.location}',
+                                  '${isBn ? 'অবস্থান:' : 'Location:'} ${item.location}',
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: AppColors.outline,
@@ -262,8 +278,8 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                                   const SizedBox(height: 4),
                                   Text(
                                     isPoster
-                                        ? 'Reward Paid: ৳ ${item.rewardAmount.toInt()}'
-                                        : 'Reward Earned: ৳ ${item.rewardAmount.toInt()}',
+                                        ? '${isBn ? 'প্রদত্ত পুরস্কার:' : 'Reward Paid:'} ৳ ${item.rewardAmount.toInt()}'
+                                        : '${isBn ? 'অর্জিত পুরস্কার:' : 'Reward Earned:'} ৳ ${item.rewardAmount.toInt()}',
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,

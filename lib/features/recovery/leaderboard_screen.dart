@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/models/user_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class LeaderboardScreen extends ConsumerWidget {
   const LeaderboardScreen({super.key});
@@ -12,10 +13,12 @@ class LeaderboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firestoreService = ref.watch(firestoreServiceProvider);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Community Leaderboard'),
+        title: Text(isBn ? 'কমিউনিটি লিডারবোর্ড' : 'Community Leaderboard'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -31,10 +34,10 @@ class LeaderboardScreen extends ConsumerWidget {
           final list = snapshot.data ?? [];
 
           if (list.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'No leaderboard data yet.',
-                style: TextStyle(color: AppColors.outline),
+                isBn ? 'এখনো কোনো লিডারবোর্ড তথ্য নেই।' : 'No leaderboard data yet.',
+                style: const TextStyle(color: AppColors.outline),
               ),
             );
           }
@@ -62,6 +65,7 @@ class LeaderboardScreen extends ConsumerWidget {
                           rank: 2,
                           color: Colors.grey.shade400,
                           badgeIcon: Icons.workspace_premium_rounded,
+                          isBn: isBn,
                         ),
                       ),
                     const SizedBox(width: 8),
@@ -76,6 +80,7 @@ class LeaderboardScreen extends ConsumerWidget {
                           color: Colors.amber,
                           badgeIcon: Icons.emoji_events_rounded,
                           isFirst: true,
+                          isBn: isBn,
                         ),
                       ),
                     const SizedBox(width: 8),
@@ -89,17 +94,18 @@ class LeaderboardScreen extends ConsumerWidget {
                           rank: 3,
                           color: Colors.orange.shade700,
                           badgeIcon: Icons.military_tech_rounded,
+                          isBn: isBn,
                         ),
                       ),
                   ],
                 ),
                 const SizedBox(height: 24),
 
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Community Top Heroes',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    isBn ? 'কমিউনিটির শীর্ষ উদ্ধারকারী' : 'Community Top Heroes',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -159,7 +165,7 @@ class LeaderboardScreen extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
-                                  '${u.rewardPoints} Points • ${u.location}',
+                                  '${u.rewardPoints} ${isBn ? 'পয়েন্ট' : 'Points'} • ${u.location}',
                                   style: const TextStyle(
                                     fontSize: 11,
                                     color: AppColors.outline,
@@ -201,6 +207,7 @@ class LeaderboardScreen extends ConsumerWidget {
     required Color color,
     required IconData badgeIcon,
     bool isFirst = false,
+    bool isBn = false,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
@@ -244,7 +251,7 @@ class LeaderboardScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            '${user.rewardPoints} Pts',
+            '${user.rewardPoints} ${isBn ? 'পয়েন্ট' : 'Pts'}',
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,

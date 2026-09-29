@@ -6,18 +6,22 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/models/recovery_models.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final firestoreService = ref.watch(firestoreServiceProvider);
     final currentUid = FirebaseAuth.instance.currentUser?.uid ?? 'guest';
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Activity & Recovery History'),
+        title: Text(isBn ? 'কার্যকলাপ ও পুনরুদ্ধারের ইতিহাস' : 'Activity & Recovery History'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -32,10 +36,10 @@ class HistoryScreen extends ConsumerWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (items.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'No Recovery History Yet',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                isBn ? 'এখনো কোনো পুনরুদ্ধারের ইতিহাস নেই' : 'No Recovery History Yet',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             );
           }
@@ -81,7 +85,7 @@ class HistoryScreen extends ConsumerWidget {
                                 ),
                               ),
                               Text(
-                                'Cat: ${item.category} • Partner: $partnerName',
+                                '${isBn ? 'বিভাগ:' : 'Cat:'} ${loc.translateCategory(item.category)} • ${isBn ? 'সঙ্গী:' : 'Partner:'} $partnerName',
                                 style: const TextStyle(
                                   fontSize: 11,
                                   color: AppColors.outline,
@@ -104,7 +108,7 @@ class HistoryScreen extends ConsumerWidget {
                       children: [
                         if (item.rewardAmount > 0)
                           Text(
-                            'Reward: ৳${item.rewardAmount.toInt()}  ',
+                            '${isBn ? 'পুরস্কার:' : 'Reward:'} ৳${item.rewardAmount.toInt()}  ',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
@@ -128,7 +132,7 @@ class HistoryScreen extends ConsumerWidget {
                     if (reviewText.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(
-                        'Review: "$reviewText"',
+                        '${isBn ? 'মতামত:' : 'Review:'} "$reviewText"',
                         style: const TextStyle(
                           fontSize: 11,
                           fontStyle: FontStyle.italic,

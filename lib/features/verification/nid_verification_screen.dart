@@ -7,6 +7,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
+import '../../core/utils/app_localizations.dart';
 
 class NidVerificationScreen extends ConsumerStatefulWidget {
   const NidVerificationScreen({super.key});
@@ -38,13 +39,20 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
   }
 
   void _submitNid() {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     setState(() => _isSubmitting = true);
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
         setState(() => _isSubmitting = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('NID Documents submitted for verification!'),
+          SnackBar(
+            content: Text(
+              isBn
+                  ? 'এনআইডি ডকুমেন্ট যাচাইয়ের জন্য জমা দেওয়া হয়েছে!'
+                  : 'NID Documents submitted for verification!',
+            ),
           ),
         );
         context.pop();
@@ -54,9 +62,12 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NID Smart Verification'),
+        title: Text(isBn ? 'স্মার্ট এনআইডি যাচাইকরণ' : 'NID Smart Verification'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -67,14 +78,16 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Verify Bangladesh NID',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              isBn ? 'বাংলাদেশ এনআইডি যাচাই করুন' : 'Verify Bangladesh NID',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Gain instant Trust Badge, unlock higher rewards, and secure direct police GD generation.',
-              style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+            Text(
+              isBn
+                  ? 'তাৎক্ষণিক ট্রাস্ট ব্যাজ পান, উচ্চতর পুরস্কার আনলক করুন এবং নিরাপদ পুলিশ জিডি সুবিধা পান।'
+                  : 'Gain instant Trust Badge, unlock higher rewards, and secure direct police GD generation.',
+              style: const TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
             ),
             const SizedBox(height: 20),
 
@@ -85,14 +98,14 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
                 children: [
                   CustomTextField(
                     controller: _nidController,
-                    labelText: 'National ID Number (NID)',
-                    hintText: '10 or 17 digit NID number',
+                    labelText: isBn ? 'জাতীয় পরিচয়পত্র নম্বর (এনআইডি)' : 'National ID Number (NID)',
+                    hintText: isBn ? '১০ বা ১৭ ডিজিটের এনআইডি নম্বর' : '10 or 17 digit NID number',
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 14),
                   CustomTextField(
                     controller: _dobController,
-                    labelText: 'Date of Birth',
+                    labelText: isBn ? 'জন্ম তারিখ' : 'Date of Birth',
                     hintText: 'YYYY-MM-DD',
                     prefixIcon: Icons.calendar_month,
                   ),
@@ -101,9 +114,9 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
             ),
             const SizedBox(height: 20),
 
-            const Text(
-              'Upload NID Card Photos',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text(
+              isBn ? 'এনআইডি কার্ডের ছবি আপলোড করুন' : 'Upload NID Card Photos',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 12),
 
@@ -129,18 +142,18 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
                                 fit: BoxFit.cover,
                               ),
                             )
-                          : const Column(
+                          : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.badge,
                                   color: AppColors.primary,
                                   size: 32,
                                 ),
-                                SizedBox(height: 6),
+                                const SizedBox(height: 6),
                                 Text(
-                                  'NID Front Side',
-                                  style: TextStyle(
+                                  isBn ? 'এনআইডি সামনের দিক' : 'NID Front Side',
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -171,18 +184,18 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
                                 fit: BoxFit.cover,
                               ),
                             )
-                          : const Column(
+                          : Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.badge_outlined,
                                   color: AppColors.primary,
                                   size: 32,
                                 ),
-                                SizedBox(height: 6),
+                                const SizedBox(height: 6),
                                 Text(
-                                  'NID Back Side',
-                                  style: TextStyle(
+                                  isBn ? 'এনআইডি পেছনের দিক' : 'NID Back Side',
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -197,7 +210,7 @@ class _NidVerificationScreenState extends ConsumerState<NidVerificationScreen> {
             const SizedBox(height: 28),
 
             PrimaryButton(
-              text: 'Submit for NID Verification',
+              text: isBn ? 'এনআইডি যাচাইয়ের জন্য জমা দিন' : 'Submit for NID Verification',
               icon: Icons.verified_user_rounded,
               isLoading: _isSubmitting,
               onPressed: _submitNid,

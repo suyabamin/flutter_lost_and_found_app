@@ -6,6 +6,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -89,6 +90,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -119,7 +121,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Lost & Found BD',
+                  l10n.t('app_name'),
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -127,9 +129,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'Connecting lost belongings with their owners.',
-                  style: TextStyle(
+                Text(
+                  l10n.t('login_subtitle'),
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -145,17 +147,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Welcome Back',
-                          style: TextStyle(
+                        Text(
+                          l10n.t('welcome_back'),
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         const SizedBox(height: 4),
-                        const Text(
-                          'Please enter your details to sign in.',
-                          style: TextStyle(
+                        Text(
+                          l10n.t('please_enter_details'),
+                          style: const TextStyle(
                             fontSize: 13,
                             color: AppColors.onSurfaceVariant,
                           ),
@@ -198,12 +200,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         // Email field
                         CustomTextField(
                           controller: _emailController,
-                          labelText: 'Email Address',
-                          hintText: 'name@example.com',
+                          labelText: l10n.t('email_address'),
+                          hintText: l10n.t('email_hint'),
                           prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (val) => val == null || !val.contains('@')
-                              ? 'Enter a valid email'
+                              ? l10n.t('email_invalid')
                               : null,
                         ),
                         const SizedBox(height: 16),
@@ -211,7 +213,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         // Password field
                         CustomTextField(
                           controller: _passwordController,
-                          labelText: 'Password',
+                          labelText: l10n.t('password'),
                           hintText: '••••••••',
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscurePassword,
@@ -226,7 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                           validator: (val) => val == null || val.length < 6
-                              ? 'Password must be at least 6 chars'
+                              ? l10n.t('password_too_short')
                               : null,
                         ),
                         const SizedBox(height: 12),
@@ -249,17 +251,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                const Text(
-                                  'Remember me',
-                                  style: TextStyle(fontSize: 13),
+                                Text(
+                                  l10n.t('remember_me'),
+                                  style: const TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),
                             GestureDetector(
                               onTap: () => context.push('/forgot-password'),
-                              child: const Text(
-                                'Forgot Password?',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.t('forgot_password'),
+                                style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primary,
@@ -271,7 +273,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const SizedBox(height: 24),
 
                         PrimaryButton(
-                          text: 'Sign In',
+                          text: l10n.t('sign_in'),
                           icon: Icons.arrow_forward_rounded,
                           isLoading: _isLoading,
                           onPressed: _handleLogin,
@@ -279,21 +281,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         const SizedBox(height: 20),
 
                         Row(
-                          children: const [
-                            Expanded(
+                          children: [
+                            const Expanded(
                               child: Divider(color: AppColors.outlineVariant),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
-                                'OR CONTINUE WITH',
-                                style: TextStyle(
+                                l10n.t('or_continue_with'),
+                                style: const TextStyle(
                                   fontSize: 11,
                                   color: AppColors.outline,
                                 ),
                               ),
                             ),
-                            Expanded(
+                            const Expanded(
                               child: Divider(color: AppColors.outlineVariant),
                             ),
                           ],
@@ -335,9 +337,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    const Text(
-                                      'Google Sign-In',
-                                      style: TextStyle(
+                                    Text(
+                                      l10n.t('google_sign_in'),
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -353,15 +355,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Don't have an account? ",
-                      style: TextStyle(fontSize: 14),
+                    Text(
+                      l10n.t('dont_have_account'),
+                      style: const TextStyle(fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () => context.push('/register'),
-                      child: const Text(
-                        'Register Now',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.t('register_now'),
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,

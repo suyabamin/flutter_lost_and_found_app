@@ -5,6 +5,7 @@ import '../../core/models/report_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
+import '../../core/utils/app_localizations.dart';
 
 /// Shows the Report Post bottom-sheet.
 ///
@@ -54,16 +55,41 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
     super.dispose();
   }
 
+  String _translateReason(String reason, bool isBn) {
+    if (!isBn) return reason;
+    switch (reason) {
+      case 'Spam or Misleading':
+        return 'স্প্যাম বা বিভ্রান্তিকর';
+      case 'Inappropriate Content':
+        return 'অনুপযুক্ত বিষয়বস্তু';
+      case 'Harassment or Hate Speech':
+        return 'হয়রানি বা বিদ্বেষমূলক বক্তব্য';
+      case 'False or Fraudulent Claim':
+        return 'মিথ্যা বা প্রতারণামূলক দাবি';
+      case 'Duplicate Post':
+        return 'ডুপ্লিকেট পোস্ট';
+      case 'Other':
+        return 'অন্যান্য';
+      default:
+        return reason;
+    }
+  }
+
   // ── Submission ──────────────────────────────────────────────────────────────
 
   Future<void> _submit() async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     // Prevent double-tap / rapid multiple taps
     if (_isSubmitting) return;
 
     // Validation: reason must be selected
     if (_selectedReason == null || _selectedReason!.isEmpty) {
       setState(
-        () => _validationError = 'Please select a reason for reporting.',
+        () => _validationError = isBn
+            ? 'রিপোর্ট করার জন্য একটি কারণ নির্বাচন করুন।'
+            : 'Please select a reason for reporting.',
       );
       return;
     }
@@ -72,7 +98,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
     final description = _descController.text.trim();
     if (description.length > 500) {
       setState(
-        () => _validationError = 'Description must be 500 characters or fewer.',
+        () => _validationError = isBn
+            ? 'বিবরণ সর্বোচ্চ ৫০০ অক্ষরের হতে হবে।'
+            : 'Description must be 500 characters or fewer.',
       );
       return;
     }
@@ -81,7 +109,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
     final authUser = FirebaseAuth.instance.currentUser;
     if (authUser == null) {
       setState(
-        () => _validationError = 'You must be signed in to report a post.',
+        () => _validationError = isBn
+            ? 'পোস্ট রিপোর্ট করতে আপনাকে সাইন ইন করতে হবে।'
+            : 'You must be signed in to report a post.',
       );
       return;
     }
@@ -113,9 +143,10 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
           context,
           icon: Icons.info_outline_rounded,
           iconColor: AppColors.primary,
-          title: 'Already Reported',
-          message:
-              'You have already reported this post. Our team will review it shortly.',
+          title: isBn ? 'ইতিমধ্যে রিপোর্ট করা হয়েছে' : 'Already Reported',
+          message: isBn
+              ? 'আপনি ইতিমধ্যে এই পোস্টটি রিপোর্ট করেছেন। আমাদের টিম শীঘ্রই এটি পর্যালোচনা করবে।'
+              : 'You have already reported this post. Our team will review it shortly.',
           isSuccess: false,
         );
         return;
@@ -150,9 +181,10 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
           context,
           icon: Icons.check_circle_rounded,
           iconColor: Colors.green,
-          title: 'Report Submitted',
-          message:
-              'Thank you. Your report has been received and will be reviewed by our team.',
+          title: isBn ? 'রিপোর্ট জমা হয়েছে' : 'Report Submitted',
+          message: isBn
+              ? 'ধন্যবাদ। আপনার রিপোর্ট পাওয়া গেছে এবং আমাদের টিম পর্যালোচনা করবে।'
+              : 'Thank you. Your report has been received and will be reviewed by our team.',
           isSuccess: true,
         );
       }
@@ -164,92 +196,102 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
       final errStr = e.toString().toLowerCase();
       if (errStr.contains('already-exists') ||
           errStr.contains('permission-denied')) {
-        msg = 'You have already reported this post.';
+        msg = isBn
+            ? 'আপনি ইতিমধ্যে এই পোস্টটি রিপোর্ট করেছেন।'
+            : 'You have already reported this post.';
       } else if (errStr.contains('unavailable') ||
           errStr.contains('network') ||
           errStr.contains('timeout')) {
-        msg =
-            'No internet connection. Please check your network and try again.';
+        msg = isBn
+            ? 'ইন্টারনেট সংযোগ নেই। নেটওয়ার্ক পরীক্ষা করে পুনরায় চেষ্টা করুন।'
+            : 'No internet connection. Please check your network and try again.';
       } else if (errStr.contains('unauthenticated')) {
-        msg = 'You must be signed in to report a post.';
+        msg = isBn
+            ? 'পোস্ট রিপোর্ট করতে আপনাকে সাইন ইন করতে হবে।'
+            : 'You must be signed in to report a post.';
       } else {
-        msg = 'Unable to submit report. Please try again.';
+        msg = isBn
+            ? 'রিপোর্ট জমা দিতে ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।'
+            : 'Unable to submit report. Please try again.';
       }
 
       setState(() => _validationError = msg);
     }
   }
 
-  // ── Build ───────────────────────────────────────────────────────────────────
+  // ── Build UI ─────────────────────────────────────────────────────────────────
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Container(
+      padding: EdgeInsets.fromLTRB(20, 16, 20, 20 + bottomInset),
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkSurface : AppColors.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      // Keyboard-safe padding
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: bottomPadding + 24,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+        ],
       ),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Drag handle ──────────────────────────────────────────
+            // Drag handle
             Center(
               child: Container(
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkSurfaceVariant
-                      : AppColors.outlineVariant,
+                  color: AppColors.outlineVariant,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
 
-            // ── Header ───────────────────────────────────────────────
+            // Header row
             Row(
               children: [
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: AppColors.error.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppColors.error.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.flag_rounded,
                     color: AppColors.error,
-                    size: 22,
+                    size: 20,
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Report Post',
-                        style: TextStyle(
+                        isBn ? 'পোস্ট রিপোর্ট করুন' : 'Report Post',
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 2),
+                      const SizedBox(height: 2),
                       Text(
-                        'Help us keep the community safe.',
-                        style: TextStyle(
+                        isBn
+                            ? 'কমিউনিটি নিরাপদ রাখতে আমাদের সাহায্য করুন।'
+                            : 'Help us keep the community safe.',
+                        style: const TextStyle(
                           fontSize: 13,
                           color: AppColors.outline,
                         ),
@@ -258,7 +300,7 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
                   ),
                 ),
                 Semantics(
-                  label: 'Close report dialog',
+                  label: isBn ? 'রিপোর্ট ডায়ালগ বন্ধ করুন' : 'Close report dialog',
                   child: IconButton(
                     icon: const Icon(Icons.close_rounded),
                     onPressed: () => Navigator.of(context).pop(),
@@ -271,9 +313,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
             const SizedBox(height: 12),
 
             // ── Reason selection ─────────────────────────────────────
-            const Text(
-              'Select a reason *',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            Text(
+              isBn ? 'একটি কারণ নির্বাচন করুন *' : 'Select a reason *',
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 10),
 
@@ -283,8 +325,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
               child: Column(
                 children: ReportModel.reasons.map((reason) {
                   final isSelected = _selectedReason == reason;
+                  final displayReason = _translateReason(reason, isBn);
                   return Semantics(
-                    label: reason,
+                    label: displayReason,
                     selected: isSelected,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
@@ -326,7 +369,7 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Text(
-                                reason,
+                                displayReason,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: isSelected
@@ -347,9 +390,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
             const SizedBox(height: 16),
 
             // ── Description ──────────────────────────────────────────
-            const Text(
-              'Additional details (optional)',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            Text(
+              isBn ? 'অতিরিক্ত বিবরণ (ঐচ্ছিক)' : 'Additional details (optional)',
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
             TextFormField(
@@ -359,8 +402,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
               keyboardType: TextInputType.multiline,
               textInputAction: TextInputAction.newline,
               decoration: InputDecoration(
-                hintText:
-                    'Describe the issue to help our team review faster...',
+                hintText: isBn
+                    ? 'সমস্যাটি সংক্ষেপে লিখুন যাতে আমাদের টিম দ্রুত পর্যালোচনা করতে পারে...'
+                    : 'Describe the issue to help our team review faster...',
                 hintStyle: const TextStyle(
                   fontSize: 13,
                   color: AppColors.outline,
@@ -433,7 +477,9 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
                       )
                     : const Icon(Icons.send_rounded, size: 20),
                 label: Text(
-                  _isSubmitting ? 'Submitting…' : 'Submit Report',
+                  _isSubmitting
+                      ? (isBn ? 'জমা হচ্ছে…' : 'Submitting…')
+                      : (isBn ? 'রিপোর্ট জমা দিন' : 'Submit Report'),
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
@@ -444,11 +490,13 @@ class _ReportPostSheetState extends ConsumerState<_ReportPostSheet> {
 
             // ── Privacy note ─────────────────────────────────────────
             const SizedBox(height: 12),
-            const Center(
+            Center(
               child: Text(
-                'Your report is confidential. We will not share your identity.',
+                isBn
+                    ? 'আপনার রিপোর্ট গোপনীয়। আমরা আপনার পরিচয় প্রকাশ করব না।'
+                    : 'Your report is confidential. We will not share your identity.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 11, color: AppColors.outline),
+                style: const TextStyle(fontSize: 11, color: AppColors.outline),
               ),
             ),
           ],

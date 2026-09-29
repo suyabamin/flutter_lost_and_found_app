@@ -9,6 +9,7 @@ import '../../core/widgets/custom_text_field.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/models/recovery_models.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class RatingScreen extends ConsumerStatefulWidget {
   final String claimId;
@@ -40,6 +41,8 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
     if (_isSubmitting) return;
 
     setState(() => _isSubmitting = true);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     try {
       final firestoreService = ref.read(firestoreServiceProvider);
@@ -71,9 +74,11 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              '🌟 Thank you! Your rating & review have been submitted.',
+              isBn
+                  ? '🌟 ধন্যবাদ! আপনার রেটিং ও রিভিউ জমা দেওয়া হয়েছে।'
+                  : '🌟 Thank you! Your rating & review have been submitted.',
             ),
           ),
         );
@@ -81,9 +86,13 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error submitting rating: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isBn ? 'রেটিং জমা দিতে ত্রুটি: $e' : 'Error submitting rating: $e',
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -93,10 +102,12 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
   @override
   Widget build(BuildContext context) {
     final firestoreService = ref.watch(firestoreServiceProvider);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rate & Write Review'),
+        title: Text(isBn ? 'রেটিং ও রিভিউ লিখুন' : 'Rate & Write Review'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -115,14 +126,21 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'How was your experience?',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                Text(
+                  isBn
+                      ? 'আপনার অভিজ্ঞতা কেমন ছিল?'
+                      : 'How was your experience?',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Your rating builds community trust and safety.',
-                  style: TextStyle(
+                Text(
+                  isBn
+                      ? 'আপনার রেটিং কমিউনিটির বিশ্বাস ও নিরাপত্তা বাড়ায়।'
+                      : 'Your rating builds community trust and safety.',
+                  style: const TextStyle(
                     color: AppColors.onSurfaceVariant,
                     fontSize: 12,
                   ),
@@ -148,7 +166,9 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                   }),
                 ),
                 Text(
-                  '${_overallRating.toInt()} / 5 Stars',
+                  isBn
+                      ? '${_overallRating.toInt()} / ৫ স্টার'
+                      : '${_overallRating.toInt()} / 5 Stars',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -164,9 +184,11 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Detailed Experience Ratings',
-                        style: TextStyle(
+                      Text(
+                        isBn
+                            ? 'বিস্তারিত অভিজ্ঞতার রেটিং'
+                            : 'Detailed Experience Ratings',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -174,35 +196,43 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                       const SizedBox(height: 14),
 
                       _buildAspectSlider(
-                        'Behaviour',
+                        isBn ? 'ব্যবহার' : 'Behaviour',
                         _behaviorRating,
                         (val) => setState(() => _behaviorRating = val),
+                        isBn,
                       ),
                       _buildAspectSlider(
-                        'Communication',
+                        isBn ? 'যোগাযোগ' : 'Communication',
                         _communicationRating,
                         (val) => setState(() => _communicationRating = val),
+                        isBn,
                       ),
                       _buildAspectSlider(
-                        'Trustworthiness',
+                        isBn ? 'বিশ্বাসযোগ্যতা' : 'Trustworthiness',
                         _trustRating,
                         (val) => setState(() => _trustRating = val),
+                        isBn,
                       ),
                       _buildAspectSlider(
-                        'Response Time',
+                        isBn ? 'সাড়াদানের গতি' : 'Response Time',
                         _responseRating,
                         (val) => setState(() => _responseRating = val),
+                        isBn,
                       ),
 
                       const Divider(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Would you recommend this user?',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13,
+                          Expanded(
+                            child: Text(
+                              isBn
+                                  ? 'আপনি কি এই ব্যবহারকারীকে সুপারিশ করবেন?'
+                                  : 'Would you recommend this user?',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                           Switch(
@@ -221,9 +251,12 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                 // Review Comment Field
                 CustomTextField(
                   controller: _reviewController,
-                  labelText: 'Write Review (Optional Comment)',
-                  hintText:
-                      'Share details about the return process, punctuality, and trust...',
+                  labelText: isBn
+                      ? 'রিভিউ লিখুন (ঐচ্ছিক মন্তব্য)'
+                      : 'Write Review (Optional Comment)',
+                  hintText: isBn
+                      ? 'ফেরত প্রক্রিয়া, সময়ানুবর্তিতা এবং সততা সম্পর্কে লিখুন...'
+                      : 'Share details about the return process, punctuality, and trust...',
                   maxLines: 4,
                   prefixIcon: Icons.rate_review_outlined,
                 ),
@@ -240,9 +273,9 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                           ),
                         ),
                         onPressed: () => context.pop(),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                        child: Text(
+                          isBn ? 'বাতিল' : 'Cancel',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -250,7 +283,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                     Expanded(
                       flex: 2,
                       child: PrimaryButton(
-                        text: 'Submit Rating',
+                        text: isBn ? 'রেটিং জমা দিন' : 'Submit Rating',
                         icon: Icons.send_rounded,
                         isLoading: _isSubmitting,
                         onPressed: () => _submitRating(claim),
@@ -270,6 +303,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
     String title,
     double value,
     ValueChanged<double> onChanged,
+    bool isBn,
   ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -287,7 +321,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                 ),
               ),
               Text(
-                '${value.toInt()} / 5',
+                '${value.toInt()} / ${isBn ? "৫" : "5"}',
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -297,9 +331,9 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
             ],
           ),
           SliderTheme(
-            data: SliderThemeData(
+            data: const SliderThemeData(
               trackHeight: 3,
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+              thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
               activeTrackColor: AppColors.primary,
               thumbColor: AppColors.primary,
             ),

@@ -5,6 +5,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class WelcomeAuthScreen extends ConsumerWidget {
   const WelcomeAuthScreen({super.key});
@@ -13,6 +14,7 @@ class WelcomeAuthScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final authService = ref.read(authServiceProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: Stack(
@@ -69,7 +71,7 @@ class WelcomeAuthScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Lost & Found BD',
+                      l10n.t('app_name'),
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -77,10 +79,10 @@ class WelcomeAuthScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Reconnecting you with what matters most, anywhere in Bangladesh.',
+                    Text(
+                      l10n.t('welcome_tagline'),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         color: AppColors.onSurfaceVariant,
                       ),
@@ -145,9 +147,9 @@ class WelcomeAuthScreen extends ConsumerWidget {
                                       const Icon(Icons.g_mobiledata, size: 24),
                                 ),
                                 const SizedBox(width: 12),
-                                const Text(
-                                  'Continue with Google',
-                                  style: TextStyle(
+                                Text(
+                                  l10n.t('continue_with_google'),
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.onSurfaceVariant,
@@ -173,18 +175,18 @@ class WelcomeAuthScreen extends ConsumerWidget {
                                   : Colors.white,
                             ),
                             onPressed: () => context.push('/otp-verify'),
-                            child: const Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.phone,
                                   color: AppColors.primary,
                                   size: 22,
                                 ),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 Text(
-                                  'Continue with Phone',
-                                  style: TextStyle(
+                                  l10n.t('continue_with_phone'),
+                                  style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
                                     color: AppColors.onSurfaceVariant,
@@ -196,21 +198,21 @@ class WelcomeAuthScreen extends ConsumerWidget {
 
                           const SizedBox(height: 16),
                           Row(
-                            children: const [
-                              Expanded(
+                            children: [
+                              const Expanded(
                                 child: Divider(color: AppColors.outlineVariant),
                               ),
                               Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12),
                                 child: Text(
-                                  'OR',
-                                  style: TextStyle(
+                                  l10n.t('or'),
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     color: AppColors.outline,
                                   ),
                                 ),
                               ),
-                              Expanded(
+                              const Expanded(
                                 child: Divider(color: AppColors.outlineVariant),
                               ),
                             ],
@@ -219,7 +221,7 @@ class WelcomeAuthScreen extends ConsumerWidget {
 
                           // Login with Email Button
                           PrimaryButton(
-                            text: 'Login with Email',
+                            text: l10n.t('login_with_email'),
                             icon: Icons.email_outlined,
                             onPressed: () => context.push('/login'),
                           ),
@@ -229,15 +231,15 @@ class WelcomeAuthScreen extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text(
-                                "Don't have an account? ",
-                                style: TextStyle(fontSize: 14),
+                              Text(
+                                l10n.t('dont_have_account'),
+                                style: const TextStyle(fontSize: 14),
                               ),
                               GestureDetector(
                                 onTap: () => context.push('/register'),
-                                child: const Text(
-                                  'Register',
-                                  style: TextStyle(
+                                child: Text(
+                                  l10n.t('register'),
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: AppColors.primary,
@@ -251,10 +253,10 @@ class WelcomeAuthScreen extends ConsumerWidget {
                     ),
 
                     const SizedBox(height: 24),
-                    const Text(
-                      'By continuing, you agree to our Terms of Service & Privacy Policy.',
+                    Text(
+                      l10n.t('terms_notice'),
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 11, color: AppColors.outline),
+                      style: const TextStyle(fontSize: 11, color: AppColors.outline),
                     ),
                   ],
                 ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
+import '../../core/utils/app_localizations.dart';
 
 class WelcomeAuthAnimatedScreen extends ConsumerStatefulWidget {
   const WelcomeAuthAnimatedScreen({super.key});
@@ -36,6 +37,7 @@ class _WelcomeAuthAnimatedScreenState
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: AnimatedBuilder(
@@ -91,7 +93,7 @@ class _WelcomeAuthAnimatedScreenState
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          'Lost & Found BD',
+                          l10n.t('app_name'),
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -99,10 +101,10 @@ class _WelcomeAuthAnimatedScreenState
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
-                          'AI-powered smart recovery network for all of Bangladesh.',
+                        Text(
+                          l10n.t('welcome_tagline'),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: AppColors.onSurfaceVariant,
                           ),
@@ -114,7 +116,7 @@ class _WelcomeAuthAnimatedScreenState
                           child: Column(
                             children: [
                               PrimaryButton(
-                                text: 'Get Started with Email',
+                                text: l10n.t('get_started_email'),
                                 icon: Icons.mail_outline,
                                 onPressed: () => context.push('/login'),
                               ),
@@ -130,21 +132,21 @@ class _WelcomeAuthAnimatedScreenState
                                   ),
                                 ),
                                 onPressed: () => context.push('/otp-verify'),
-                                child: const Text('Phone Number Verification'),
+                                child: Text(l10n.t('phone_verification')),
                               ),
                               const SizedBox(height: 16),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text(
-                                    "New here? ",
-                                    style: TextStyle(fontSize: 14),
+                                  Text(
+                                    l10n.t('new_here'),
+                                    style: const TextStyle(fontSize: 14),
                                   ),
                                   GestureDetector(
                                     onTap: () => context.push('/register'),
-                                    child: const Text(
-                                      'Create Account',
-                                      style: TextStyle(
+                                    child: Text(
+                                      l10n.t('create_account'),
+                                      style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.primary,
                                       ),

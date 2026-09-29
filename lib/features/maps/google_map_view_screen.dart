@@ -8,6 +8,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/location_dashboard_provider.dart';
 import '../../core/utils/location_utils.dart';
+import '../../core/utils/app_localizations.dart';
 
 class GoogleMapViewScreen extends ConsumerStatefulWidget {
   const GoogleMapViewScreen({super.key});
@@ -95,6 +96,8 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
     final liveState = ref.watch(liveLocationProvider);
     final radiusState = ref.watch(radiusSearchProvider);
     final radiusNotifier = ref.read(radiusSearchProvider.notifier);
@@ -155,7 +158,9 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                               : AppColors.onSurface,
                         ),
                         decoration: InputDecoration(
-                          hintText: 'Search items (e.g. iPhone, Keys)...',
+                          hintText: isBn
+                              ? 'আইটেম খুঁজুন (যেমন: আইফোন, চাবি)...'
+                              : 'Search items (e.g. iPhone, Keys)...',
                           hintStyle: TextStyle(
                             fontSize: 13,
                             color: isDark
@@ -222,7 +227,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'Map',
+                                    isBn ? 'ম্যাপ' : 'Map',
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
@@ -260,7 +265,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
-                                    'List',
+                                    isBn ? 'তালিকা' : 'List',
                                     style: TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
@@ -350,8 +355,8 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     children: [
                       SizedBox(
@@ -361,8 +366,10 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                       ),
                       SizedBox(width: 12),
                       Text(
-                        'Locating GPS position...',
-                        style: TextStyle(
+                        isBn
+                            ? 'জিপিএস অবস্থান নির্ণয় করা হচ্ছে...'
+                            : 'Locating GPS position...',
+                        style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
@@ -389,18 +396,20 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.radar_rounded,
                             color: AppColors.outline,
                             size: 20,
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
-                            'No items found nearby',
-                            style: TextStyle(
+                            isBn
+                                ? 'কাছাকাছি কোনো আইটেম পাওয়া যায়নি'
+                                : 'No items found nearby',
+                            style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
@@ -410,8 +419,12 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                       const SizedBox(height: 6),
                       Text(
                         radiusState.isEnabled
-                            ? 'No items reported within ${LocationUtils.formatDistance(radiusState.radiusKm)} radius.'
-                            : 'No items match your active search filter.',
+                            ? (isBn
+                                  ? '${LocationUtils.formatDistance(radiusState.radiusKm)} সীমানার মধ্যে কোনো রিপোর্ট করা আইটেম পাওয়া যায়নি।'
+                                  : 'No items reported within ${LocationUtils.formatDistance(radiusState.radiusKm)} radius.')
+                            : (isBn
+                                  ? 'আপনার ফিল্টারের সাথে মিলে এমন কোনো আইটেম নেই।'
+                                  : 'No items match your active search filter.'),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 12,
@@ -446,7 +459,9 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                           size: 16,
                         ),
                         label: Text(
-                          'Increase Radius (${LocationUtils.formatDistance(radiusState.radiusKm < 5 ? 5.0 : radiusState.radiusKm + 5)})',
+                          isBn
+                              ? 'পরিসর বাড়ান (${LocationUtils.formatDistance(radiusState.radiusKm < 5 ? 5.0 : radiusState.radiusKm + 5)})'
+                              : 'Increase Radius (${LocationUtils.formatDistance(radiusState.radiusKm < 5 ? 5.0 : radiusState.radiusKm + 5)})',
                           style: const TextStyle(fontSize: 12),
                         ),
                       ),
@@ -486,7 +501,9 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            '${nearbyPostsWithDistance.length} Items within ${LocationUtils.formatDistance(radiusState.radiusKm)}',
+                            isBn
+                                ? '${nearbyPostsWithDistance.length} টি আইটেম (${LocationUtils.formatDistance(radiusState.radiusKm)}-এর মধ্যে)'
+                                : '${nearbyPostsWithDistance.length} Items within ${LocationUtils.formatDistance(radiusState.radiusKm)}',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,

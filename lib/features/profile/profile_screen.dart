@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
-
 import '../../core/models/recovery_models.dart';
+import '../../core/utils/app_localizations.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -14,10 +14,11 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider).value;
     final authService = ref.watch(authServiceProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Profile'),
+        title: Text(l10n.t('my_profile')),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
@@ -124,16 +125,16 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
-                        Icon(
+                      children: [
+                        const Icon(
                           Icons.verified_user_rounded,
                           color: AppColors.primary,
                           size: 18,
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         Text(
-                          'NID Verified Member',
-                          style: TextStyle(
+                          l10n.t('nid_verified_member'),
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 12,
@@ -210,9 +211,9 @@ class ProfileScreen extends ConsumerWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        const Text(
-                                          'Recoveries',
-                                          style: TextStyle(
+                                        Text(
+                                          l10n.t('recoveries'),
+                                          style: const TextStyle(
                                             fontSize: 11,
                                             color: AppColors.outline,
                                           ),
@@ -237,9 +238,9 @@ class ProfileScreen extends ConsumerWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        const Text(
-                                          'Returns',
-                                          style: TextStyle(
+                                        Text(
+                                          l10n.t('returns'),
+                                          style: const TextStyle(
                                             fontSize: 11,
                                             color: AppColors.outline,
                                           ),
@@ -264,9 +265,9 @@ class ProfileScreen extends ConsumerWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        const Text(
-                                          'Earned',
-                                          style: TextStyle(
+                                        Text(
+                                          l10n.t('earned'),
+                                          style: const TextStyle(
                                             fontSize: 11,
                                             color: AppColors.outline,
                                           ),
@@ -307,7 +308,7 @@ class ProfileScreen extends ConsumerWidget {
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          '$displayCount Reviews',
+                                          '$displayCount ${l10n.t('reviews')}',
                                           style: const TextStyle(
                                             fontSize: 11,
                                             color: AppColors.outline,
@@ -333,9 +334,9 @@ class ProfileScreen extends ConsumerWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 2),
-                                        const Text(
-                                          'Trust Score',
-                                          style: TextStyle(
+                                        Text(
+                                          l10n.t('trust_score'),
+                                          style: const TextStyle(
                                             fontSize: 11,
                                             color: AppColors.outline,
                                           ),
@@ -368,7 +369,7 @@ class ProfileScreen extends ConsumerWidget {
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
-                                            'User Rating: $displayAvg / 5.0',
+                                            '${l10n.t('user_rating')}: $displayAvg / 5.0',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
                                               fontSize: 14,
@@ -377,7 +378,7 @@ class ProfileScreen extends ConsumerWidget {
                                         ],
                                       ),
                                       Text(
-                                        '$displayCount reviews',
+                                        '$displayCount ${l10n.t('reviews')}',
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: AppColors.outline,
@@ -404,9 +405,9 @@ class ProfileScreen extends ConsumerWidget {
                                     const SizedBox(height: 12),
                                     const Divider(),
                                     const SizedBox(height: 6),
-                                    const Text(
-                                      'Recent Ratings & Reviews:',
-                                      style: TextStyle(
+                                    Text(
+                                      l10n.t('recent_ratings'),
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                         color: AppColors.primary,
@@ -510,7 +511,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.person_outline_rounded,
                       color: AppColors.primary,
                     ),
-                    title: const Text('Edit Profile'),
+                    title: Text(l10n.t('edit_profile')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/edit-profile'),
                   ),
@@ -520,8 +521,8 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.history_edu_rounded,
                       color: AppColors.primary,
                     ),
-                    title: const Text('Recovery History Archive'),
-                    subtitle: const Text('View completed & returned items'),
+                    title: Text(l10n.t('recovery_history')),
+                    subtitle: Text(l10n.t('recovery_history_sub')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/recovery-history'),
                   ),
@@ -531,10 +532,8 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.account_balance_wallet_rounded,
                       color: Colors.green,
                     ),
-                    title: const Text('Earnings & Wallet'),
-                    subtitle: const Text(
-                      'Reward earnings & transaction history',
-                    ),
+                    title: Text(l10n.t('earnings_wallet')),
+                    subtitle: Text(l10n.t('earnings_wallet_sub')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/wallet'),
                   ),
@@ -544,8 +543,8 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.emoji_events_outlined,
                       color: Colors.amber,
                     ),
-                    title: const Text('Community Leaderboard'),
-                    subtitle: const Text('Top recovery heroes & rankings'),
+                    title: Text(l10n.t('leaderboard')),
+                    subtitle: Text(l10n.t('leaderboard_sub')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/leaderboard'),
                   ),
@@ -555,7 +554,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.post_add_rounded,
                       color: AppColors.primary,
                     ),
-                    title: const Text('My Reported Posts'),
+                    title: Text(l10n.t('my_reported_posts')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/my-posts'),
                   ),
@@ -565,7 +564,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.favorite_outline_rounded,
                       color: AppColors.error,
                     ),
-                    title: const Text('Favorites'),
+                    title: Text(l10n.t('favorites')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/favorites'),
                   ),
@@ -575,7 +574,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.badge_outlined,
                       color: AppColors.primary,
                     ),
-                    title: const Text('NID Verification'),
+                    title: Text(l10n.t('nid_verification')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/nid-verification'),
                   ),
@@ -585,7 +584,7 @@ class ProfileScreen extends ConsumerWidget {
                       Icons.local_police_outlined,
                       color: Colors.indigo,
                     ),
-                    title: const Text('Police GD Integration'),
+                    title: Text(l10n.t('police_gd')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/police-gd'),
                   ),
@@ -609,9 +608,9 @@ class ProfileScreen extends ConsumerWidget {
                 if (context.mounted) context.go('/welcome');
               },
               icon: const Icon(Icons.logout_rounded),
-              label: const Text(
-                'Sign Out',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              label: Text(
+                l10n.t('sign_out'),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(height: 20),

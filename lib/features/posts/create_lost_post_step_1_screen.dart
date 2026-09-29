@@ -8,6 +8,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
+import '../../core/utils/app_localizations.dart';
 
 class CreateLostPostStep1Screen extends ConsumerStatefulWidget {
   const CreateLostPostStep1Screen({super.key});
@@ -102,9 +103,11 @@ class _CreateLostPostStep1ScreenState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Report'),
+        title: Text(l10n.t('create_report')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -117,14 +120,14 @@ class _CreateLostPostStep1ScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Report Lost or Found Item',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Text(
+                l10n.t('report_lost_or_found'),
+                style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 4),
-              const Text(
-                'Step 1 of 2: Item Details & Photos',
-                style: TextStyle(color: AppColors.onSurfaceVariant),
+              Text(
+                l10n.t('step_1_of_2'),
+                style: const TextStyle(color: AppColors.onSurfaceVariant),
               ),
               const SizedBox(height: 20),
 
@@ -133,7 +136,7 @@ class _CreateLostPostStep1ScreenState
                 children: [
                   Expanded(
                     child: ChoiceChip(
-                      label: const Center(child: Text('I Lost Something')),
+                      label: Center(child: Text(l10n.t('i_lost_something'))),
                       selected: _type == 'lost',
                       selectedColor: AppColors.error,
                       labelStyle: TextStyle(
@@ -146,7 +149,7 @@ class _CreateLostPostStep1ScreenState
                   const SizedBox(width: 12),
                   Expanded(
                     child: ChoiceChip(
-                      label: const Center(child: Text('I Found Something')),
+                      label: Center(child: Text(l10n.t('i_found_something'))),
                       selected: _type == 'found',
                       selectedColor: AppColors.secondary,
                       labelStyle: TextStyle(
@@ -167,17 +170,17 @@ class _CreateLostPostStep1ScreenState
                   children: [
                     CustomTextField(
                       controller: _titleController,
-                      labelText: 'Title',
-                      hintText: 'e.g. Silver iPhone 14 Pro with blue case',
+                      labelText: l10n.t('title'),
+                      hintText: l10n.t('title_hint'),
                       validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Enter a title'
+                          ? l10n.t('enter_title')
                           : null,
                     ),
                     const SizedBox(height: 14),
 
                     DropdownButtonFormField<String>(
                       initialValue: _category,
-                      decoration: const InputDecoration(labelText: 'Category'),
+                      decoration: InputDecoration(labelText: l10n.t('category')),
                       items:
                           [
                                 'Electronics',
@@ -190,7 +193,7 @@ class _CreateLostPostStep1ScreenState
                               ]
                               .map(
                                 (c) =>
-                                    DropdownMenuItem(value: c, child: Text(c)),
+                                    DropdownMenuItem(value: c, child: Text(l10n.translateCategory(c))),
                               )
                               .toList(),
                       onChanged: (v) => setState(() => _category = v!),
@@ -199,20 +202,19 @@ class _CreateLostPostStep1ScreenState
 
                     CustomTextField(
                       controller: _descController,
-                      labelText: 'Description',
-                      hintText:
-                          'Provide detailed info (color, serial numbers, marks...)',
+                      labelText: l10n.t('description'),
+                      hintText: l10n.t('description_hint'),
                       maxLines: 3,
                       validator: (v) => v == null || v.trim().isEmpty
-                          ? 'Provide description'
+                          ? (l10n.isBangla ? 'বিবরণ দিন' : 'Provide description')
                           : null,
                     ),
                     const SizedBox(height: 14),
 
                     CustomTextField(
                       controller: _locationController,
-                      labelText: 'Location',
-                      hintText: 'e.g. Near Dhanmondi 27, Dhaka',
+                      labelText: l10n.t('location'),
+                      hintText: l10n.isBangla ? 'উদা: ধানমন্ডি ২৭ এর কাছে, ঢাকা' : 'e.g. Near Dhanmondi 27, Dhaka',
                       prefixIcon: Icons.location_on_outlined,
                       suffixIcon: IconButton(
                         icon: const Icon(
@@ -228,9 +230,9 @@ class _CreateLostPostStep1ScreenState
                       child: TextButton.icon(
                         onPressed: _openLocationPicker,
                         icon: const Icon(Icons.pin_drop_rounded, size: 16),
-                        label: const Text(
-                          'Pick Spot on Live Map / Search Place',
-                          style: TextStyle(
+                        label: Text(
+                          l10n.isBangla ? 'ম্যাপে স্থান নির্বাচন / এলাকা খুঁজুন' : 'Pick Spot on Live Map / Search Place',
+                          style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -242,7 +244,7 @@ class _CreateLostPostStep1ScreenState
                     if (_type == 'lost')
                       CustomTextField(
                         controller: _rewardController,
-                        labelText: 'Reward Amount (BDT Optional)',
+                        labelText: l10n.t('reward_amount'),
                         hintText: '1000',
                         prefixIcon: Icons.card_giftcard_rounded,
                         keyboardType: TextInputType.number,
@@ -252,9 +254,9 @@ class _CreateLostPostStep1ScreenState
               ),
               const SizedBox(height: 20),
 
-              const Text(
-                'Add Images (Up to 4)',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              Text(
+                l10n.isBangla ? 'ছবি যোগ করুন (সর্বোচ্চ ৪টি)' : 'Add Images (Up to 4)',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
               const SizedBox(height: 10),
 
@@ -278,14 +280,14 @@ class _CreateLostPostStep1ScreenState
                               color: AppColors.primary.withValues(alpha: 0.3),
                             ),
                           ),
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.add_a_photo, color: AppColors.primary),
-                              SizedBox(height: 4),
+                              const Icon(Icons.add_a_photo, color: AppColors.primary),
+                              const SizedBox(height: 4),
                               Text(
-                                'Add Photo',
-                                style: TextStyle(
+                                l10n.t('add_photos'),
+                                style: const TextStyle(
                                   fontSize: 11,
                                   color: AppColors.primary,
                                 ),
@@ -319,7 +321,7 @@ class _CreateLostPostStep1ScreenState
               const SizedBox(height: 28),
 
               PrimaryButton(
-                text: 'Preview & Publish Report',
+                text: l10n.isBangla ? 'প্রিভিউ এবং রিপোর্ট প্রকাশ করুন' : 'Preview & Publish Report',
                 icon: Icons.arrow_forward_rounded,
                 onPressed: _proceedToPreview,
               ),

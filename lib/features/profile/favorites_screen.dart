@@ -3,15 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
+import '../../core/utils/app_localizations.dart';
 
 class FavoritesScreen extends ConsumerWidget {
   const FavoritesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved Favorites'),
+        title: Text(isBn ? 'সংরক্ষিত পছন্দের তালিকা' : 'Saved Favorites'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -43,7 +47,9 @@ class FavoritesScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        index == 0 ? 'iPhone 14 Pro' : 'Black Wallet',
+                        index == 0
+                            ? (isBn ? 'আইফোন ১৪ প্রো' : 'iPhone 14 Pro')
+                            : (isBn ? 'কালো মানিব্যাগ' : 'Black Wallet'),
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -51,7 +57,9 @@ class FavoritesScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        index == 0 ? 'Banani, Dhaka' : 'Dhanmondi, Dhaka',
+                        index == 0
+                            ? (isBn ? 'বনানী, ঢাকা' : 'Banani, Dhaka')
+                            : (isBn ? 'ধানমন্ডি, ঢাকা' : 'Dhanmondi, Dhaka'),
                         style: const TextStyle(
                           fontSize: 12,
                           color: AppColors.outline,

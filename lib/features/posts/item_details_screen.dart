@@ -11,6 +11,7 @@ import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/services/firestore_service.dart';
 import '../../core/utils/post_delete_helper.dart';
+import '../../core/utils/app_localizations.dart';
 import 'report_post_sheet.dart';
 
 class ItemDetailsScreen extends ConsumerWidget {
@@ -20,6 +21,7 @@ class ItemDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final firestoreService = ref.watch(firestoreServiceProvider);
     final user = ref.watch(currentUserProvider).value;
@@ -34,15 +36,15 @@ class ItemDetailsScreen extends ConsumerWidget {
 
           final post = snapshot.data;
 
-          final String title = post?.title ?? 'Reported Lost/Found Item';
+          final String title = post?.title ?? (l10n.isBangla ? 'রিপোর্টকৃত আইটেম' : 'Reported Lost/Found Item');
           final String description =
-              post?.description ?? 'Detailed description of the reported item.';
+              post?.description ?? (l10n.isBangla ? 'রিপোর্টকৃত আইটেমের বিস্তারিত বিবরণ।' : 'Detailed description of the reported item.');
           final String category = post?.category ?? 'Electronics';
           final String type = post?.type ?? 'lost';
           final String location = post?.location ?? 'Dhaka, Bangladesh';
           final String userName = post?.userName.isNotEmpty == true
               ? post!.userName
-              : 'Verified Community Member';
+              : (l10n.isBangla ? 'যাচাইকৃত কমিউনিটি সদস্য' : 'Verified Community Member');
           final double rewardAmount = post?.rewardAmount ?? 0.0;
           final String mainImage = (post?.images.isNotEmpty == true)
               ? post!.images.first
@@ -102,7 +104,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                               Icons.edit_outlined,
                               color: AppColors.primary,
                             ),
-                            tooltip: 'Edit Post',
+                            tooltip: l10n.t('edit_post'),
                             onPressed: () =>
                                 context.push('/edit-post/${post.id}'),
                           ),
@@ -117,7 +119,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                               Icons.delete_outline_rounded,
                               color: AppColors.error,
                             ),
-                            tooltip: 'Delete Post',
+                            tooltip: l10n.t('delete_post'),
                             onPressed: () =>
                                 PostDeleteHelper.confirmAndDeletePost(
                                   context: context,
@@ -147,8 +149,12 @@ class ItemDetailsScreen extends ConsumerWidget {
                           icon: const Icon(Icons.share_rounded),
                           onPressed: () {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Item link copied to clipboard!'),
+                              SnackBar(
+                                content: Text(
+                                  l10n.isBangla
+                                      ? 'আইটেমের লিংক ক্লিপবোর্ডে কপি করা হয়েছে!'
+                                      : 'Item link copied to clipboard!',
+                                ),
                               ),
                             );
                           },
@@ -189,7 +195,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  isLost ? 'LOST ITEM' : 'FOUND ITEM',
+                                  isLost
+                                      ? (l10n.isBangla ? 'হারানো আইটেম' : 'LOST ITEM')
+                                      : (l10n.isBangla ? 'পাওয়া আইটেম' : 'FOUND ITEM'),
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
@@ -199,8 +207,8 @@ class ItemDetailsScreen extends ConsumerWidget {
                               ),
                               Text(
                                 post?.date.isNotEmpty == true
-                                    ? 'Reported ${post!.date}'
-                                    : 'Recently Reported',
+                                    ? (l10n.isBangla ? 'রিপোর্টকৃত ${post!.date}' : 'Reported ${post!.date}')
+                                    : (l10n.isBangla ? 'সম্প্রতি রিপোর্টকৃত' : 'Recently Reported'),
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.onSurfaceVariant,
@@ -219,7 +227,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Category: $category',
+                            '${l10n.t('category')}: ${l10n.translateCategory(category)}',
                             style: const TextStyle(
                               fontSize: 13,
                               color: AppColors.primary,
@@ -259,17 +267,17 @@ class ItemDetailsScreen extends ConsumerWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Row(
+                                  Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.military_tech_rounded,
                                         color: Colors.amber,
                                         size: 28,
                                       ),
-                                      SizedBox(width: 8),
+                                      const SizedBox(width: 8),
                                       Text(
-                                        'Reward Offered',
-                                        style: TextStyle(
+                                        l10n.isBangla ? 'পুরস্কার ঘোষিত' : 'Reward Offered',
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15,
                                         ),
@@ -277,7 +285,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                                     ],
                                   ),
                                   Text(
-                                    'à§³ ${rewardAmount.round()}',
+                                    '৳ ${rewardAmount.round()}',
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
@@ -290,9 +298,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                             const SizedBox(height: 20),
                           ],
 
-                          const Text(
-                            'Description',
-                            style: TextStyle(
+                          Text(
+                            l10n.t('description'),
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
@@ -327,7 +335,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Reported by $userName',
+                                        l10n.isBangla ? '$userName কর্তৃক রিপোর্টকৃত' : 'Reported by $userName',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15,
@@ -335,7 +343,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        'NID Verified Member â€¢ $location',
+                                        l10n.isBangla
+                                            ? 'এনআইডি যাচাইকৃত সদস্য • $location'
+                                            : 'NID Verified Member • $location',
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: AppColors.outline,
@@ -372,9 +382,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                                 Icons.assignment_turned_in_rounded,
                                 size: 22,
                               ),
-                              label: const Text(
-                                'Claim This Item',
-                                style: TextStyle(
+                              label: Text(
+                                l10n.isBangla ? 'আইটেমটি দাবি করুন' : 'Claim This Item',
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -393,10 +403,12 @@ class ItemDetailsScreen extends ConsumerWidget {
                                     color: AppColors.primary,
                                   ),
                                   const SizedBox(width: 12),
-                                  const Expanded(
+                                  Expanded(
                                     child: Text(
-                                      'You have already submitted a claim for this item.',
-                                      style: TextStyle(
+                                      l10n.isBangla
+                                          ? 'আপনি ইতিমধ্যে এই আইটেমের জন্য দাবি জমা দিয়েছেন।'
+                                          : 'You have already submitted a claim for this item.',
+                                      style: const TextStyle(
                                         fontSize: 13,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -406,7 +418,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                                     onPressed: () => context.push(
                                       '/claim-details/${existingUserClaim.claimId}',
                                     ),
-                                    child: const Text('View Status'),
+                                    child: Text(l10n.isBangla ? 'অবস্থা দেখুন' : 'View Status'),
                                   ),
                                 ],
                               ),
@@ -428,14 +440,14 @@ class ItemDetailsScreen extends ConsumerWidget {
                                   onPressed: () =>
                                       context.push('/google-map-view'),
                                   icon: const Icon(Icons.map_outlined),
-                                  label: const Text('View on Map'),
+                                  label: Text(l10n.isBangla ? 'ম্যাপে দেখুন' : 'View on Map'),
                                 ),
                               ),
                               if (showMessaging) ...[
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: PrimaryButton(
-                                    text: 'Chat & Contact',
+                                    text: l10n.isBangla ? 'চ্যাট ও যোগাযোগ' : 'Chat & Contact',
                                     icon: Icons.chat_rounded,
                                     onPressed: () async {
                                       // Find approved chat room or open chats page
@@ -447,13 +459,13 @@ class ItemDetailsScreen extends ConsumerWidget {
                             ],
                           ),
 
-                          // Report Post â€” only shown to authenticated non-owners
+                          // Report Post
                           if (!isPostOwner && currentUid != null) ...[
                             const SizedBox(height: 12),
                             SizedBox(
                               width: double.infinity,
                               child: Semantics(
-                                label: 'Report this post',
+                                label: l10n.isBangla ? 'এই পোস্ট রিপোর্ট করুন' : 'Report this post',
                                 child: OutlinedButton.icon(
                                   style: OutlinedButton.styleFrom(
                                     minimumSize: const Size(
@@ -478,9 +490,9 @@ class ItemDetailsScreen extends ConsumerWidget {
                                     Icons.flag_outlined,
                                     size: 18,
                                   ),
-                                  label: const Text(
-                                    'Report Post',
-                                    style: TextStyle(
+                                  label: Text(
+                                    l10n.isBangla ? 'পোস্ট রিপোর্ট করুন' : 'Report Post',
+                                    style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),

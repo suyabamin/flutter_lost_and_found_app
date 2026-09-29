@@ -5,12 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class NotificationsScreen extends ConsumerWidget {
   const NotificationsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final user = ref.watch(currentUserProvider).value;
     final authUser = FirebaseAuth.instance.currentUser;
     final firestoreService = ref.watch(firestoreServiceProvider);
@@ -18,28 +20,40 @@ class NotificationsScreen extends ConsumerWidget {
 
     final defaultNotifications = [
       {
-        'title': 'AI Match Found! (94% Similarity)',
-        'body': 'A black wallet matching your report was found in Dhanmondi.',
-        'time': '10 mins ago',
+        'title': l10n.isBangla
+            ? 'এআই ম্যাচ পাওয়া গেছে! (৯৪% সাদৃশ্য)'
+            : 'AI Match Found! (94% Similarity)',
+        'body': l10n.isBangla
+            ? 'ধানমন্ডিতে আপনার রিপোর্টের সাথে মিল থাকা একটি কালো ওয়ালেট পাওয়া গেছে।'
+            : 'A black wallet matching your report was found in Dhanmondi.',
+        'time': l10n.isBangla ? '১০ মিনিট আগে' : '10 mins ago',
         'type': 'ai_match',
       },
       {
-        'title': 'New Message from Naimur',
-        'body': 'Is the iPhone still available for claim?',
-        'time': '1 hour ago',
+        'title': l10n.isBangla
+            ? 'নাঈমুর থেকে নতুন বার্তা'
+            : 'New Message from Naimur',
+        'body': l10n.isBangla
+            ? 'আইফোনটি কি এখনও দাবির জন্য উপলব্ধ?'
+            : 'Is the iPhone still available for claim?',
+        'time': l10n.isBangla ? '১ ঘণ্টা আগে' : '1 hour ago',
         'type': 'chat',
       },
       {
-        'title': 'Reward Earned +100 PTS',
-        'body': 'You completed a successful item return verification.',
-        'time': 'Yesterday',
+        'title': l10n.isBangla
+            ? 'পুরস্কার অর্জিত +১০০ পয়েন্ট'
+            : 'Reward Earned +100 PTS',
+        'body': l10n.isBangla
+            ? 'আপনি সফলভাবে একটি আইটেম ফেরত যাচাইকরণ সম্পন্ন করেছেন।'
+            : 'You completed a successful item return verification.',
+        'time': l10n.isBangla ? 'গতকাল' : 'Yesterday',
         'type': 'reward',
       },
     ];
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Notifications'),
+        title: Text(l10n.t('notifications')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -57,10 +71,10 @@ class NotificationsScreen extends ConsumerWidget {
             separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = allNotifs[index];
-              final String title = item['title'] ?? 'Notification';
+              final String title = item['title'] ?? l10n.t('notification');
               final String body = item['body'] ?? item['subtitle'] ?? '';
               final String time =
-                  item['time'] ?? item['timestamp'] ?? 'Just now';
+                  item['time'] ?? item['timestamp'] ?? (l10n.isBangla ? 'এইমাত্র' : 'Just now');
               final String? claimId = item['claimId'];
               final String type = item['type'] ?? 'general';
 
@@ -121,9 +135,9 @@ class NotificationsScreen extends ConsumerWidget {
                                     color: AppColors.secondary.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: const Text(
-                                    'CLAIM',
-                                    style: TextStyle(
+                                  child: Text(
+                                    l10n.t('claim'),
+                                    style: const TextStyle(
                                       fontSize: 9,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.secondary,

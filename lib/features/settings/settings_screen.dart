@@ -17,13 +17,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _isDeletingAccount = false;
 
   Future<void> _confirmAndDeleteAccount(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     final authService = ref.read(authServiceProvider);
     final currentUser = authService.currentUser;
 
     if (currentUser == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No authenticated user found.'),
+        SnackBar(
+          content: Text(l10n.isBangla ? 'কোনো প্রমাণীকৃত ব্যবহারকারী পাওয়া যায়নি।' : 'No authenticated user found.'),
           backgroundColor: AppColors.error,
         ),
       );
@@ -34,14 +35,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final bool? confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete Account?'),
-        content: const Text(
-          'This action is permanent and cannot be undone. Your profile data and account will be permanently deleted.',
+        title: Text(l10n.t('delete_account_dialog_title')),
+        content: Text(
+          l10n.t('delete_account_dialog_content'),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+            child: Text(l10n.t('cancel')),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -49,7 +50,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Delete Account'),
+            child: Text(l10n.t('delete_account')),
           ),
         ],
       ),
@@ -392,11 +393,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Text(
-                      'Account Actions',
-                      style: TextStyle(
+                      l10n.t('account_actions'),
+                      style: const TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,
                         color: AppColors.error,

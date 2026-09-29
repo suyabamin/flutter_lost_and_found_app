@@ -72,6 +72,37 @@ final themeModeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((
   return ThemeNotifier();
 });
 
+// ── Persistent Locale Notifier ─────────────────────────────────────────────
+class LocaleNotifier extends StateNotifier<Locale> {
+  static const String _prefKey = 'app_locale';
+
+  LocaleNotifier() : super(const Locale('en')) {
+    _loadLocale();
+  }
+
+  Future<void> _loadLocale() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getString(_prefKey);
+      if (saved != null) {
+        state = Locale(saved);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> setLocale(Locale locale) async {
+    state = locale;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_prefKey, locale.languageCode);
+    } catch (_) {}
+  }
+}
+
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale>((ref) {
+  return LocaleNotifier();
+});
+
 // Category Filter Provider
 final selectedCategoryProvider = StateProvider<String>((ref) => 'All');
 

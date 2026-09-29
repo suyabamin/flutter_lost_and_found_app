@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -225,10 +226,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('App Settings'),
+        title: Text(l10n.t('app_settings')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: _isDeletingAccount ? null : () => context.pop(),
@@ -248,7 +251,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.dark_mode_outlined,
                       color: AppColors.primary,
                     ),
-                    title: const Text('Theme Mode'),
+                    title: Text(l10n.t('theme_mode')),
                     subtitle: Text(themeMode.name.toUpperCase()),
                     trailing: DropdownButton<ThemeMode>(
                       value: themeMode,
@@ -259,18 +262,59 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                               .setThemeMode(val);
                         }
                       },
-                      items: const [
+                      items: [
                         DropdownMenuItem(
                           value: ThemeMode.system,
-                          child: Text('System'),
+                          child: Text(l10n.t('theme_system')),
                         ),
                         DropdownMenuItem(
                           value: ThemeMode.light,
-                          child: Text('Light'),
+                          child: Text(l10n.t('theme_light')),
                         ),
                         DropdownMenuItem(
                           value: ThemeMode.dark,
-                          child: Text('Dark'),
+                          child: Text(l10n.t('theme_dark')),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  // ── Language Selector ──────────────────────────────
+                  ListTile(
+                    leading: const Icon(
+                      Icons.language_rounded,
+                      color: AppColors.primary,
+                    ),
+                    title: Text(l10n.t('language')),
+                    subtitle: Text(l10n.t('language_subtitle')),
+                    trailing: DropdownButton<Locale>(
+                      value: locale,
+                      underline: const SizedBox(),
+                      onChanged: (val) {
+                        if (val != null) {
+                          ref.read(localeProvider.notifier).setLocale(val);
+                        }
+                      },
+                      items: [
+                        DropdownMenuItem(
+                          value: const Locale('en'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('🇬🇧  '),
+                              Text(l10n.t('lang_english')),
+                            ],
+                          ),
+                        ),
+                        DropdownMenuItem(
+                          value: const Locale('bn'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text('🇧🇩  '),
+                              Text(l10n.t('lang_bangla')),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -281,8 +325,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.notifications_active_outlined,
                       color: AppColors.primary,
                     ),
-                    title: const Text('Push Notifications'),
-                    subtitle: const Text('AI matches & chat alerts'),
+                    title: Text(l10n.t('push_notifications')),
+                    subtitle: Text(l10n.t('notifications_subtitle')),
                     value: true,
                     onChanged: (val) {},
                   ),
@@ -292,7 +336,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.help_outline_rounded,
                       color: AppColors.primary,
                     ),
-                    title: const Text('Help Center & FAQs'),
+                    title: Text(l10n.t('help_center')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/help'),
                   ),
@@ -302,7 +346,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.privacy_tip_outlined,
                       color: AppColors.primary,
                     ),
-                    title: const Text('Privacy & Terms'),
+                    title: Text(l10n.t('privacy_terms')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/privacy-terms'),
                   ),
@@ -312,7 +356,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.gradient_outlined,
                       color: Colors.purple,
                     ),
-                    title: const Text('Interactive Shader Demo'),
+                    title: Text(l10n.t('shader_demo')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/shader'),
                   ),
@@ -322,7 +366,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.wifi_off_outlined,
                       color: Colors.orange,
                     ),
-                    title: const Text('Empty & Offline App State'),
+                    title: Text(l10n.t('empty_offline')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/empty-offline'),
                   ),
@@ -332,7 +376,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.info_outline_rounded,
                       color: AppColors.primary,
                     ),
-                    title: const Text('About Lost & Found BD'),
+                    title: Text(l10n.t('about')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/about'),
                   ),
@@ -364,16 +408,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       Icons.delete_forever_rounded,
                       color: AppColors.error,
                     ),
-                    title: const Text(
-                      'Delete Account',
-                      style: TextStyle(
+                    title: Text(
+                      l10n.t('delete_account'),
+                      style: const TextStyle(
                         color: AppColors.error,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: const Text(
-                      'Permanently remove your account and user profile',
-                      style: TextStyle(fontSize: 12),
+                    subtitle: Text(
+                      l10n.t('delete_account_subtitle'),
+                      style: const TextStyle(fontSize: 12),
                     ),
                     trailing: _isDeletingAccount
                         ? const SizedBox(

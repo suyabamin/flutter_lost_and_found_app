@@ -104,11 +104,13 @@ class AuthService {
           '779298287833-apkicde2h99c79olnea347540ol3rkv5.apps.googleusercontent.com';
       await GoogleSignIn.instance.initialize(serverClientId: clientId);
 
-      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
           .authenticate();
 
+      if (googleUser == null) return null;
+
       final GoogleSignInAuthentication googleAuth =
-          googleUser.authentication;
+          await googleUser.authentication;
 
       if (googleAuth.idToken == null) {
         throw 'Google ID Token is null. Check Firebase OAuth configuration.';
@@ -262,31 +264,10 @@ class AuthService {
     if (user == null) {
       throw 'No authenticated user found for re-authentication.';
     }
-
-    if (kIsWeb) {
-      final googleProvider = GoogleAuthProvider();
-      await user.reauthenticateWithPopup(googleProvider);
-      return;
+    final cred = await signInWithGoogle();
+    if (cred != null && cred.credential != null) {
+      await user.reauthenticateWithCredential(cred.credential!);
     }
-
-    const clientId =
-        '779298287833-apkicde2h99c79olnea347540ol3rkv5.apps.googleusercontent.com';
-    await GoogleSignIn.instance.initialize(serverClientId: clientId);
-
-    final GoogleSignInAccount googleUser =
-        await GoogleSignIn.instance.authenticate();
-
-    final GoogleSignInAuthentication googleAuth = googleUser.authentication;
-
-    if (googleAuth.idToken == null) {
-      throw 'Google ID Token is null. Check Firebase OAuth configuration.';
-    }
-
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      idToken: googleAuth.idToken,
-    );
-
-    await user.reauthenticateWithCredential(credential);
   }
 
   Future<void> deleteAuthAccount() async {

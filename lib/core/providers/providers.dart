@@ -185,3 +185,79 @@ final pendingReportCountProvider = StreamProvider<int>((ref) {
       .watch(firestoreServiceProvider)
       .streamReportCount(status: 'pending');
 });
+
+// ── Persistent Push Notifications Setting Notifier ────────────────────────
+class PushNotificationsNotifier extends StateNotifier<bool> {
+  static const String _prefKey = 'app_push_notifications';
+
+  PushNotificationsNotifier() : super(true) {
+    _loadState();
+  }
+
+  Future<void> _loadState() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final saved = prefs.getBool(_prefKey);
+      if (saved != null) {
+        state = saved;
+      }
+    } catch (_) {}
+  }
+
+  Future<void> setEnabled(bool enabled) async {
+    state = enabled;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_prefKey, enabled);
+    } catch (_) {}
+  }
+}
+
+final pushNotificationsProvider =
+    StateNotifierProvider<PushNotificationsNotifier, bool>((ref) {
+  return PushNotificationsNotifier();
+});
+
+// ── Persistent Saved Favorites Notifier ──────────────────────────────────
+class FavoritesNotifier extends StateNotifier<Set<String>> {
+  static const String _prefKey = 'app_favorite_post_ids';
+
+  FavoritesNotifier() : super({}) {
+    _loadFavorites();
+  }
+
+  Future<void> _loadFavorites() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedList = prefs.getStringList(_prefKey) ?? [];
+      state = savedList.toSet();
+    } catch (_) {}
+  }
+
+  Future<bool> toggleFavorite(String postId) async {
+    final newSet = Set<String>.from(state);
+    bool isAdded = false;
+    if (newSet.contains(postId)) {
+      newSet.remove(postId);
+    } else {
+      newSet.add(postId);
+      isAdded = true;
+    }
+    state = newSet;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(_prefKey, newSet.toList());
+    } catch (_) {}
+    return isAdded;
+  }
+
+  bool isFavorite(String postId) {
+    return state.contains(postId);
+  }
+}
+
+final favoritesNotifierProvider =
+    StateNotifierProvider<FavoritesNotifier, Set<String>>((ref) {
+  return FavoritesNotifier();
+});
+

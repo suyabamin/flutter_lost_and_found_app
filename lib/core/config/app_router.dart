@@ -178,6 +178,10 @@ final appRouter = GoRouter(
       builder: (context, state) => const GoogleMapViewScreen(),
     ),
     GoRoute(
+      path: '/google-map-view',
+      builder: (context, state) => const GoogleMapViewScreen(),
+    ),
+    GoRoute(
       path: '/select-location',
       builder: (context, state) => SelectLocationScreen(
         initialLocation: state.uri.queryParameters['initial'],

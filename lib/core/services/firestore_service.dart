@@ -596,7 +596,13 @@ class FirestoreService {
         .snapshots()
         .map((snapshot) {
           final list = snapshot.docs
-              .map((doc) => doc.data() as Map<String, dynamic>)
+              .map((doc) {
+                final d = doc.data() as Map<String, dynamic>;
+                if (!d.containsKey('id') || d['id'] == null) {
+                  d['id'] = doc.id;
+                }
+                return d;
+              })
               .toList();
 
           // Sort notifications by timestamp descending (newest first)
@@ -606,19 +612,35 @@ class FirestoreService {
             return bTime.compareTo(aTime);
           });
 
-          if (userId.isNotEmpty && userId != 'guest') {
-            return list.where((data) {
-              final targetId = data['userId']?.toString() ?? '';
-              return targetId == userId ||
-                  targetId.isEmpty ||
-                  targetId == 'guest' ||
-                  targetId.startsWith('guest_') ||
-                  targetId.startsWith('claimer_');
-            }).toList();
-          }
-          return list;
+          return list.where((data) {
+            final targetId = data['userId']?.toString() ?? data['recipientId']?.toString() ?? '';
+            final title = data['title']?.toString() ?? '';
+            final body = data['body']?.toString() ?? data['subtitle']?.toString() ?? '';
+            final hasContent = title.isNotEmpty || body.isNotEmpty;
+            if (!hasContent) return false;
+
+            if (userId.isNotEmpty && userId != 'guest') {
+              return targetId == userId || targetId == 'all';
+            } else {
+              return targetId == 'guest' || targetId == 'all' || targetId.isEmpty;
+            }
+          }).toList();
         })
         .handleError((_) => <Map<String, dynamic>>[]);
+  }
+
+  Future<void> markNotificationsAsRead(String userId) async {
+    try {
+      final snapshot = await _notificationsRef.get();
+      for (final doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final targetId = data['userId']?.toString() ?? data['recipientId']?.toString() ?? '';
+        final isRead = data['isRead'] == true;
+        if (!isRead && (targetId == userId || targetId == 'all' || (userId == 'guest' && targetId == 'guest'))) {
+          await doc.reference.update({'isRead': true});
+        }
+      }
+    } catch (_) {}
   }
 
   // CHAT CRUD & AUTO CHAT CREATION

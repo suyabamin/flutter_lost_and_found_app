@@ -7,11 +7,27 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
 import '../../core/utils/app_localizations.dart';
 
-class NotificationsScreen extends ConsumerWidget {
+class NotificationsScreen extends ConsumerStatefulWidget {
   const NotificationsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<NotificationsScreen> createState() => _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final user = ref.read(currentUserProvider).value;
+      final authUser = FirebaseAuth.instance.currentUser;
+      final currentUserId = user?.uid ?? authUser?.uid ?? 'guest';
+      ref.read(firestoreServiceProvider).markNotificationsAsRead(currentUserId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final user = ref.watch(currentUserProvider).value;
     final authUser = FirebaseAuth.instance.currentUser;
@@ -63,7 +79,7 @@ class NotificationsScreen extends ConsumerWidget {
         stream: firestoreService.streamNotifications(currentUserId),
         builder: (context, snapshot) {
           final dbNotifications = snapshot.data ?? [];
-          final allNotifs = [...dbNotifications, ...defaultNotifications];
+          final allNotifs = dbNotifications.isNotEmpty ? dbNotifications : defaultNotifications;
 
           return ListView.separated(
             padding: const EdgeInsets.all(16),

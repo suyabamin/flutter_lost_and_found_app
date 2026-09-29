@@ -131,14 +131,45 @@ class ItemDetailsScreen extends ConsumerWidget {
                         ),
                         const SizedBox(width: 8),
                       ],
-                      CircleAvatar(
-                        backgroundColor: isDark
-                            ? Colors.black54
-                            : Colors.white70,
-                        child: IconButton(
-                          icon: const Icon(Icons.favorite_border_rounded),
-                          onPressed: () => context.push('/favorites'),
-                        ),
+                      Builder(
+                        builder: (context) {
+                          final isFav = ref.watch(favoritesNotifierProvider).contains(id);
+                          return CircleAvatar(
+                            backgroundColor: isDark
+                                ? Colors.black54
+                                : Colors.white70,
+                            child: IconButton(
+                              icon: Icon(
+                                isFav
+                                    ? Icons.favorite_rounded
+                                    : Icons.favorite_border_rounded,
+                                color: isFav ? AppColors.error : null,
+                              ),
+                              onPressed: () async {
+                                final added = await ref
+                                    .read(favoritesNotifierProvider.notifier)
+                                    .toggleFavorite(id);
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        added
+                                            ? (l10n.isBangla
+                                                ? 'পছন্দের তালিকায় যুক্ত করা হয়েছে!'
+                                                : 'Added to Favorites!')
+                                            : (l10n.isBangla
+                                                ? 'পছন্দের তালিকা থেকে সরানো হয়েছে!'
+                                                : 'Removed from Favorites!'),
+                                      ),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              },
+                              tooltip: l10n.t('favorites'),
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(width: 8),
                       CircleAvatar(
@@ -438,7 +469,7 @@ class ItemDetailsScreen extends ConsumerWidget {
                                     ),
                                   ),
                                   onPressed: () =>
-                                      context.push('/google-map-view'),
+                                      context.push('/map-view'),
                                   icon: const Icon(Icons.map_outlined),
                                   label: Text(l10n.isBangla ? 'ম্যাপে দেখুন' : 'View on Map'),
                                 ),

@@ -328,8 +328,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                     title: Text(l10n.t('push_notifications')),
                     subtitle: Text(l10n.t('notifications_subtitle')),
-                    value: true,
-                    onChanged: (val) {},
+                    value: ref.watch(pushNotificationsProvider),
+                    onChanged: (val) {
+                      ref
+                          .read(pushNotificationsProvider.notifier)
+                          .setEnabled(val);
+                    },
                   ),
                   const Divider(),
                   ListTile(

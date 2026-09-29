@@ -66,11 +66,14 @@ service cloud.firestore {
     match /posts/{postId} {
       allow read: if true;
       allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      // Owner can always update.
+      // Owner can always update (checking userId, posterId, ownerId, createdBy).
       // Claim participant can mark post as 'completed' or 'resolved' when item is recovered.
       // Admins can update any post for moderation.
       allow update: if isSignedIn() && (
         request.auth.uid == resource.data.userId ||
+        (resource.data.posterId != null && resource.data.posterId == request.auth.uid) ||
+        (resource.data.ownerId != null && resource.data.ownerId == request.auth.uid) ||
+        (resource.data.createdBy != null && resource.data.createdBy == request.auth.uid) ||
         isAdmin() ||
         (request.resource.data.status in ['completed', 'resolved'] && (
           isClaimParticipant(request.resource.data.completedClaimId) ||
@@ -116,9 +119,12 @@ service cloud.firestore {
       allow read: if isSignedIn();
       // Any signed-in user can create notifications (claim flow creates for both parties)
       allow create: if isSignedIn();
-      // Users can only update/delete their own notifications (e.g. mark as read), or admin
+      // Users can only update/delete their own notifications (e.g. mark as read), broadcast notifications, or admin
       allow update, delete: if isSignedIn() && (
         request.auth.uid == resource.data.userId ||
+        (resource.data.recipientId != null && request.auth.uid == resource.data.recipientId) ||
+        resource.data.userId == 'all' ||
+        resource.data.userId == 'guest' ||
         isAdmin()
       );
     }

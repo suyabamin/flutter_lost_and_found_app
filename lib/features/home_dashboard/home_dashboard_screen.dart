@@ -209,10 +209,13 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                     FirebaseAuth.instance.currentUser?.uid ?? 'guest',
                   ),
               builder: (context, snapshot) {
+                final pushEnabled = ref.watch(pushNotificationsProvider);
                 final list = snapshot.data ?? [];
-                final unreadCount = list
-                    .where((n) => n['isRead'] == false || n['isRead'] == null)
-                    .length;
+                final unreadCount = pushEnabled
+                    ? list
+                        .where((n) => n['isRead'] == false || n['isRead'] == null)
+                        .length
+                    : 0;
                 return _NotificationIconButton(
                   unreadCount: unreadCount,
                   onPressed: () => context.push('/notifications'),
@@ -375,10 +378,6 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      _AiSmartSearchButton(
-                        onPressed: () => context.push('/ai-search'),
                       ),
                     ],
                   ),

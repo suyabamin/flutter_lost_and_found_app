@@ -568,6 +568,19 @@ class ProfileScreen extends ConsumerWidget {
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/favorites'),
                   ),
+                  if (user?.role == 'admin') ...[
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.admin_panel_settings_rounded,
+                        color: AppColors.primary,
+                      ),
+                      title: const Text('Admin Management Console'),
+                      subtitle: const Text('System overview, moderation & portals'),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => context.push('/admin'),
+                    ),
+                  ],
                   const Divider(height: 1),
                   ListTile(
                     leading: const Icon(

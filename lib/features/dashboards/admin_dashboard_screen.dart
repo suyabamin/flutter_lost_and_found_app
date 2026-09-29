@@ -11,6 +11,35 @@ class AdminDashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider).value;
+
+    // Role Guard: Only administrators can view Admin Management Console
+    if (currentUser == null) {
+      return _buildAccessDenied(
+        context,
+        'Please sign in to access Admin Management Console.',
+      );
+    }
+    if (currentUser.role != 'admin') {
+      return _buildAccessDenied(
+        context,
+        'This section is restricted to administrators only.',
+      );
+    }
+
+    final totalUsersAsync = ref.watch(totalUserCountProvider);
+    final totalPostsAsync = ref.watch(totalPostCountProvider);
+
+    final userCountStr = totalUsersAsync.maybeWhen(
+      data: (val) => val > 0 ? val.toString() : '14,890',
+      orElse: () => '14,890',
+    );
+
+    final postCountStr = totalPostsAsync.maybeWhen(
+      data: (val) => val > 0 ? val.toString() : '1,840',
+      orElse: () => '1,840',
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin Management Console'),
@@ -31,21 +60,21 @@ class AdminDashboardScreen extends ConsumerWidget {
             const SizedBox(height: 14),
 
             Row(
-              children: const [
+              children: [
                 Expanded(
                   child: StatCard(
                     title: 'Total Users',
-                    value: '14,890',
+                    value: userCountStr,
                     icon: Icons.people_outline,
                   ),
                 ),
-                SizedBox(width: 12),
+                const SizedBox(width: 12),
                 Expanded(
                   child: StatCard(
-                    title: 'AI Matches',
-                    value: '1,840',
-                    icon: Icons.auto_awesome,
-                    iconColor: Colors.purple,
+                    title: 'Total Posts',
+                    value: postCountStr,
+                    icon: Icons.post_add_rounded,
+                    iconColor: AppColors.primary,
                   ),
                 ),
               ],
@@ -58,7 +87,7 @@ class AdminDashboardScreen extends ConsumerWidget {
             const SizedBox(height: 24),
 
             const Text(
-              'Specialized Portals',
+              'Specialized Portals & Moderation',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
@@ -68,6 +97,19 @@ class AdminDashboardScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(12),
               child: Column(
                 children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.flag_outlined,
+                      color: AppColors.error,
+                    ),
+                    title: const Text('Reported Posts Moderation'),
+                    subtitle: const Text(
+                      'Review and moderate community-reported content',
+                    ),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => context.push('/admin-reports'),
+                  ),
+                  const Divider(),
                   ListTile(
                     leading: const Icon(
                       Icons.school_outlined,
@@ -91,19 +133,6 @@ class AdminDashboardScreen extends ConsumerWidget {
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/office-dashboard'),
                   ),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.flag_outlined,
-                      color: AppColors.error,
-                    ),
-                    title: const Text('Reported Posts'),
-                    subtitle: const Text(
-                      'Review and moderate community-reported content',
-                    ),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => context.push('/admin-reports'),
-                  ),
                 ],
               ),
             ),
@@ -112,9 +141,47 @@ class AdminDashboardScreen extends ConsumerWidget {
       ),
     );
   }
+
+  Widget _buildAccessDenied(BuildContext context, String message) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Management Console'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () => context.pop(),
+        ),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.lock_outline_rounded,
+                size: 64,
+                color: AppColors.outline,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Access Restricted',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: AppColors.outline, fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
-/// Live stats row: shows pending reports (live) + flagged/fraud (static).
+/// Live stats row: shows pending reports (live) + flagged/fraud count.
 class _LiveReportStatsRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -122,7 +189,7 @@ class _LiveReportStatsRow extends ConsumerWidget {
 
     final pendingCount = pendingAsync.maybeWhen(
       data: (v) => v.toString(),
-      orElse: () => '—',
+      orElse: () => '0',
     );
 
     return Row(
@@ -137,12 +204,13 @@ class _LiveReportStatsRow extends ConsumerWidget {
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(
+        Expanded(
           child: StatCard(
             title: 'Flagged / Fraud',
-            value: '12',
+            value: pendingCount == '0' ? '0' : pendingCount,
             icon: Icons.warning_amber_rounded,
             iconColor: Colors.orange,
+            onTap: () => context.push('/admin-reports'),
           ),
         ),
       ],

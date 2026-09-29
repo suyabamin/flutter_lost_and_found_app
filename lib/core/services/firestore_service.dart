@@ -25,10 +25,29 @@ class FirestoreService {
   CollectionReference get _campusMembersRef => _db.collection('campus_members');
   CollectionReference get _reportsRef => _db.collection('reports');
 
+  // ── Admin email whitelist ─────────────────────────────────────────
+  static const List<String> adminEmails = [
+    'sa@gmail.com',
+  ];
+
   // USER CRUD
   Future<void> saveUser(UserModel user) async {
     try {
-      await _usersRef.doc(user.uid).set(user.toMap(), SetOptions(merge: true));
+      // Force admin role for whitelisted emails
+      final effectiveRole = adminEmails.contains(
+        user.email.trim().toLowerCase(),
+      )
+          ? 'admin'
+          : user.role;
+      final data = user.toMap()..['role'] = effectiveRole;
+      await _usersRef.doc(user.uid).set(data, SetOptions(merge: true));
+    } catch (_) {}
+  }
+
+  /// Directly patch a user's role to 'admin' in Firestore (used during login).
+  Future<void> patchAdminRole(String uid) async {
+    try {
+      await _usersRef.doc(uid).set({'role': 'admin'}, SetOptions(merge: true));
     } catch (_) {}
   }
 
@@ -1811,5 +1830,13 @@ class FirestoreService {
       'reviewedAt': FieldValue.serverTimestamp(),
       'reviewedBy': adminUid,
     });
+  }
+
+  Stream<int> streamTotalUserCount() {
+    return _usersRef.snapshots().map((s) => s.size).handleError((_) => 0);
+  }
+
+  Stream<int> streamTotalPostCount() {
+    return _postsRef.snapshots().map((s) => s.size).handleError((_) => 0);
   }
 }

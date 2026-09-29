@@ -119,6 +119,8 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
     final selectedCategory = ref.watch(selectedCategoryProvider);
     final postsAsync = ref.watch(postsStreamProvider);
     final allPostsAsync = ref.watch(allPostsStreamProvider);
+    final currentUser = ref.watch(currentUserProvider).value;
+    final isAdmin = currentUser?.role == 'admin';
 
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF090D16) : AppColors.background,
@@ -223,32 +225,33 @@ class _HomeDashboardScreenState extends ConsumerState<HomeDashboardScreen>
               },
             ),
           ),
-          FadeTransition(
-            opacity: _headerFade,
-            child: Container(
-              margin: const EdgeInsets.only(right: 12),
-              decoration: BoxDecoration(
-                color: isDark
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : AppColors.primary.withValues(alpha: 0.08),
-                shape: BoxShape.circle,
-                border: Border.all(
+          if (isAdmin)
+            FadeTransition(
+              opacity: _headerFade,
+              child: Container(
+                margin: const EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
                   color: isDark
-                      ? Colors.white.withValues(alpha: 0.15)
-                      : AppColors.primary.withValues(alpha: 0.2),
+                      ? Colors.white.withValues(alpha: 0.08)
+                      : AppColors.primary.withValues(alpha: 0.08),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.15)
+                        : AppColors.primary.withValues(alpha: 0.2),
+                  ),
                 ),
-              ),
-              child: IconButton(
-                icon: Icon(
-                  Icons.qr_code_scanner_rounded,
-                  size: 20,
-                  color: isDark ? Colors.white : AppColors.primary,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.admin_panel_settings_rounded,
+                    size: 20,
+                    color: isDark ? Colors.white : AppColors.primary,
+                  ),
+                  onPressed: () => context.push('/admin'),
+                  tooltip: 'Admin Management Console',
                 ),
-                onPressed: () => context.push('/admin'),
-                tooltip: 'Admin Portal',
               ),
             ),
-          ),
         ],
       ),
       body: SingleChildScrollView(

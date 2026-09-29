@@ -261,3 +261,13 @@ final favoritesNotifierProvider =
   return FavoritesNotifier();
 });
 
+/// Streams total user count for Admin Dashboard
+final totalUserCountProvider = StreamProvider<int>((ref) {
+  return ref.watch(firestoreServiceProvider).streamTotalUserCount();
+});
+
+/// Streams total post count for Admin Dashboard
+final totalPostCountProvider = StreamProvider<int>((ref) {
+  return ref.watch(firestoreServiceProvider).streamTotalPostCount();
+});
+

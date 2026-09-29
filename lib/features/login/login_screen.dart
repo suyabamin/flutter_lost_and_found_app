@@ -7,6 +7,7 @@ import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import '../../core/providers/providers.dart';
 import '../../core/utils/app_localizations.dart';
+import '../../core/services/firestore_service.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -71,10 +72,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     try {
       final authService = ref.read(authServiceProvider);
-      await authService.signInWithEmail(
+      final cred = await authService.signInWithEmail(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
+      // Patch admin role for whitelisted emails on every login
+      final email = _emailController.text.trim().toLowerCase();
+      if (FirestoreService.adminEmails.contains(email) && cred.user != null) {
+        await ref
+            .read(firestoreServiceProvider)
+            .patchAdminRole(cred.user!.uid);
+      }
       if (mounted) {
         context.go('/home');
       }

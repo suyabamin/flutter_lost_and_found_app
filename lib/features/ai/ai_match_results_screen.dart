@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
+import '../../core/utils/app_localizations.dart';
 
 class AiMatchResultsScreen extends ConsumerWidget {
   const AiMatchResultsScreen({super.key});
@@ -39,9 +40,12 @@ class AiMatchResultsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Match Results'),
+        title: Text(isBn ? 'এআই ম্যাচ ফলাফল' : 'AI Match Results'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -53,23 +57,33 @@ class AiMatchResultsScreen extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [
-                Icon(
+              children: [
+                const Icon(
                   Icons.auto_awesome_rounded,
                   color: AppColors.primary,
                   size: 24,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
-                  '3 High-Confidence Matches Found',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  isBn
+                      ? '৩টি সম্ভাব্য মিল পাওয়া গেছে'
+                      : '3 High-Confidence Matches Found',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 4),
-            const Text(
-              'Gemini AI compared visual vectors, color histograms, and OCR text.',
-              style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+            Text(
+              isBn
+                  ? 'জেমিনি এআই ছবির ভেক্টর, রঙের হিস্টোগ্রাম এবং লেখার মিল পরীক্ষা করেছে।'
+                  : 'Gemini AI compared visual vectors, color histograms, and OCR text.',
+              style: const TextStyle(
+                fontSize: 13,
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -127,7 +141,9 @@ class AiMatchResultsScreen extends ConsumerWidget {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
-                                      '$similarity% Match',
+                                      isBn
+                                          ? '$similarity% মিল'
+                                          : '$similarity% Match',
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 11,
@@ -140,7 +156,7 @@ class AiMatchResultsScreen extends ConsumerWidget {
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(
+                                    const Icon(
                                     Icons.location_on_outlined,
                                     size: 14,
                                     color: AppColors.outline,
@@ -171,9 +187,11 @@ class AiMatchResultsScreen extends ConsumerWidget {
                                       color: AppColors.outline,
                                     ),
                                   ),
-                                  const Text(
-                                    'Claim / Chat >',
-                                    style: TextStyle(
+                                  Text(
+                                    isBn
+                                        ? 'দাবি / চ্যাট করুন >'
+                                        : 'Claim / Chat >',
+                                    style: const TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.primary,

@@ -6,6 +6,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -65,6 +66,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +102,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Forgot Password?',
+                  l10n.t('forgot_password'),
                   style: TextStyle(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -108,10 +110,10 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Enter your email address and we will send you instructions to reset your password.',
+                Text(
+                  l10n.t('reset_instructions'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -137,17 +139,17 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               ),
                             ),
                             const SizedBox(height: 16),
-                            const Text(
-                              'Password reset email sent successfully.',
+                            Text(
+                              l10n.t('check_email'),
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             const SizedBox(height: 12),
                             Text(
-                              'Check your inbox (${_emailController.text.trim()}) and follow the instructions to reset your password.',
+                              '(${_emailController.text.trim()})',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 14,
@@ -156,7 +158,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                             ),
                             const SizedBox(height: 24),
                             PrimaryButton(
-                              text: 'Back to Sign In',
+                              text: l10n.t('back_to_login'),
                               icon: Icons.arrow_back_rounded,
                               onPressed: () {
                                 if (context.canPop()) {
@@ -175,9 +177,9 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                         _emailSent = false;
                                       });
                                     },
-                              child: const Text(
-                                'Resend to another email',
-                                style: TextStyle(
+                              child: Text(
+                                l10n.t('retry'),
+                                style: const TextStyle(
                                   color: AppColors.primary,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -224,26 +226,26 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                               ],
                               CustomTextField(
                                 controller: _emailController,
-                                labelText: 'Email Address',
-                                hintText: 'name@example.com',
+                                labelText: l10n.t('email_address'),
+                                hintText: l10n.t('email_hint'),
                                 prefixIcon: Icons.email_outlined,
                                 keyboardType: TextInputType.emailAddress,
                                 validator: (val) {
                                   if (val == null || val.trim().isEmpty) {
-                                    return 'Please enter your email address.';
+                                    return l10n.t('email_invalid');
                                   }
                                   final emailRegex = RegExp(
                                     r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
                                   );
                                   if (!emailRegex.hasMatch(val.trim())) {
-                                    return 'Please enter a valid email address.';
+                                    return l10n.t('email_invalid');
                                   }
                                   return null;
                                 },
                               ),
                               const SizedBox(height: 24),
                               PrimaryButton(
-                                text: 'Send Reset Link',
+                                text: l10n.t('send_reset_link'),
                                 icon: Icons.send_rounded,
                                 isLoading: _isLoading,
                                 onPressed: _handleReset,

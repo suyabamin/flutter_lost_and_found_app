@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class SearchResultsScreen extends ConsumerWidget {
   final String query;
@@ -17,12 +18,15 @@ class SearchResultsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final postsAsync = ref.watch(postsStreamProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          query.isNotEmpty ? 'Results for "$query"' : 'Search Results',
+          query.isNotEmpty
+              ? (l10n.isBangla ? '"$query" এর জন্য ফলাফল' : 'Results for "$query"')
+              : l10n.t('search_results'),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -51,14 +55,14 @@ class SearchResultsScreen extends ConsumerWidget {
                     color: AppColors.outline.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
-                    'No matching items found',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    l10n.t('no_matching_items'),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Try adjusting your search terms or filters',
-                    style: TextStyle(color: AppColors.onSurfaceVariant),
+                  Text(
+                    l10n.t('adjust_filters'),
+                    style: const TextStyle(color: AppColors.onSurfaceVariant),
                   ),
                 ],
               ),
@@ -123,7 +127,9 @@ class SearchResultsScreen extends ConsumerWidget {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
-                                    item.type.toUpperCase(),
+                                    item.type == 'lost'
+                                        ? l10n.t('lost').toUpperCase()
+                                        : l10n.t('found').toUpperCase(),
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 10,
@@ -172,7 +178,7 @@ class SearchResultsScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (err, stack) => Center(child: Text('Error: $err')),
+        error: (err, stack) => Center(child: Text('${l10n.t('error')}: $err')),
       ),
     );
   }

@@ -7,6 +7,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/stat_card.dart';
 import '../../core/models/recovery_models.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class WalletScreen extends ConsumerWidget {
   const WalletScreen({super.key});
@@ -16,10 +17,12 @@ class WalletScreen extends ConsumerWidget {
     final firestoreService = ref.watch(firestoreServiceProvider);
     final authUser = FirebaseAuth.instance.currentUser;
     final currentUid = authUser?.uid ?? 'guest';
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Earnings & Wallet'),
+        title: Text(isBn ? 'আমার উপার্জন ও ওয়ালেট' : 'My Earnings & Wallet'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -93,18 +96,18 @@ class WalletScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Row(
+                          Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Total Reward Earnings',
-                                style: TextStyle(
+                                isBn ? 'মোট অর্জিত পুরস্কার' : 'Total Reward Earnings',
+                                style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              Icon(
+                              const Icon(
                                 Icons.account_balance_wallet_rounded,
                                 color: Colors.white,
                                 size: 24,
@@ -132,17 +135,19 @@ class WalletScreen extends ConsumerWidget {
                             ),
                             onPressed: () {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
+                                SnackBar(
                                   content: Text(
-                                    'Payout request feature enabled for verified accounts.',
+                                    isBn
+                                        ? 'যাচাইকৃত অ্যাকাউন্টের জন্য ক্যাশ আউট সুবিধা চালু থাকবে।'
+                                        : 'Payout request feature enabled for verified accounts.',
                                   ),
                                 ),
                               );
                             },
                             icon: const Icon(Icons.outbox_rounded, size: 18),
-                            label: const Text(
-                              'Withdraw Earnings (Future Use)',
-                              style: TextStyle(
+                            label: Text(
+                              isBn ? 'উপার্জন প্রত্যাহার করুন' : 'Withdraw Earnings (Future Use)',
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
                               ),
@@ -158,7 +163,7 @@ class WalletScreen extends ConsumerWidget {
                       children: [
                         Expanded(
                           child: StatCard(
-                            title: 'Today',
+                            title: isBn ? 'আজ' : 'Today',
                             value: '৳ $displayToday',
                             icon: Icons.today_rounded,
                             iconColor: AppColors.secondary,
@@ -167,7 +172,7 @@ class WalletScreen extends ConsumerWidget {
                         const SizedBox(width: 12),
                         Expanded(
                           child: StatCard(
-                            title: 'This Month',
+                            title: isBn ? 'এই মাসে' : 'This Month',
                             value: '৳ $displayMonthly',
                             icon: Icons.calendar_month_rounded,
                             iconColor: Colors.purple,
@@ -177,7 +182,7 @@ class WalletScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     StatCard(
-                      title: 'Lifetime Earned Rewards',
+                      title: isBn ? 'সর্বমোট অর্জিত পুরস্কার' : 'Lifetime Earned Rewards',
                       value: '৳ $displayLifetime',
                       icon: Icons.workspace_premium_rounded,
                       iconColor: Colors.amber,
@@ -185,9 +190,9 @@ class WalletScreen extends ConsumerWidget {
                     const SizedBox(height: 24),
 
                     // Reward Payment History Section
-                    const Text(
-                      'Transaction & Payment History',
-                      style: TextStyle(
+                    Text(
+                      isBn ? 'লেনদেন ও পেমেন্ট ইতিহাস' : 'Transaction & Payment History',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -200,24 +205,26 @@ class WalletScreen extends ConsumerWidget {
                         padding: const EdgeInsets.all(24),
                         child: Center(
                           child: Column(
-                            children: const [
-                              Icon(
+                            children: [
+                              const Icon(
                                 Icons.receipt_long_outlined,
                                 size: 48,
                                 color: AppColors.outline,
                               ),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Text(
-                                'No transactions yet.',
-                                style: TextStyle(
+                                isBn ? 'এখনো কোনো লেনদেন নেই।' : 'No transactions yet.',
+                                style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
                                 ),
                               ),
-                              SizedBox(height: 4),
+                              const SizedBox(height: 4),
                               Text(
-                                'Received and paid rewards will be listed here.',
-                                style: TextStyle(
+                                isBn
+                                    ? 'প্রাপ্ত ও প্রদত্ত পুরস্কারের তালিকা এখানে দেখা যাবে।'
+                                    : 'Received and paid rewards will be listed here.',
+                                style: const TextStyle(
                                   fontSize: 12,
                                   color: AppColors.outline,
                                 ),
@@ -267,8 +274,8 @@ class WalletScreen extends ConsumerWidget {
                                     children: [
                                       Text(
                                         isEarned
-                                            ? 'Reward Received (${p.method})'
-                                            : 'Reward Paid (${p.method})',
+                                            ? (isBn ? 'পুরস্কার প্রাপ্ত (${p.method})' : 'Reward Received (${p.method})')
+                                            : (isBn ? 'পুরস্কার প্রদান (${p.method})' : 'Reward Paid (${p.method})'),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 14,

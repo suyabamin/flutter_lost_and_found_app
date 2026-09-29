@@ -11,6 +11,7 @@ import '../../core/widgets/app_image.dart';
 import '../../core/models/post_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/services/firestore_service.dart';
+import '../../core/utils/app_localizations.dart';
 import '../home_dashboard/home_dashboard_screen.dart';
 
 class PreviewPublishReportScreen extends ConsumerStatefulWidget {
@@ -111,9 +112,14 @@ class _PreviewPublishReportScreenState
       } catch (_) {}
 
       if (mounted) {
+        final loc = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('🎉 Your report has been published successfully!'),
+          SnackBar(
+            content: Text(
+              loc.isBangla
+                  ? '🎉 আপনার রিপোর্ট সফলভাবে প্রকাশিত হয়েছে!'
+                  : '🎉 Your report has been published successfully!',
+            ),
           ),
         );
         context.go('/home');
@@ -131,6 +137,9 @@ class _PreviewPublishReportScreenState
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final data = widget.postData ?? {};
     final String title = data['title'] ?? 'Silver iPhone 14 Pro with blue case';
     final String description =
@@ -143,9 +152,14 @@ class _PreviewPublishReportScreenState
         (data['rewardAmount'] as num?)?.toDouble() ?? 1000.0;
     final List<XFile> pickedFiles = (data['pickedFiles'] as List<XFile>?) ?? [];
 
+    final displayCategory = loc.translateCategory(category);
+    final displayType = type == 'lost'
+        ? (isBn ? 'হারানো' : 'LOST')
+        : (isBn ? 'পাওয়া' : 'FOUND');
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Preview Report'),
+        title: Text(isBn ? 'রিপোর্টের পূর্বরূপ' : 'Preview Report'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -185,7 +199,7 @@ class _PreviewPublishReportScreenState
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Category: $category • Type: ${type.toUpperCase()}',
+                    '${isBn ? 'বিভাগ:' : 'Category:'} $displayCategory • ${isBn ? 'ধরন:' : 'Type:'} $displayType',
                     style: TextStyle(
                       color: type == 'lost'
                           ? AppColors.error
@@ -194,9 +208,9 @@ class _PreviewPublishReportScreenState
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Description:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  Text(
+                    isBn ? 'বিবরণ:' : 'Description:',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 4),
                   Text(
@@ -205,13 +219,13 @@ class _PreviewPublishReportScreenState
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Location: $location',
+                    '${isBn ? 'অবস্থান:' : 'Location:'} $location',
                     style: const TextStyle(color: AppColors.outline),
                   ),
                   if (rewardAmount > 0) ...[
                     const SizedBox(height: 8),
                     Text(
-                      'Reward Offered: ৳ ${rewardAmount.round()}',
+                      '${isBn ? 'পুরস্কারের প্রস্তাব:' : 'Reward Offered:'} ৳ ${rewardAmount.round()}',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
@@ -224,7 +238,7 @@ class _PreviewPublishReportScreenState
             const SizedBox(height: 28),
 
             PrimaryButton(
-              text: 'Publish Report to Feed',
+              text: isBn ? 'ফিডে রিপোর্ট প্রকাশ করুন' : 'Publish Report to Feed',
               icon: Icons.cloud_upload_rounded,
               isLoading: _isPublishing,
               onPressed: _handlePublish,

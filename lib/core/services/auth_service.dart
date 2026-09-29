@@ -104,13 +104,10 @@ class AuthService {
           '779298287833-apkicde2h99c79olnea347540ol3rkv5.apps.googleusercontent.com';
       await GoogleSignIn.instance.initialize(serverClientId: clientId);
 
-      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
+      final GoogleSignInAccount googleUser = await GoogleSignIn.instance
           .authenticate();
 
-      if (googleUser == null) return null;
-
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       if (googleAuth.idToken == null) {
         throw 'Google ID Token is null. Check Firebase OAuth configuration.';

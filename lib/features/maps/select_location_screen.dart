@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/utils/location_utils.dart';
+import '../../core/utils/app_localizations.dart';
 
 class LocationSearchResult {
   final String title;
@@ -385,6 +386,8 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Scaffold(
       body: Stack(
@@ -463,8 +466,9 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                           child: TextField(
                             controller: _searchController,
                             decoration: InputDecoration(
-                              hintText:
-                                  'Search place (e.g. Dhanmondi, Dhaka)...',
+                              hintText: isBn
+                                  ? 'স্থান খুঁজুন (যেমন: ধানমন্ডি, ঢাকা)...'
+                                  : 'Search place (e.g. Dhanmondi, Dhaka)...',
                               hintStyle: const TextStyle(fontSize: 13),
                               border: InputBorder.none,
                               suffixIcon: _isSearching
@@ -677,9 +681,9 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                           size: 22,
                         ),
                         const SizedBox(width: 8),
-                        const Text(
-                          'Selected Report Spot:',
-                          style: TextStyle(
+                        Text(
+                          isBn ? 'নির্বাচিত স্থান:' : 'Selected Report Spot:',
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 13,
                             color: AppColors.outline,
@@ -717,7 +721,7 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                     ),
                     const SizedBox(height: 16),
                     PrimaryButton(
-                      text: 'Confirm Location',
+                      text: isBn ? 'স্থান নিশ্চিত করুন' : 'Confirm Location',
                       icon: Icons.check_circle_rounded,
                       onPressed: _confirmAndReturn,
                     ),

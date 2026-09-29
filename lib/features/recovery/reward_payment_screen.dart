@@ -10,6 +10,7 @@ import '../../core/models/claim_model.dart';
 import '../../core/models/post_model.dart';
 import '../../core/models/recovery_models.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class RewardPaymentScreen extends ConsumerStatefulWidget {
   final String claimId;
@@ -42,6 +43,8 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
     if (!(_formKey.currentState?.validate() ?? false) || _isSubmitting) return;
 
     setState(() => _isSubmitting = true);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     try {
       final firestoreService = ref.read(firestoreServiceProvider);
@@ -76,9 +79,15 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Payment processing error: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isBn
+                  ? 'পেমেন্ট প্রক্রিয়াকরণে ত্রুটি: $e'
+                  : 'Payment processing error: $e',
+            ),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -88,10 +97,12 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
   @override
   Widget build(BuildContext context) {
     final firestoreService = ref.watch(firestoreServiceProvider);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Reward Payment'),
+        title: Text(isBn ? 'পুরস্কার পেমেন্ট' : 'Reward Payment'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -132,9 +143,11 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                         padding: const EdgeInsets.all(18),
                         child: Column(
                           children: [
-                            const Text(
-                              'Total Reward Amount',
-                              style: TextStyle(
+                            Text(
+                              isBn
+                                  ? 'মোট পুরস্কারের পরিমাণ'
+                                  : 'Total Reward Amount',
+                              style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.outline,
                               ),
@@ -150,7 +163,9 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Reward for item: "${post?.title ?? "Recovered Item"}"',
+                              isBn
+                                  ? 'আইটেমের জন্য পুরস্কার: "${post?.title ?? "উদ্ধারকৃত আইটেম"}"'
+                                  : 'Reward for item: "${post?.title ?? "Recovered Item"}"',
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: AppColors.onSurfaceVariant,
@@ -162,9 +177,11 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      const Text(
-                        'Select Payment Method',
-                        style: TextStyle(
+                      Text(
+                        isBn
+                            ? 'পেমেন্ট পদ্ধতি নির্বাচন করুন'
+                            : 'Select Payment Method',
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -242,34 +259,48 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                           children: [
                             CustomTextField(
                               controller: _receiverNameController,
-                              labelText: 'Receiver Name (Finder)',
+                              labelText: isBn
+                                  ? 'প্রাপকের নাম (উদ্ধারকারী)'
+                                  : 'Receiver Name (Finder)',
                               prefixIcon: Icons.person_outline_rounded,
                               validator: (v) => v == null || v.trim().isEmpty
-                                  ? 'Enter receiver name'
+                                  ? (isBn
+                                        ? 'প্রাপকের নাম লিখুন'
+                                        : 'Enter receiver name')
                                   : null,
                             ),
                             const SizedBox(height: 14),
                             CustomTextField(
                               controller: _receiverNumberController,
-                              labelText: 'Receiver Phone Number',
+                              labelText: isBn
+                                  ? 'প্রাপকের ফোন নম্বর'
+                                  : 'Receiver Phone Number',
                               prefixIcon: Icons.phone_android_rounded,
                               keyboardType: TextInputType.phone,
                               validator: (v) => v == null || v.trim().isEmpty
-                                  ? 'Enter receiver number'
+                                  ? (isBn
+                                        ? 'প্রাপকের ফোন নম্বর লিখুন'
+                                        : 'Enter receiver number')
                                   : null,
                             ),
                             const SizedBox(height: 14),
                             CustomTextField(
                               controller: _trxIdController,
-                              labelText: 'Transaction ID (TrxID)',
+                              labelText: isBn
+                                  ? 'ট্রানজেকশন আইডি (TrxID)'
+                                  : 'Transaction ID (TrxID)',
                               hintText: 'e.g. 9J87A2KXLM',
                               prefixIcon: Icons.receipt_long_rounded,
                               validator: (v) {
                                 if (v == null || v.trim().isEmpty) {
-                                  return 'Transaction ID is required';
+                                  return isBn
+                                      ? 'ট্রানজেকশন আইডি আবশ্যক'
+                                      : 'Transaction ID is required';
                                 }
                                 if (v.trim().length < 6) {
-                                  return 'Enter a valid Transaction ID';
+                                  return isBn
+                                      ? 'সঠিক ট্রানজেকশন আইডি দিন'
+                                      : 'Enter a valid Transaction ID';
                                 }
                                 return null;
                               },
@@ -280,7 +311,9 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                       const SizedBox(height: 28),
 
                       PrimaryButton(
-                        text: 'Confirm & Submit Payment',
+                        text: isBn
+                            ? 'পেমেন্ট নিশ্চিত ও জমা দিন'
+                            : 'Confirm & Submit Payment',
                         icon: Icons.check_circle_rounded,
                         isLoading: _isSubmitting,
                         onPressed: () => _submitPayment(claim, amount),
@@ -290,9 +323,9 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                       Center(
                         child: TextButton(
                           onPressed: () => context.pop(),
-                          child: const Text(
-                            'Cancel Payment',
-                            style: TextStyle(color: AppColors.outline),
+                          child: Text(
+                            isBn ? 'পেমেন্ট বাতিল' : 'Cancel Payment',
+                            style: const TextStyle(color: AppColors.outline),
                           ),
                         ),
                       ),

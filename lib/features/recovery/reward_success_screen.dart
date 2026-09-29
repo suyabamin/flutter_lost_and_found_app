@@ -6,6 +6,7 @@ import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
 import '../../core/models/recovery_models.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class RewardSuccessScreen extends ConsumerWidget {
   final String paymentId;
@@ -15,11 +16,13 @@ class RewardSuccessScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final firestoreService = ref.watch(firestoreServiceProvider);
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Payment Submitted'),
+        title: Text(isBn ? 'পেমেন্ট জমা হয়েছে' : 'Payment Submitted'),
       ),
       body: StreamBuilder<PaymentModel?>(
         stream: firestoreService.streamPayment(paymentId),
@@ -49,15 +52,22 @@ class RewardSuccessScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Reward Payment Submitted!',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                Text(
+                  isBn
+                      ? 'পুরস্কার পেমেন্ট জমা দেওয়া হয়েছে!'
+                      : 'Reward Payment Submitted!',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Notification sent to Finder. Once Finder confirms receipt, recovery will be finalized.',
-                  style: TextStyle(
+                Text(
+                  isBn
+                      ? 'উদ্ধারকারীকে নোটিফিকেশন পাঠানো হয়েছে। উদ্ধারকারী গ্রহণ নিশ্চিত করলে পুনরুদ্ধার চূড়ান্ত হবে।'
+                      : 'Notification sent to Finder. Once Finder confirms receipt, recovery will be finalized.',
+                  style: const TextStyle(
                     color: AppColors.onSurfaceVariant,
                     fontSize: 13,
                   ),
@@ -73,9 +83,9 @@ class RewardSuccessScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Transaction ID:',
-                            style: TextStyle(
+                          Text(
+                            isBn ? 'ট্রানজেকশন আইডি:' : 'Transaction ID:',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.outline,
                             ),
@@ -93,9 +103,9 @@ class RewardSuccessScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Method & Amount:',
-                            style: TextStyle(
+                          Text(
+                            isBn ? 'পদ্ধতি ও পরিমাণ:' : 'Method & Amount:',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.outline,
                             ),
@@ -113,15 +123,16 @@ class RewardSuccessScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Receiver:',
-                            style: TextStyle(
+                          Text(
+                            isBn ? 'প্রাপক:' : 'Receiver:',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.outline,
                             ),
                           ),
                           Text(
-                            payment?.receiverName ?? 'Finder',
+                            payment?.receiverName ??
+                                (isBn ? 'উদ্ধারকারী' : 'Finder'),
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -130,9 +141,9 @@ class RewardSuccessScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Status:',
-                            style: TextStyle(
+                          Text(
+                            isBn ? 'স্ট্যাটাস:' : 'Status:',
+                            style: const TextStyle(
                               fontSize: 12,
                               color: AppColors.outline,
                             ),
@@ -146,9 +157,11 @@ class RewardSuccessScreen extends ConsumerWidget {
                               color: Colors.orange.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            child: const Text(
-                              'PAID (Awaiting Finder)',
-                              style: TextStyle(
+                            child: Text(
+                              isBn
+                                  ? 'পরিশোধিত (উদ্ধারকারীর অপেক্ষমাণ)'
+                                  : 'PAID (Awaiting Finder)',
+                              style: const TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orange,
@@ -163,7 +176,9 @@ class RewardSuccessScreen extends ConsumerWidget {
                 const SizedBox(height: 32),
 
                 PrimaryButton(
-                  text: 'Back to Recovery Summary',
+                  text: isBn
+                      ? 'পুনরুদ্ধার সারসংক্ষেপে ফিরুন'
+                      : 'Back to Recovery Summary',
                   icon: Icons.arrow_back_rounded,
                   onPressed: () {
                     if (payment != null && payment.claimId.isNotEmpty) {

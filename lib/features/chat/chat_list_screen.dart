@@ -6,12 +6,14 @@ import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/models/chat_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class ChatListScreen extends ConsumerWidget {
   const ChatListScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = AppLocalizations.of(context);
     final user = ref.watch(currentUserProvider).value;
     final authUser = FirebaseAuth.instance.currentUser;
     final firestoreService = ref.watch(firestoreServiceProvider);
@@ -24,7 +26,9 @@ class ChatListScreen extends ConsumerWidget {
         postId: 'post_1',
         postTitle: 'Silver iPhone 14 Pro',
         postImage: 'https://picsum.photos/seed/chat1/100/100',
-        lastMessage: 'Claim approved! Let us arrange item handoff.',
+        lastMessage: l10n.isBangla
+            ? 'দাবি অনুমোদিত! হস্তান্তরের ব্যবস্থা করা যাক।'
+            : 'Claim approved! Let us arrange item handoff.',
         lastMessageTime: DateTime.now().subtract(const Duration(minutes: 12)),
         unreadCount: 1,
       ),
@@ -32,7 +36,7 @@ class ChatListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Messages & Active Chats'),
+        title: Text(l10n.t('messages_active_chats')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -49,29 +53,34 @@ class ChatListScreen extends ConsumerWidget {
           final allChats = [...dbChats, ...mockChats];
 
           if (allChats.isEmpty) {
-            return const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 64,
-                    color: AppColors.outline,
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'No active conversations yet.',
-                    style: TextStyle(fontSize: 16, color: AppColors.outline),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Approved claims will open private 1-to-1 chat rooms here.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: AppColors.onSurfaceVariant,
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 64,
+                      color: AppColors.outline,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.t('no_active_conversations'),
+                      style: const TextStyle(fontSize: 16, color: AppColors.outline),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      l10n.t('approved_claims_chat'),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             );
           }

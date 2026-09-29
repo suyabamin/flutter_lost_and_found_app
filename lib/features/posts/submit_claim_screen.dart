@@ -13,6 +13,7 @@ import '../../core/widgets/app_image.dart';
 import '../../core/models/claim_model.dart';
 import '../../core/providers/providers.dart';
 import '../../core/services/firestore_service.dart';
+import '../../core/utils/app_localizations.dart';
 
 class SubmitClaimScreen extends ConsumerStatefulWidget {
   final String postId;
@@ -87,11 +88,16 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
   }
 
   Future<void> _pickImages() async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     if (_pickedImages.length >= SubmitClaimScreen.maxClaimImages) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Maximum ${SubmitClaimScreen.maxClaimImages} proof images allowed.',
+            isBn
+                ? 'সর্বোচ্চ ${SubmitClaimScreen.maxClaimImages}টি প্রমাণের ছবি দেওয়া যাবে।'
+                : 'Maximum ${SubmitClaimScreen.maxClaimImages} proof images allowed.',
           ),
         ),
       );
@@ -125,7 +131,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Only the first $availableSlots images were added to stay within the ${SubmitClaimScreen.maxClaimImages}-image limit.',
+                isBn
+                    ? '${SubmitClaimScreen.maxClaimImages}টি ছবির সীমার মধ্যে রাখতে কেবল প্রথম $availableSlotsটি ছবি যোগ করা হয়েছে।'
+                    : 'Only the first $availableSlots images were added to stay within the ${SubmitClaimScreen.maxClaimImages}-image limit.',
               ),
             ),
           );
@@ -154,13 +162,20 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
   Future<void> _handleSubmitClaim() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final authUser = FirebaseAuth.instance.currentUser;
     final currentUid = authUser?.uid;
 
     if (currentUid == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('You must be signed in to submit a claim.'),
+        SnackBar(
+          content: Text(
+            isBn
+                ? 'দাবি জমা দিতে আপনাকে সাইন ইন করতে হবে।'
+                : 'You must be signed in to submit a claim.',
+          ),
         ),
       );
       return;
@@ -168,7 +183,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
 
     setState(() {
       _isSubmitting = true;
-      _uploadStatusMessage = 'Validating post & claim permissions...';
+      _uploadStatusMessage = isBn
+          ? 'পোস্ট ও দাবি যাচাই করা হচ্ছে...'
+          : 'Validating post & claim permissions...';
     });
 
     try {
@@ -176,15 +193,23 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       final post = await firestoreService.getPost(widget.postId);
 
       if (post == null) {
-        throw Exception('Original post not found.');
+        throw Exception(
+          isBn ? 'মূল পোস্টটি পাওয়া যায়নি।' : 'Original post not found.',
+        );
       }
 
       if (post.status == 'closed' || post.status == 'completed') {
-        throw Exception('This post is no longer active.');
+        throw Exception(
+          isBn ? 'এই পোস্টটি আর সক্রিয় নেই।' : 'This post is no longer active.',
+        );
       }
 
       if (post.userId == currentUid) {
-        throw Exception('You cannot submit a claim for your own post.');
+        throw Exception(
+          isBn
+              ? 'আপনি নিজের পোস্টে দাবি জমা দিতে পারবেন না।'
+              : 'You cannot submit a claim for your own post.',
+        );
       }
 
       // Pre-flight duplicate claim check
@@ -193,14 +218,20 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
         widget.postId,
       );
       if (alreadyClaimed) {
-        throw Exception('You have already submitted a claim for this item.');
+        throw Exception(
+          isBn
+              ? 'আপনি ইতিমধ্যে এই আইটেমের জন্য দাবি জমা দিয়েছেন।'
+              : 'You have already submitted a claim for this item.',
+        );
       }
 
       // Upload proof images to Cloudinary with controlled concurrency
       List<String> imageUrls = [];
       if (_pickedImages.isNotEmpty) {
         setState(() {
-          _uploadStatusMessage = 'Preparing image upload...';
+          _uploadStatusMessage = isBn
+              ? 'ছবি আপলোডের প্রস্তুতি চলছে...'
+              : 'Preparing image upload...';
         });
 
         final cloudinaryService = ref.read(cloudinaryServiceProvider);
@@ -218,7 +249,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       }
 
       setState(() {
-        _uploadStatusMessage = 'Saving claim document...';
+        _uploadStatusMessage = isBn
+            ? 'দাবির নথি সংরক্ষণ হচ্ছে...'
+            : 'Saving claim document...';
       });
 
       final user = ref.read(currentUserProvider).value;
@@ -257,9 +290,11 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              '🎉 Claim submitted successfully! Notification sent to owner.',
+              isBn
+                  ? '🎉 দাবি সফলভাবে জমা দেওয়া হয়েছে! পোস্টের মালিককে বিজ্ঞপ্তি পাঠানো হয়েছে।'
+                  : '🎉 Claim submitted successfully! Notification sent to owner.',
             ),
           ),
         );
@@ -284,6 +319,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     final user = ref.watch(currentUserProvider).value;
 
     if (_nameController.text.isEmpty && user?.displayName != null) {
@@ -301,9 +339,11 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       onPopInvokedWithResult: (didPop, result) {
         if (!didPop && _isSubmitting) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
+            SnackBar(
               content: Text(
-                'Upload in progress. Please wait until claim submission completes.',
+                isBn
+                    ? 'আপলোড চলছে। অনুগ্রহ করে দাবি জমা শেষ হওয়া পর্যন্ত অপেক্ষা করুন।'
+                    : 'Upload in progress. Please wait until claim submission completes.',
               ),
             ),
           );
@@ -311,7 +351,7 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Claim Item'),
+          title: Text(isBn ? 'আইটেম দাবি করুন' : 'Claim Item'),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: _isSubmitting ? null : () => context.pop(),
@@ -324,14 +364,16 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Submit Item Claim',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                Text(
+                  isBn ? 'আইটেম দাবি জমা দিন' : 'Submit Item Claim',
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Provide ownership details or discovery location to claim this item.',
-                  style: TextStyle(
+                Text(
+                  isBn
+                      ? 'আইটেমটি দাবি করতে মালিকানার বিবরণ বা প্রাপ্তির অবস্থান প্রদান করুন।'
+                      : 'Provide ownership details or discovery location to claim this item.',
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -345,28 +387,28 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                     children: [
                       CustomTextField(
                         controller: _nameController,
-                        labelText: 'Full Name',
+                        labelText: isBn ? 'পুরো নাম' : 'Full Name',
                         hintText: 'Tanvir Ahmed',
                         prefixIcon: Icons.person_outline,
                         validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Enter your full name'
+                            ? (isBn ? 'আপনার পুরো নাম লিখুন' : 'Enter your full name')
                             : null,
                       ),
                       const SizedBox(height: 14),
                       CustomTextField(
                         controller: _phoneController,
-                        labelText: 'Phone Number',
+                        labelText: isBn ? 'ফোন নম্বর' : 'Phone Number',
                         hintText: '+8801700000000',
                         prefixIcon: Icons.phone_outlined,
                         keyboardType: TextInputType.phone,
                         validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Enter contact phone'
+                            ? (isBn ? 'যোগাযোগের ফোন নম্বর দিন' : 'Enter contact phone')
                             : null,
                       ),
                       const SizedBox(height: 14),
                       CustomTextField(
                         controller: _emailController,
-                        labelText: 'Email Address',
+                        labelText: isBn ? 'ইমেইল ঠিকানা' : 'Email Address',
                         hintText: 'name@example.com',
                         prefixIcon: Icons.email_outlined,
                         keyboardType: TextInputType.emailAddress,
@@ -374,7 +416,7 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                       const SizedBox(height: 14),
                       CustomTextField(
                         controller: _addressController,
-                        labelText: 'Current Address',
+                        labelText: isBn ? 'বর্তমান ঠিকানা' : 'Current Address',
                         hintText: 'Dhanmondi, Dhaka',
                         prefixIcon: Icons.location_on_outlined,
                         suffixIcon: IconButton(
@@ -388,26 +430,32 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                       const SizedBox(height: 14),
                       CustomTextField(
                         controller: _descController,
-                        labelText: 'Claim Description',
-                        hintText:
-                            'Explain when & where you lost/found this item...',
+                        labelText: isBn ? 'দাবির বিবরণ' : 'Claim Description',
+                        hintText: isBn
+                            ? 'কখন ও কোথায় আপনি এটি হারিয়েছেন/পেয়েছেন তা ব্যাখ্যা করুন...'
+                            : 'Explain when & where you lost/found this item...',
                         maxLines: 3,
                         validator: (v) => v == null || v.trim().isEmpty
-                            ? 'Provide claim description'
+                            ? (isBn ? 'দাবির বিবরণ প্রদান করুন' : 'Provide claim description')
                             : null,
                       ),
                       const SizedBox(height: 14),
                       CustomTextField(
                         controller: _proofController,
-                        labelText: 'Proof of Ownership / Identifiers',
-                        hintText:
-                            'Serial number, unique marks, wallpaper photo details...',
+                        labelText: isBn
+                            ? 'মালিকানার প্রমাণ / শনাক্তকারী চিহ্ন'
+                            : 'Proof of Ownership / Identifiers',
+                        hintText: isBn
+                            ? 'সিরিয়াল নম্বর, অনন্য চিহ্ন, ওয়ালপেপারের ছবি...'
+                            : 'Serial number, unique marks, wallpaper photo details...',
                         maxLines: 2,
                       ),
                       const SizedBox(height: 14),
                       CustomTextField(
                         controller: _rewardController,
-                        labelText: 'Reward Expectation (BDT Optional)',
+                        labelText: isBn
+                            ? 'পুরস্কারের প্রত্যাশা (ঐচ্ছিক টাকা)'
+                            : 'Reward Expectation (BDT Optional)',
                         hintText: '0',
                         prefixIcon: Icons.card_giftcard_rounded,
                         keyboardType: TextInputType.number,
@@ -420,9 +468,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Upload Proof Images',
-                      style: TextStyle(
+                    Text(
+                      isBn ? 'প্রমাণের ছবি আপলোড করুন' : 'Upload Proof Images',
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
@@ -464,18 +512,18 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                                 color: AppColors.primary.withValues(alpha: 0.3),
                               ),
                             ),
-                            child: const Column(
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.add_a_photo_rounded,
                                   color: AppColors.primary,
                                   size: 26,
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
-                                  'Add Proof',
-                                  style: TextStyle(
+                                  isBn ? 'ছবি যোগ' : 'Add Proof',
+                                  style: const TextStyle(
                                     fontSize: 11,
                                     color: AppColors.primary,
                                     fontWeight: FontWeight.w600,
@@ -560,8 +608,8 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
 
                 PrimaryButton(
                   text: _isSubmitting
-                      ? 'Submitting Claim...'
-                      : 'Submit Claim to Owner',
+                      ? (isBn ? 'দাবি জমা হচ্ছে...' : 'Submitting Claim...')
+                      : (isBn ? 'মালিকের কাছে দাবি পাঠান' : 'Submit Claim to Owner'),
                   icon: Icons.send_rounded,
                   isLoading: _isSubmitting,
                   onPressed: _isSubmitting ? null : _handleSubmitClaim,

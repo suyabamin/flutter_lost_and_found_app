@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/primary_button.dart';
+import '../../core/utils/app_localizations.dart';
 
 class AiImageScanScreen extends ConsumerStatefulWidget {
   const AiImageScanScreen({super.key});
@@ -39,9 +40,12 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AI Visual Scan'),
+        title: Text(isBn ? 'এআই ভিজ্যুয়াল স্ক্যান' : 'AI Visual Scan'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -52,15 +56,20 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              const Text(
-                'Scan & Compare Image',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              Text(
+                isBn ? 'ছবি স্ক্যান ও তুলনা করুন' : 'Scan & Compare Image',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               const SizedBox(height: 6),
-              const Text(
-                'Upload a photo of your lost or found item. Gemini AI will scan features and compare with all database records.',
+              Text(
+                isBn
+                    ? 'আপনার হারানো বা প্রাপ্ত আইটেমের ছবি আপলোড করুন। জেমিনি এআই ছবির বৈশিষ্ট্য স্ক্যান করে ডাটাবেসের তথ্যের সাথে মেলাবে।'
+                    : 'Upload a photo of your lost or found item. Gemini AI will scan features and compare with all database records.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppColors.onSurfaceVariant,
                 ),
@@ -89,14 +98,16 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                                 color: Colors.black45,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    CircularProgressIndicator(
+                                  children: [
+                                    const CircularProgressIndicator(
                                       color: Colors.white,
                                     ),
-                                    SizedBox(height: 16),
+                                    const SizedBox(height: 16),
                                     Text(
-                                      'Analyzing features & OCR text...',
-                                      style: TextStyle(
+                                      isBn
+                                          ? 'বৈশিষ্ট্য ও লেখার বিশ্লেষণ চলছে...'
+                                          : 'Analyzing features & OCR text...',
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -116,9 +127,11 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                                 color: AppColors.primary.withValues(alpha: 0.6),
                               ),
                               const SizedBox(height: 16),
-                              const Text(
-                                'Select or Capture Image',
-                                style: TextStyle(
+                              Text(
+                                isBn
+                                    ? 'ছবি নির্বাচন বা তুলুন'
+                                    : 'Select or Capture Image',
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -131,14 +144,14 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                                     onPressed: () =>
                                         _pickImage(ImageSource.camera),
                                     icon: const Icon(Icons.camera_alt),
-                                    label: const Text('Camera'),
+                                    label: Text(isBn ? 'ক্যামেরা' : 'Camera'),
                                   ),
                                   const SizedBox(width: 12),
                                   OutlinedButton.icon(
                                     onPressed: () =>
                                         _pickImage(ImageSource.gallery),
                                     icon: const Icon(Icons.photo_library),
-                                    label: const Text('Gallery'),
+                                    label: Text(isBn ? 'গ্যালারি' : 'Gallery'),
                                   ),
                                 ],
                               ),
@@ -151,7 +164,9 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
 
               if (_selectedImage != null)
                 PrimaryButton(
-                  text: 'Run Gemini AI Match',
+                  text: isBn
+                      ? 'জেমিনি এআই ম্যাচিং চালান'
+                      : 'Run Gemini AI Match',
                   icon: Icons.auto_awesome_rounded,
                   isLoading: _isScanning,
                   onPressed: _runAiScan,

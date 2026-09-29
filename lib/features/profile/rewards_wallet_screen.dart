@@ -3,15 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
+import '../../core/utils/app_localizations.dart';
 
 class RewardsWalletScreen extends ConsumerWidget {
   const RewardsWalletScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Rewards & Wallet'),
+        title: Text(isBn ? 'পুরস্কার ও ওয়ালেট' : 'Rewards & Wallet'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.pop(),
@@ -39,13 +43,13 @@ class RewardsWalletScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Total Reward Balance',
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
+                  Text(
+                    isBn ? 'মোট পুরস্কারের ব্যালেন্স' : 'Total Reward Balance',
+                    style: const TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    '৳ 3,500',
+                    '৳ ৩,৫০০',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 36,
@@ -55,15 +59,17 @@ class RewardsWalletScreen extends ConsumerWidget {
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
+                    children: [
                       Text(
-                        '1,250 Community Points',
-                        style: TextStyle(
+                        isBn
+                            ? '১,২৫০ কমিউনিটি পয়েন্ট'
+                            : '1,250 Community Points',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Icon(
+                      const Icon(
                         Icons.military_tech_rounded,
                         color: Colors.amber,
                         size: 28,
@@ -81,9 +87,14 @@ class RewardsWalletScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Cash Out via bKash / Nagad',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  Text(
+                    isBn
+                        ? 'বিকাশ / নগদের মাধ্যমে ক্যাশ আউট'
+                        : 'Cash Out via bKash / Nagad',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -91,14 +102,14 @@ class RewardsWalletScreen extends ConsumerWidget {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {},
-                          child: const Text('bKash'),
+                          child: Text(isBn ? 'বিকাশ' : 'bKash'),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {},
-                          child: const Text('Nagad'),
+                          child: Text(isBn ? 'নগদ' : 'Nagad'),
                         ),
                       ),
                     ],
@@ -108,11 +119,14 @@ class RewardsWalletScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 20),
 
-            const Align(
+            Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'Recent Transactions',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                isBn ? 'সাম্প্রতিক লেনদেন' : 'Recent Transactions',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
             ),
             const SizedBox(height: 12),
@@ -121,23 +135,25 @@ class RewardsWalletScreen extends ConsumerWidget {
               borderRadius: 18,
               padding: const EdgeInsets.all(14),
               child: Row(
-                children: const [
-                  CircleAvatar(
+                children: [
+                  const CircleAvatar(
                     backgroundColor: Colors.green,
                     child: Icon(Icons.arrow_downward, color: Colors.white),
                   ),
-                  SizedBox(width: 14),
+                  const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Reward received for Wallet return',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          isBn
+                              ? 'মানিব্যাগ ফেরতের জন্য পুরস্কার প্রাপ্ত'
+                              : 'Reward received for Wallet return',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'From Naimur Rahman',
-                          style: TextStyle(
+                          isBn ? 'নাইমুর রহমানের কাছ থেকে' : 'From Naimur Rahman',
+                          style: const TextStyle(
                             fontSize: 12,
                             color: AppColors.outline,
                           ),
@@ -146,8 +162,8 @@ class RewardsWalletScreen extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    '+৳ 1,000',
-                    style: TextStyle(
+                    isBn ? '+৳ ১,০০০' : '+৳ 1,000',
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.green,
                     ),

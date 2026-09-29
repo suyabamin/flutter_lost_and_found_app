@@ -7,6 +7,7 @@ import '../../core/widgets/primary_button.dart';
 import '../../core/widgets/custom_text_field.dart';
 import '../../core/models/user_model.dart';
 import '../../core/providers/providers.dart';
+import '../../core/utils/app_localizations.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -120,6 +121,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -135,7 +137,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Column(
               children: [
                 Text(
-                  'Create Account',
+                  l10n.t('create_account'),
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -143,9 +145,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'Join Lost & Found BD community today.',
-                  style: TextStyle(
+                Text(
+                  l10n.t('register_subtitle'),
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -195,30 +197,30 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                         CustomTextField(
                           controller: _nameController,
-                          labelText: 'Full Name',
-                          hintText: 'e.g. Tanvir Ahmed',
+                          labelText: l10n.t('full_name'),
+                          hintText: l10n.t('full_name_hint'),
                           prefixIcon: Icons.person_outline,
                           validator: (v) => v == null || v.trim().isEmpty
-                              ? 'Enter your full name'
+                              ? l10n.t('enter_full_name')
                               : null,
                         ),
                         const SizedBox(height: 14),
 
                         CustomTextField(
                           controller: _emailController,
-                          labelText: 'Email Address',
+                          labelText: l10n.t('email_address'),
                           hintText: 'tanvir@example.com',
                           prefixIcon: Icons.email_outlined,
                           keyboardType: TextInputType.emailAddress,
                           validator: (v) => v == null || !v.contains('@')
-                              ? 'Enter a valid email'
+                              ? l10n.t('email_invalid')
                               : null,
                         ),
                         const SizedBox(height: 14),
 
                         CustomTextField(
                           controller: _phoneController,
-                          labelText: 'Phone Number',
+                          labelText: l10n.t('phone_number'),
                           hintText: '+8801700000000',
                           prefixIcon: Icons.phone_outlined,
                           keyboardType: TextInputType.phone,
@@ -227,7 +229,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                         CustomTextField(
                           controller: _passwordController,
-                          labelText: 'Password',
+                          labelText: l10n.t('password'),
                           hintText: '••••••••',
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscurePassword,
@@ -242,14 +244,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             ),
                           ),
                           validator: (v) => v == null || v.length < 6
-                              ? 'Minimum 6 characters'
+                              ? l10n.t('min_6_chars')
                               : null,
                         ),
                         const SizedBox(height: 14),
 
                         CustomTextField(
                           controller: _confirmPasswordController,
-                          labelText: 'Confirm Password',
+                          labelText: l10n.t('confirm_password'),
                           hintText: '••••••••',
                           prefixIcon: Icons.lock_outline,
                           obscureText: _obscureConfirmPassword,
@@ -266,7 +268,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           ),
                           validator: (v) {
                             if (v != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return l10n.t('passwords_dont_match');
                             }
                             return null;
                           },
@@ -289,9 +291,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () => context.push('/privacy-terms'),
-                                child: const Text(
-                                  'I agree to the Terms of Service & Privacy Policy',
-                                  style: TextStyle(
+                                child: Text(
+                                  l10n.t('agree_terms'),
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     color: AppColors.onSurfaceVariant,
                                   ),
@@ -303,7 +305,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         const SizedBox(height: 20),
 
                         PrimaryButton(
-                          text: 'Register Account',
+                          text: l10n.t('register_account'),
                           icon: Icons.check_circle_outline_rounded,
                           isLoading: _isLoading,
                           onPressed: _isGoogleLoading ? null : _handleRegister,
@@ -311,21 +313,21 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         const SizedBox(height: 20),
 
                         Row(
-                          children: const [
-                            Expanded(
+                          children: [
+                            const Expanded(
                               child: Divider(color: AppColors.outlineVariant),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
                               child: Text(
-                                'OR CONTINUE WITH',
-                                style: TextStyle(
+                                l10n.t('or_continue_with'),
+                                style: const TextStyle(
                                   fontSize: 11,
                                   color: AppColors.outline,
                                 ),
                               ),
                             ),
-                            Expanded(
+                            const Expanded(
                               child: Divider(color: AppColors.outlineVariant),
                             ),
                           ],
@@ -370,9 +372,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       ),
                                     ),
                                     const SizedBox(width: 12),
-                                    const Text(
-                                      'Continue with Google',
-                                      style: TextStyle(
+                                    Text(
+                                      l10n.t('continue_with_google'),
+                                      style: const TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.w600,
                                         color: AppColors.onSurfaceVariant,
@@ -390,15 +392,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Already have an account? ',
-                      style: TextStyle(fontSize: 14),
+                    Text(
+                      l10n.t('already_have_account'),
+                      style: const TextStyle(fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () => context.pop(),
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
+                      child: Text(
+                        l10n.t('sign_in_link'),
+                        style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
                           color: AppColors.primary,

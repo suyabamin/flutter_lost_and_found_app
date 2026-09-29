@@ -295,18 +295,11 @@ class FirestoreService {
               )
               .where(
                 (p) =>
-                    p.status == 'active' ||
-                    (p.status != 'completed' &&
-                        p.status != 'resolved' &&
-                        p.status != 'archived' &&
-                        p.status != 'closed'),
-              )
-              .where(
-                (p) =>
                     p.status != 'completed' &&
                     p.status != 'resolved' &&
                     p.status != 'archived' &&
-                    p.status != 'closed',
+                    p.status != 'closed' &&
+                    p.campusId.isEmpty,
               )
               .toList();
 
@@ -315,7 +308,8 @@ class FirestoreService {
             if (lp.status == 'completed' ||
                 lp.status == 'resolved' ||
                 lp.status == 'archived' ||
-                lp.status == 'closed') {
+                lp.status == 'closed' ||
+                lp.campusId.isNotEmpty) {
               return false;
             }
             if (firestoreIds.contains(lp.id)) return false;
@@ -337,7 +331,8 @@ class FirestoreService {
             if (lp.status == 'completed' ||
                 lp.status == 'resolved' ||
                 lp.status == 'archived' ||
-                lp.status == 'closed') {
+                lp.status == 'closed' ||
+                lp.campusId.isNotEmpty) {
               return false;
             }
             if (category != null &&

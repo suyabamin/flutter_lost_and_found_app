@@ -1,7 +1,10 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/widgets/app_image.dart';
@@ -1069,6 +1072,8 @@ class _UniversityDashboardScreenState
     );
     String type = 'found';
     String category = 'Electronics';
+    final List<XFile> pickedXFiles = [];
+    bool isUploading = false;
 
     showDialog(
       context: context,
@@ -1084,6 +1089,7 @@ class _UniversityDashboardScreenState
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   children: [
@@ -1149,12 +1155,111 @@ class _UniversityDashboardScreenState
                     hintText: 'Specific markings or details',
                   ),
                 ),
+                const SizedBox(height: 14),
+                const Text(
+                  'Add Images (Up to 4)',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  height: 70,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: pickedXFiles.length + 1,
+                    separatorBuilder: (_, _) => const SizedBox(width: 8),
+                    itemBuilder: (context, index) {
+                      if (index == pickedXFiles.length) {
+                        return InkWell(
+                          onTap: () async {
+                            try {
+                              final picker = ImagePicker();
+                              final picked = await picker.pickImage(
+                                source: ImageSource.gallery,
+                                maxWidth: 600,
+                                maxHeight: 600,
+                                imageQuality: 50,
+                              );
+                              if (picked != null) {
+                                setDialogState(() {
+                                  pickedXFiles.add(picked);
+                                });
+                              }
+                            } catch (e) {
+                              if (ctx.mounted) {
+                                ScaffoldMessenger.of(ctx).showSnackBar(
+                                  SnackBar(content: Text('Could not pick image: $e')),
+                                );
+                              }
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            width: 70,
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppColors.primary.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add_a_photo, size: 20, color: AppColors.primary),
+                                SizedBox(height: 2),
+                                Text(
+                                  'Add Photo',
+                                  style: TextStyle(fontSize: 10, color: AppColors.primary),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }
+
+                      final xfile = pickedXFiles[index];
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: kIsWeb
+                            ? Image.network(
+                                xfile.path,
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(xfile.path),
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.cover,
+                              ),
+                      );
+                    },
+                  ),
+                ),
+                if (isUploading) ...[
+                  const SizedBox(height: 12),
+                  const Row(
+                    children: [
+                      SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Uploading report & images...',
+                        style: TextStyle(fontSize: 12, color: AppColors.primary),
+                      ),
+                    ],
+                  ),
+                ],
               ],
             ),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(ctx),
+              onPressed: isUploading ? null : () => Navigator.pop(ctx),
               child: const Text('Cancel'),
             ),
             ElevatedButton(
@@ -1162,44 +1267,86 @@ class _UniversityDashboardScreenState
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
               ),
-              onPressed: () async {
-                if (titleCtrl.text.trim().isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please enter an item title.'),
-                    ),
-                  );
-                  return;
-                }
+              onPressed: isUploading
+                  ? null
+                  : () async {
+                      if (titleCtrl.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please enter an item title.'),
+                          ),
+                        );
+                        return;
+                      }
 
-                final post = PostModel(
-                  id: 'post_${DateTime.now().millisecondsSinceEpoch}',
-                  title: titleCtrl.text.trim(),
-                  description: descCtrl.text.trim(),
-                  category: category,
-                  type: type,
-                  location: locationCtrl.text.trim(),
-                  date: DateTime.now().toString().split(' ').first,
-                  images: const [],
-                  userId: uid,
-                  userName: userName ?? 'Campus Student',
-                  campusId: campus.id,
-                );
+                      setDialogState(() => isUploading = true);
 
-                await ref.read(firestoreServiceProvider).createPost(post);
+                      List<String> imageUrls = [];
+                      List<Uint8List> pickedBytes = [];
 
-                if (ctx.mounted) {
-                  Navigator.of(ctx).pop();
-                }
-                if (mounted) {
-                  ScaffoldMessenger.of(this.context).showSnackBar(
-                    SnackBar(
-                      content: Text('Campus report "${post.title}" published!'),
-                    ),
-                  );
-                }
-              },
-              child: const Text('Publish Report'),
+                      if (pickedXFiles.isNotEmpty) {
+                        try {
+                          pickedBytes = await Future.wait(
+                            pickedXFiles.map((f) => f.readAsBytes()),
+                          );
+                          final cloudinaryService =
+                              ref.read(cloudinaryServiceProvider);
+                          imageUrls = await cloudinaryService
+                              .uploadMultipleXFiles(pickedXFiles);
+                        } catch (_) {}
+                      }
+
+                      if (imageUrls.isEmpty) {
+                        imageUrls = [
+                          'https://picsum.photos/seed/${DateTime.now().millisecondsSinceEpoch}/600/400',
+                        ];
+                      }
+
+                      final postId =
+                          'post_${DateTime.now().millisecondsSinceEpoch}';
+
+                      final post = PostModel(
+                        id: postId,
+                        title: titleCtrl.text.trim(),
+                        description: descCtrl.text.trim(),
+                        category: category,
+                        type: type,
+                        location: locationCtrl.text.trim(),
+                        date: DateTime.now().toString().split(' ').first,
+                        images: imageUrls,
+                        userId: uid,
+                        userName: userName ?? 'Campus Student',
+                        campusId: campus.id,
+                        rewardAmount: 0.0,
+                      );
+
+                      await ref
+                          .read(firestoreServiceProvider)
+                          .createPost(post);
+
+                      if (pickedBytes.isNotEmpty) {
+                        FirestoreService.storeLocalImageBytes(
+                          postId,
+                          pickedBytes,
+                        );
+                      }
+
+                      ref.invalidate(campusPostsStreamProvider(campus.id));
+
+                      if (ctx.mounted) {
+                        Navigator.of(ctx).pop();
+                      }
+                      if (mounted) {
+                        ScaffoldMessenger.of(this.context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Campus report "${post.title}" published!',
+                            ),
+                          ),
+                        );
+                      }
+                    },
+              child: Text(isUploading ? 'Publishing...' : 'Publish Report'),
             ),
           ],
         ),

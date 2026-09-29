@@ -414,16 +414,6 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                           ),
                         ),
                       ],
-                      if (claim.rewardRequested > 0) ...[
-                        const SizedBox(height: 12),
-                        Text(
-                          '${isBn ? 'পুরস্কার প্রত্যাশা:' : 'Reward Expectation:'} ৳ ${claim.rewardRequested.round()}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),

@@ -1,4 +1,6 @@
 import 'dart:typed_data';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -35,7 +37,6 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
   final _addressController = TextEditingController(text: 'Dhanmondi, Dhaka');
   final _descController = TextEditingController();
   final _proofController = TextEditingController();
-  final _rewardController = TextEditingController(text: '0');
 
   double _latitude = 23.8103;
   double _longitude = 90.4125;
@@ -58,19 +59,78 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
     _addressController.dispose();
     _descController.dispose();
     _proofController.dispose();
-    _rewardController.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchCurrentGpsLocation() async {
+  bool _isLocating = false;
+
+  Future<void> _fetchCurrentGpsLocation({bool userInitiated = false}) async {
+    final loc = AppLocalizations.of(context);
+    final isBn = loc.isBangla;
+
+    if (_isLocating) return;
+
+    if (userInitiated && mounted) {
+      setState(() => _isLocating = true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            isBn ? 'GPS অবস্থান নেওয়া হচ্ছে...' : 'Fetching GPS location...',
+          ),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return;
+      if (!serviceEnabled) {
+        if (userInitiated && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isBn
+                    ? 'আপনার ডিভাইসের লোকেশন সার্ভিস (GPS) বন্ধ রয়েছে।'
+                    : 'Location service is disabled on your device.',
+              ),
+            ),
+          );
+        }
+        return;
+      }
 
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) return;
+        if (permission == LocationPermission.denied) {
+          if (userInitiated && mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isBn
+                      ? 'লোকেশন পারমিশন দেওয়া হয়নি।'
+                      : 'Location permission denied.',
+                ),
+              ),
+            );
+          }
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        if (userInitiated && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isBn
+                    ? 'লোকেশন পারমিশন পার্মানেন্টলি ডিনাইড। সেটিংসে গিয়ে এলাউ করুন।'
+                    : 'Location permissions are permanently denied. Please enable in settings.',
+              ),
+            ),
+          );
+        }
+        return;
       }
 
       final position = await Geolocator.getCurrentPosition(
@@ -78,13 +138,102 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
           accuracy: LocationAccuracy.high,
         ),
       );
+
+      String resolvedAddress = '';
+      try {
+        final url = Uri.parse(
+          'https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.latitude}&lon=${position.longitude}&zoom=18&addressdetails=1',
+        );
+        final response = await http
+            .get(url, headers: {'User-Agent': 'FlutterLostAndFoundApp/1.0'})
+            .timeout(const Duration(seconds: 4));
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          final addr = data['address'] as Map<String, dynamic>?;
+          if (addr != null) {
+            final String road =
+                addr['road'] ??
+                addr['pedestrian'] ??
+                addr['suburb'] ??
+                addr['neighbourhood'] ??
+                '';
+            final String district =
+                addr['city'] ??
+                addr['town'] ??
+                addr['county'] ??
+                addr['state_district'] ??
+                'Dhaka';
+            final String fullAddr = road.isNotEmpty
+                ? '$road, $district'
+                : (data['display_name'] ?? '$district, Bangladesh');
+
+            resolvedAddress = fullAddr.split(',').take(3).join(',').trim();
+          }
+        }
+      } catch (_) {}
+
+      if (resolvedAddress.isEmpty) {
+        resolvedAddress =
+            'Spot (${position.latitude.toStringAsFixed(4)}, ${position.longitude.toStringAsFixed(4)})';
+      }
+
       if (mounted) {
         setState(() {
           _latitude = position.latitude;
           _longitude = position.longitude;
+          _addressController.text = resolvedAddress;
+        });
+
+        if (userInitiated) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isBn
+                    ? 'অবস্থান আপডেট করা হয়েছে: $resolvedAddress'
+                    : 'Location updated: $resolvedAddress',
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (userInitiated && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              isBn ? 'অবস্থান পাওয়া যায়নি: $e' : 'Could not get location: $e',
+            ),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLocating = false);
+      }
+    }
+  }
+
+  Future<void> _openLocationPicker() async {
+    final currentLoc = _addressController.text.trim();
+    final result = await context.push<dynamic>(
+      '/select-location?initial=${Uri.encodeComponent(currentLoc)}',
+    );
+
+    if (result != null && mounted) {
+      if (result is Map) {
+        setState(() {
+          _addressController.text =
+              result['address']?.toString() ?? _addressController.text;
+          _latitude = (result['lat'] as num?)?.toDouble() ?? _latitude;
+          _longitude = (result['lng'] as num?)?.toDouble() ?? _longitude;
+        });
+      } else if (result is String && result.isNotEmpty) {
+        setState(() {
+          _addressController.text = result;
         });
       }
-    } catch (_) {}
+    }
   }
 
   Future<void> _pickImages() async {
@@ -274,7 +423,7 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
         longitude: _longitude,
         description: _descController.text.trim(),
         proofDescription: _proofController.text.trim(),
-        rewardRequested: double.tryParse(_rewardController.text.trim()) ?? 0.0,
+        rewardRequested: 0.0,
         claimImages: imageUrls,
         status: 'pending',
       );
@@ -419,13 +568,103 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                         labelText: isBn ? 'বর্তমান ঠিকানা' : 'Current Address',
                         hintText: 'Dhanmondi, Dhaka',
                         prefixIcon: Icons.location_on_outlined,
-                        suffixIcon: IconButton(
-                          icon: const Icon(
-                            Icons.my_location_rounded,
-                            color: AppColors.primary,
-                          ),
-                          onPressed: _fetchCurrentGpsLocation,
+                        suffixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (_isLocating)
+                              const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
+                            else
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.my_location_rounded,
+                                  color: AppColors.primary,
+                                ),
+                                tooltip: isBn
+                                    ? 'জিপিএস অবস্থান নিন'
+                                    : 'Fetch GPS Location',
+                                onPressed: () => _fetchCurrentGpsLocation(
+                                  userInitiated: true,
+                                ),
+                              ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.map_rounded,
+                                color: AppColors.primary,
+                              ),
+                              tooltip: isBn ? 'ম্যাপে বাছুন' : 'Pick on Map',
+                              onPressed: _openLocationPicker,
+                            ),
+                          ],
                         ),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () => _fetchCurrentGpsLocation(
+                              userInitiated: true,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.my_location_rounded,
+                                    size: 14,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    isBn
+                                        ? 'GPS অবস্থান আপডেট করুন'
+                                        : 'Update GPS Location',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: _openLocationPicker,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 4),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.pin_drop_rounded,
+                                    size: 14,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    isBn
+                                        ? 'ম্যাপে স্থান নির্বাচন'
+                                        : 'Pick Spot on Map',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 14),
                       CustomTextField(
@@ -449,16 +688,6 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                             ? 'সিরিয়াল নম্বর, অনন্য চিহ্ন, ওয়ালপেপারের ছবি...'
                             : 'Serial number, unique marks, wallpaper photo details...',
                         maxLines: 2,
-                      ),
-                      const SizedBox(height: 14),
-                      CustomTextField(
-                        controller: _rewardController,
-                        labelText: isBn
-                            ? 'পুরস্কারের প্রত্যাশা (ঐচ্ছিক টাকা)'
-                            : 'Reward Expectation (BDT Optional)',
-                        hintText: '0',
-                        prefixIcon: Icons.card_giftcard_rounded,
-                        keyboardType: TextInputType.number,
                       ),
                     ],
                   ),

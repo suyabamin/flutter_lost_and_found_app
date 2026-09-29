@@ -13,7 +13,6 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final user = ref.watch(currentUserProvider).value;
-    final authService = ref.watch(authServiceProvider);
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
@@ -176,16 +175,8 @@ class ProfileScreen extends ConsumerWidget {
                 return StreamBuilder(
                   stream: ref
                       .watch(firestoreServiceProvider)
-                      .streamWallet(user?.uid ?? 'guest'),
-                  builder: (context, walletSnap) {
-                    final wallet = walletSnap.data;
-                    final totalEarned = wallet?.totalEarned.toInt() ?? 0;
-
-                    return StreamBuilder(
-                      stream: ref
-                          .watch(firestoreServiceProvider)
-                          .streamUserHistory(user?.uid ?? 'guest'),
-                      builder: (context, historySnap) {
+                      .streamUserHistory(user?.uid ?? 'guest'),
+                  builder: (context, historySnap) {
                         final historyList = historySnap.data ?? [];
                         final recCount =
                             user?.completedRecoveries ?? historyList.length;
@@ -240,33 +231,6 @@ class ProfileScreen extends ConsumerWidget {
                                         const SizedBox(height: 2),
                                         Text(
                                           l10n.t('returns'),
-                                          style: const TextStyle(
-                                            fontSize: 11,
-                                            color: AppColors.outline,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: GlassContainer(
-                                    borderRadius: 16,
-                                    padding: const EdgeInsets.all(12),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          '৳ $totalEarned',
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 2),
-                                        Text(
-                                          l10n.t('earned'),
                                           style: const TextStyle(
                                             fontSize: 11,
                                             color: AppColors.outline,
@@ -495,9 +459,7 @@ class ProfileScreen extends ConsumerWidget {
                       },
                     );
                   },
-                );
-              },
-            ),
+                ),
             const SizedBox(height: 20),
 
             // Options List
@@ -525,17 +487,6 @@ class ProfileScreen extends ConsumerWidget {
                     subtitle: Text(l10n.t('recovery_history_sub')),
                     trailing: const Icon(Icons.chevron_right_rounded),
                     onTap: () => context.push('/recovery-history'),
-                  ),
-                  const Divider(height: 1),
-                  ListTile(
-                    leading: const Icon(
-                      Icons.account_balance_wallet_rounded,
-                      color: Colors.green,
-                    ),
-                    title: Text(l10n.t('earnings_wallet')),
-                    subtitle: Text(l10n.t('earnings_wallet_sub')),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => context.push('/wallet'),
                   ),
                   const Divider(height: 1),
                   ListTile(
@@ -617,7 +568,7 @@ class ProfileScreen extends ConsumerWidget {
                 ),
               ),
               onPressed: () async {
-                await authService.signOut();
+                await ref.read(authServiceProvider).signOut();
                 if (context.mounted) context.go('/welcome');
               },
               icon: const Icon(Icons.logout_rounded),

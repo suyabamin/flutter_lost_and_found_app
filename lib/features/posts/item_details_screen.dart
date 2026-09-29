@@ -45,7 +45,6 @@ class ItemDetailsScreen extends ConsumerWidget {
           final String userName = post?.userName.isNotEmpty == true
               ? post!.userName
               : (l10n.isBangla ? 'যাচাইকৃত কমিউনিটি সদস্য' : 'Verified Community Member');
-          final double rewardAmount = post?.rewardAmount ?? 0.0;
           final String mainImage = (post?.images.isNotEmpty == true)
               ? post!.images.first
               : 'https://picsum.photos/seed/$id/600/400';
@@ -288,46 +287,6 @@ class ItemDetailsScreen extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(height: 20),
-
-                          // Reward Highlight (If available)
-                          if (rewardAmount > 0) ...[
-                            GlassContainer(
-                              borderRadius: 16,
-                              padding: const EdgeInsets.all(14),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(
-                                        Icons.military_tech_rounded,
-                                        color: Colors.amber,
-                                        size: 28,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        l10n.isBangla ? 'পুরস্কার ঘোষিত' : 'Reward Offered',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    '৳ ${rewardAmount.round()}',
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                          ],
 
                           Text(
                             l10n.t('description'),

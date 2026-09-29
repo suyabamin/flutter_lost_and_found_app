@@ -27,7 +27,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _locationController = TextEditingController();
-  final _rewardController = TextEditingController();
 
   String _selectedCategory = 'Electronics';
   String _selectedType = 'lost';
@@ -83,9 +82,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
     _titleController.text = post.title;
     _descController.text = post.description;
     _locationController.text = post.location;
-    _rewardController.text = post.rewardAmount > 0
-        ? post.rewardAmount.toInt().toString()
-        : '';
 
     setState(() {
       _post = post;
@@ -105,7 +101,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
     _titleController.dispose();
     _descController.dispose();
     _locationController.dispose();
-    _rewardController.dispose();
     super.dispose();
   }
 
@@ -234,7 +229,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
         _statusMessage = isBn ? 'পোস্ট সংরক্ষণ হচ্ছে...' : 'Saving post changes...';
       });
 
-      final reward = double.tryParse(_rewardController.text.trim()) ?? 0.0;
       final firestoreService = ref.read(firestoreServiceProvider);
 
       await firestoreService.updatePost(
@@ -247,7 +241,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
         location: _locationController.text.trim(),
         latitude: _latitude,
         longitude: _longitude,
-        rewardAmount: reward,
+        rewardAmount: 0.0,
         images: updatedImageUrls,
       );
 
@@ -472,16 +466,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                           }
                           return null;
                         },
-                      ),
-                      const SizedBox(height: 14),
-
-                      CustomTextField(
-                        controller: _rewardController,
-                        labelText: isBn ? 'পুরস্কারের পরিমাণ (৳)' : 'Reward Amount (৳)',
-                        hintText: isBn ? 'ঐচ্ছিক পুরস্কারের প্রস্তাব' : 'Optional reward offer',
-                        prefixIcon: Icons.attach_money_rounded,
-                        keyboardType: TextInputType.number,
-                        enabled: !_isSaving,
                       ),
                       const SizedBox(height: 14),
 

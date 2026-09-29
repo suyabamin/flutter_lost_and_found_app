@@ -23,7 +23,6 @@ class _CreateLostPostStep1ScreenState
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
   final _locationController = TextEditingController(text: 'Dhanmondi, Dhaka');
-  final _rewardController = TextEditingController(text: '1000');
   final _formKey = GlobalKey<FormState>();
 
   String _type = 'lost';
@@ -37,7 +36,6 @@ class _CreateLostPostStep1ScreenState
     _titleController.dispose();
     _descController.dispose();
     _locationController.dispose();
-    _rewardController.dispose();
     super.dispose();
   }
 
@@ -94,7 +92,7 @@ class _CreateLostPostStep1ScreenState
       'location': _locationController.text.trim(),
       'latitude': _latitude ?? 23.7461,
       'longitude': _longitude ?? 90.3742,
-      'rewardAmount': double.tryParse(_rewardController.text.trim()) ?? 0.0,
+      'rewardAmount': 0.0,
       'pickedFiles': _pickedXFiles,
     };
 
@@ -239,16 +237,6 @@ class _CreateLostPostStep1ScreenState
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-
-                    if (_type == 'lost')
-                      CustomTextField(
-                        controller: _rewardController,
-                        labelText: l10n.t('reward_amount'),
-                        hintText: '1000',
-                        prefixIcon: Icons.card_giftcard_rounded,
-                        keyboardType: TextInputType.number,
-                      ),
                   ],
                 ),
               ),

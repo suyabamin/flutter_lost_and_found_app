@@ -148,8 +148,6 @@ class _PreviewPublishReportScreenState
     final String category = data['category'] ?? 'Electronics';
     final String type = data['type'] ?? 'lost';
     final String location = data['location'] ?? 'Dhanmondi, Dhaka';
-    final double rewardAmount =
-        (data['rewardAmount'] as num?)?.toDouble() ?? 1000.0;
     final List<XFile> pickedFiles = (data['pickedFiles'] as List<XFile>?) ?? [];
 
     final displayCategory = loc.translateCategory(category);
@@ -222,16 +220,6 @@ class _PreviewPublishReportScreenState
                     '${isBn ? 'অবস্থান:' : 'Location:'} $location',
                     style: const TextStyle(color: AppColors.outline),
                   ),
-                  if (rewardAmount > 0) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      '${isBn ? 'পুরস্কারের প্রস্তাব:' : 'Reward Offered:'} ৳ ${rewardAmount.round()}',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             ),

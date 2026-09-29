@@ -1,5 +1,47 @@
 # Progress Log - Extended Recovery, Rating & Archiving System
 
+## Modern 3D App Icon Generation & Setup
+
+### Summary
+- Generated a high-resolution modern 3D app icon featuring a glassmorphism magnifying glass with a location pin badge, royal navy blue/cyan gradient, and amber gold accents.
+- Created and configured launcher icon sets across all Android resolution density folders (`mipmap-mdpi`, `mipmap-hdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi`).
+- Generated Web icon set (`favicon.png`, `Icon-192.png`, `Icon-512.png`, maskable icons).
+- Added `assets/icon/app_icon.png` high-res asset to `pubspec.yaml`.
+
+### Files Created/Changed
+- `assets/icon/app_icon.png`
+- `android/app/src/main/res/mipmap-*/ic_launcher.png`
+- `web/favicon.png`, `web/icons/Icon-*.png`
+- `pubspec.yaml`
+- `progress.md`
+
+## Claim Item Location Button Fix
+
+### Problem
+On the "Claim Item" screen (`submit_claim_screen.dart`), tapping the GPS location button did not update the "Current Address" text field (`_addressController.text`), nor did it provide visual feedback, reverse geocoding, error messages for disabled GPS/permissions, or an interactive map picker.
+
+### Root Cause
+1. `_fetchCurrentGpsLocation` only set `_latitude` and `_longitude` state variables silently without setting `_addressController.text`.
+2. Reverse geocoding via OpenStreetMap Nominatim was not invoked to turn raw GPS coordinates into human-readable area names (e.g., "Dhanmondi, Dhaka").
+3. No user feedback or loading indicators were shown when GPS location fetching was initiated by the user.
+4. No connection to `/select-location` interactive map picker existed on the Claim Item form.
+
+### Fix Summary
+1. Enhanced `_fetchCurrentGpsLocation(userInitiated: true)` with visual loading indicators (`_isLocating`), permission/GPS status error messages, and automatic reverse geocoding via Nominatim API.
+2. Automatically updates `_addressController.text` with the resolved area name and shows a confirmation `SnackBar`.
+3. Added `_openLocationPicker()` method to allow picking exact spots on the interactive live map (`/select-location`).
+4. Provided dual location control buttons (`GPS` & `Map`) on the Current Address field and quick action links.
+
+### Files Changed
+- `lib/features/posts/submit_claim_screen.dart`
+- `progress.md`
+
+### Testing
+- GPS Location Fetching & Reverse Geocoding: PASS
+- Interactive Map Picker Integration: PASS
+- Form Validation & Submit Flow: PASS
+- `flutter analyze`: PASS (0 errors, 0 warnings)
+
 ## Own Post Delete Fix
 
 ### Problem

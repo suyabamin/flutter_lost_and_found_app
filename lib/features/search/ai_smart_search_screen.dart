@@ -16,7 +16,6 @@ class AiSmartSearchScreen extends ConsumerStatefulWidget {
 class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   double _radius = 5.0;
-  double _minReward = 500.0;
   String _selectedCategory = 'Electronics';
   String _selectedDateRange = 'Last 7 Days';
   bool _isListening = false;
@@ -178,31 +177,6 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
                     divisions: 49,
                     activeColor: AppColors.primary,
                     onChanged: (v) => setState(() => _radius = v),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Minimum Reward (BDT)',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        '৳ ${_minReward.round()}',
-                        style: const TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Slider(
-                    value: _minReward,
-                    min: 0,
-                    max: 10000,
-                    divisions: 20,
-                    activeColor: AppColors.primary,
-                    onChanged: (v) => setState(() => _minReward = v),
                   ),
                 ],
               ),

@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
-import '../../core/models/post_model.dart';
 import '../../core/utils/app_localizations.dart';
 
 class FavoritesScreen extends ConsumerWidget {

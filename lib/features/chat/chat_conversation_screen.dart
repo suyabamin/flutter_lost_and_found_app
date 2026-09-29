@@ -242,10 +242,10 @@ class _ChatConversationScreenState
                             margin: const EdgeInsets.symmetric(vertical: 12),
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: AppColors.secondary.withOpacity(0.15),
+                              color: AppColors.secondary.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: AppColors.secondary.withOpacity(0.3),
+                                color: AppColors.secondary.withValues(alpha: 0.3),
                               ),
                             ),
                             child: Row(
@@ -287,7 +287,7 @@ class _ChatConversationScreenState
                                 CircleAvatar(
                                   radius: 14,
                                   backgroundColor: AppColors.primary
-                                      .withOpacity(0.18),
+                                      .withValues(alpha: 0.18),
                                   child: Text(
                                     otherUid.isNotEmpty
                                         ? otherUid[0].toUpperCase()
@@ -341,7 +341,7 @@ class _ChatConversationScreenState
                                       ),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.06),
+                                          color: Colors.black.withValues(alpha: 0.06),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),
@@ -360,7 +360,7 @@ class _ChatConversationScreenState
                                                     context,
                                                   ).size.width *
                                                   0.60,
-                                              errorBuilder: (_, __, ___) =>
+                                              errorBuilder: (_, _, _) =>
                                                   const Padding(
                                                     padding: EdgeInsets.all(
                                                       8.0,
@@ -423,7 +423,7 @@ class _ChatConversationScreenState
                   color: isDark ? AppColors.darkSurface : Colors.white,
                   border: Border(
                     top: BorderSide(
-                      color: AppColors.outlineVariant.withOpacity(0.5),
+                      color: AppColors.outlineVariant.withValues(alpha: 0.5),
                     ),
                   ),
                 ),

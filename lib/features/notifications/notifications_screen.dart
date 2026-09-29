@@ -54,7 +54,7 @@ class NotificationsScreen extends ConsumerWidget {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: allNotifs.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = allNotifs[index];
               final String title = item['title'] ?? 'Notification';
@@ -80,8 +80,8 @@ class NotificationsScreen extends ConsumerWidget {
                   children: [
                     CircleAvatar(
                       backgroundColor: type == 'claim' || type == 'claim_status'
-                          ? AppColors.secondary.withOpacity(0.15)
-                          : AppColors.primary.withOpacity(0.1),
+                          ? AppColors.secondary.withValues(alpha: 0.15)
+                          : AppColors.primary.withValues(alpha: 0.1),
                       child: Icon(
                         type == 'claim' || type == 'claim_status'
                             ? Icons.assignment_turned_in_rounded
@@ -118,7 +118,7 @@ class NotificationsScreen extends ConsumerWidget {
                                     vertical: 2,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: AppColors.secondary.withOpacity(0.2),
+                                    color: AppColors.secondary.withValues(alpha: 0.2),
                                     borderRadius: BorderRadius.circular(6),
                                   ),
                                   child: const Text(

@@ -193,7 +193,7 @@ class _RewardPaymentScreenState extends ConsumerState<RewardPaymentScreen> {
                                   ),
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? badgeColor.withOpacity(0.15)
+                                        ? badgeColor.withValues(alpha: 0.15)
                                         : Colors.transparent,
                                     borderRadius: BorderRadius.circular(16),
                                     border: Border.all(

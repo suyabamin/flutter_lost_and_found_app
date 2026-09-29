@@ -3,11 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart' as ll;
-import 'package:geolocator/geolocator.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/models/post_model.dart';
-import '../../core/providers/providers.dart';
 import '../../core/providers/location_dashboard_provider.dart';
 import '../../core/utils/location_utils.dart';
 
@@ -135,7 +133,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.12),
+                      color: Colors.black.withValues(alpha: 0.12),
                       blurRadius: 14,
                       offset: const Offset(0, 4),
                     ),
@@ -193,7 +191,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                     // MAP / LIST TOGGLE SEGMENT
                     Container(
                       decoration: BoxDecoration(
-                        color: AppColors.primaryContainer.withOpacity(0.4),
+                        color: AppColors.primaryContainer.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: Row(
@@ -477,7 +475,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.15),
+                              color: AppColors.primary.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -498,7 +496,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                       ),
                       Switch(
                         value: radiusState.isEnabled,
-                        activeColor: AppColors.primary,
+                        activeThumbColor: AppColors.primary,
                         onChanged: (val) => radiusNotifier.toggleEnabled(val),
                       ),
                     ],
@@ -528,7 +526,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                                       ? AppColors.primary
                                       : (isDark
                                             ? AppColors.darkSurface
-                                            : Colors.white.withOpacity(0.85)),
+                                            : Colors.white.withValues(alpha: 0.85)),
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                     color: isSel
@@ -622,7 +620,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
       options: MapOptions(
         initialCenter: userLatLng,
         initialZoom: 13.5,
-        onTap: (_, __) {
+        onTap: (_, _) {
           radiusNotifier.selectPost(null);
         },
       ),
@@ -640,7 +638,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                 point: userLatLng,
                 radius: radiusState.radiusKm * 1000, // radius in meters
                 useRadiusInMeter: true,
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
                 borderColor: AppColors.primary,
                 borderStrokeWidth: 2.2,
               ),
@@ -657,7 +655,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
               height: 52,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.2),
+                  color: Colors.blue.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.blue, width: 2),
                 ),
@@ -714,7 +712,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                         boxShadow: [
                           BoxShadow(
                             color: isSelected
-                                ? Colors.amber.withOpacity(0.8)
+                                ? Colors.amber.withValues(alpha: 0.8)
                                 : Colors.black26,
                             blurRadius: isSelected ? 14 : 4,
                             spreadRadius: isSelected ? 3 : 0,
@@ -786,7 +784,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
             : ListView.separated(
                 padding: const EdgeInsets.all(16),
                 itemCount: nearbyPostsWithDistance.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (context, index) {
                   final itemWithDist = nearbyPostsWithDistance[index];
                   final post = itemWithDist.post;
@@ -868,7 +866,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: AppColors.primaryContainer
-                                            .withOpacity(0.5),
+                                            .withValues(alpha: 0.5),
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       child: Row(
@@ -1028,7 +1026,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primaryContainer.withOpacity(0.5),
+                            color: AppColors.primaryContainer.withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -1071,7 +1069,7 @@ class _GoogleMapViewScreenState extends ConsumerState<GoogleMapViewScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: AppColors.secondary.withOpacity(0.12),
+                color: AppColors.secondary.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(

@@ -263,7 +263,7 @@ class _CreateLostPostStep1ScreenState
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: _pickedXFiles.length + 1,
-                  separatorBuilder: (_, __) => const SizedBox(width: 10),
+                  separatorBuilder: (_, _) => const SizedBox(width: 10),
                   itemBuilder: (context, index) {
                     if (index == _pickedXFiles.length) {
                       return InkWell(
@@ -272,10 +272,10 @@ class _CreateLostPostStep1ScreenState
                         child: Container(
                           width: 90,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withValues(alpha: 0.3),
                             ),
                           ),
                           child: const Column(

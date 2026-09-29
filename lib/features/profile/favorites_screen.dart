@@ -20,7 +20,7 @@ class FavoritesScreen extends ConsumerWidget {
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: 2,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           return GlassContainer(
             onTap: () => context.push('/item-details/${index + 1}'),

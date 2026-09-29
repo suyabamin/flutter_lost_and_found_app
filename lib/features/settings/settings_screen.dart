@@ -67,7 +67,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       } else {
         if (mounted) {
           setState(() => _isDeletingAccount = false);
-          ScaffoldMessenger.of(context).showSnackBar(
+          final messenger = ScaffoldMessenger.maybeOf(this.context);
+          messenger?.showSnackBar(
             SnackBar(
               content: Text(
                 'Failed to delete account: ${e.toString().replaceAll(RegExp(r'\[.*?\]'), '').trim()}',
@@ -88,7 +89,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     try {
       await firestoreService.deleteUserData(uid);
     } catch (e) {
-      print('Firestore delete user data notice: $e');
+      debugPrint('Firestore delete user data notice: $e');
     }
 
     // 2. Delete Firebase Authentication account

@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
-import '../../core/widgets/primary_button.dart';
 
 class RewardsWalletScreen extends ConsumerWidget {
   const RewardsWalletScreen({super.key});
@@ -31,7 +30,7 @@ class RewardsWalletScreen extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 20,
                     offset: const Offset(0, 8),
                   ),

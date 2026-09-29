@@ -11,7 +11,6 @@ class LeaderboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final firestoreService = ref.watch(firestoreServiceProvider);
 
     return Scaffold(
@@ -110,7 +109,7 @@ class LeaderboardScreen extends ConsumerWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: rest.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final u = rest[index];
                     final rank = index + 4;
@@ -125,7 +124,7 @@ class LeaderboardScreen extends ConsumerWidget {
                             height: 28,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: AppColors.outlineVariant.withOpacity(0.3),
+                              color: AppColors.outlineVariant.withValues(alpha: 0.3),
                               shape: BoxShape.circle,
                             ),
                             child: Text(
@@ -213,7 +212,7 @@ class LeaderboardScreen extends ConsumerWidget {
         border: Border.all(color: color, width: isFirst ? 2.5 : 1.5),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.2),
+            color: color.withValues(alpha: 0.2),
             blurRadius: isFirst ? 14 : 8,
             offset: const Offset(0, 4),
           ),

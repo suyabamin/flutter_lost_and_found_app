@@ -36,7 +36,7 @@ class RewardSuccessScreen extends ConsumerWidget {
                   width: 90,
                   height: 90,
                   decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.15),
+                    color: Colors.green.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.green, width: 3),
                   ),
@@ -143,7 +143,7 @@ class RewardSuccessScreen extends ConsumerWidget {
                               vertical: 3,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.orange.withOpacity(0.15),
+                              color: Colors.orange.withValues(alpha: 0.15),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Text(

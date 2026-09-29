@@ -39,7 +39,7 @@ class RadiusSearchCard extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.15),
+                      color: AppColors.primary.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
@@ -74,7 +74,7 @@ class RadiusSearchCard extends ConsumerWidget {
               ),
               Switch(
                 value: radiusState.isEnabled,
-                activeColor: AppColors.primary,
+                activeThumbColor: AppColors.primary,
                 onChanged: (val) => radiusNotifier.toggleEnabled(val),
               ),
             ],
@@ -149,7 +149,7 @@ class RadiusSearchCard extends ConsumerWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primaryContainer.withOpacity(0.5),
+                    color: AppColors.primaryContainer.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -166,9 +166,9 @@ class RadiusSearchCard extends ConsumerWidget {
             SliderTheme(
               data: SliderThemeData(
                 activeTrackColor: AppColors.primary,
-                inactiveTrackColor: AppColors.primary.withOpacity(0.2),
+                inactiveTrackColor: AppColors.primary.withValues(alpha: 0.2),
                 thumbColor: AppColors.primary,
-                overlayColor: AppColors.primary.withOpacity(0.15),
+                overlayColor: AppColors.primary.withValues(alpha: 0.15),
                 valueIndicatorTextStyle: const TextStyle(color: Colors.white),
               ),
               child: Slider(

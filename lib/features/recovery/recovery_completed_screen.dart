@@ -17,7 +17,6 @@ class RecoveryCompletedScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final firestoreService = ref.watch(firestoreServiceProvider);
     final authUser = FirebaseAuth.instance.currentUser;
     final currentUid = authUser?.uid ?? 'guest';
@@ -76,7 +75,7 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                               width: 100,
                               height: 100,
                               decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.15),
+                                color: Colors.green.withValues(alpha: 0.15),
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                   color: Colors.green,
@@ -243,13 +242,13 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                           color:
                                               (isPaymentCompleted ||
                                                   rewardAmount == 0)
-                                              ? Colors.green.withOpacity(0.15)
+                                              ? Colors.green.withValues(alpha: 0.15)
                                               : (isPaid
-                                                    ? Colors.orange.withOpacity(
-                                                        0.15,
+                                                    ? Colors.orange.withValues(
+                                                        alpha: 0.15,
                                                       )
                                                     : AppColors.error
-                                                          .withOpacity(0.15)),
+                                                          .withValues(alpha: 0.15)),
                                           borderRadius: BorderRadius.circular(
                                             8,
                                           ),
@@ -300,7 +299,7 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                 child: Column(
                                   children: [
                                     Text(
-                                      'Owner has sent ৳ ${payment?.amount.toInt()} via ${payment?.method}.',
+                                      'Owner has sent ৳ ${payment.amount.toInt()} via ${payment.method}.',
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
@@ -308,7 +307,7 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      'Trx ID: ${payment?.transactionId}',
+                                      'Trx ID: ${payment.transactionId}',
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: AppColors.outline,
@@ -319,22 +318,20 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                                       text: 'Confirm Reward Received',
                                       icon: Icons.check_circle_outline_rounded,
                                       onPressed: () async {
-                                        if (payment != null) {
-                                          await firestoreService
-                                              .confirmPaymentReceived(
-                                                payment.paymentId,
-                                              );
-                                          if (context.mounted) {
-                                            ScaffoldMessenger.of(
-                                              context,
-                                            ).showSnackBar(
-                                              const SnackBar(
-                                                content: Text(
-                                                  '🎉 Reward confirmed! Added to your wallet.',
-                                                ),
-                                              ),
+                                        await firestoreService
+                                            .confirmPaymentReceived(
+                                              payment.paymentId,
                                             );
-                                          }
+                                        if (context.mounted) {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                '🎉 Reward confirmed! Added to your wallet.',
+                                              ),
+                                            ),
+                                          );
                                         }
                                       },
                                     ),
@@ -369,7 +366,7 @@ class RecoveryCompletedScreen extends ConsumerWidget {
                               Container(
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber.withOpacity(0.12),
+                                  color: Colors.amber.withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                                 child: const Row(

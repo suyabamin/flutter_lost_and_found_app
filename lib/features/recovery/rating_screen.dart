@@ -207,7 +207,7 @@ class _RatingScreenState extends ConsumerState<RatingScreen> {
                           ),
                           Switch(
                             value: _recommendation,
-                            activeColor: AppColors.primary,
+                            activeThumbColor: AppColors.primary,
                             onChanged: (val) =>
                                 setState(() => _recommendation = val),
                           ),

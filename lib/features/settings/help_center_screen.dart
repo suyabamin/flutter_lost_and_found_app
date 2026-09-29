@@ -38,7 +38,7 @@ class HelpCenterScreen extends ConsumerWidget {
       body: ListView.separated(
         padding: const EdgeInsets.all(16),
         itemCount: _faqs.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final item = _faqs[index];
           return GlassContainer(

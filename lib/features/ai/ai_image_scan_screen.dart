@@ -113,7 +113,7 @@ class _AiImageScanScreenState extends ConsumerState<AiImageScanScreen> {
                               Icon(
                                 Icons.add_a_photo_outlined,
                                 size: 64,
-                                color: AppColors.primary.withOpacity(0.6),
+                                color: AppColors.primary.withValues(alpha: 0.6),
                               ),
                               const SizedBox(height: 16),
                               const Text(

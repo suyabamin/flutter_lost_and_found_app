@@ -24,10 +24,7 @@ Future<void> showReportPostSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
     ),
-    builder: (_) => ProviderScope(
-      parent: ProviderScope.containerOf(context),
-      child: _ReportPostSheet(postId: postId, postTitle: postTitle),
-    ),
+    builder: (_) => _ReportPostSheet(postId: postId, postTitle: postTitle),
   );
 }
 

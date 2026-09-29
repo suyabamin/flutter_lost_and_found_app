@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_model.dart';
@@ -297,13 +296,15 @@ class FirestoreService {
             if (lp.status == 'completed' ||
                 lp.status == 'resolved' ||
                 lp.status == 'archived' ||
-                lp.status == 'closed')
+                lp.status == 'closed') {
               return false;
+            }
             if (firestoreIds.contains(lp.id)) return false;
             if (category != null &&
                 category != 'All' &&
-                lp.category != category)
+                lp.category != category) {
               return false;
+            }
             if (type != null && lp.type != type) return false;
             return true;
           });
@@ -317,12 +318,14 @@ class FirestoreService {
             if (lp.status == 'completed' ||
                 lp.status == 'resolved' ||
                 lp.status == 'archived' ||
-                lp.status == 'closed')
+                lp.status == 'closed') {
               return false;
+            }
             if (category != null &&
                 category != 'All' &&
-                lp.category != category)
+                lp.category != category) {
               return false;
+            }
             if (type != null && lp.type != type) return false;
             return true;
           }).toList();
@@ -698,7 +701,7 @@ class FirestoreService {
           final msgs = snapshot.docs
               .map(
                 (doc) => ChatMessageModel.fromMap(
-                  doc.data() as Map<String, dynamic>,
+                  doc.data(),
                   doc.id,
                 ),
               )
@@ -1152,7 +1155,7 @@ class FirestoreService {
       final claim = await getClaim(claimId);
       if (post == null || claim == null) return;
 
-      final historyId = 'hist_${claimId}';
+      final historyId = 'hist_$claimId';
       final historyDoc = await _historyRef.doc(historyId).get();
 
       if (!historyDoc.exists) {
@@ -1503,7 +1506,7 @@ class FirestoreService {
     required String studentId,
     String role = 'student',
   }) async {
-    final memberId = '${campusId}_${uid}';
+    final memberId = '${campusId}_$uid';
     final member = CampusMemberModel(
       id: memberId,
       uid: uid,

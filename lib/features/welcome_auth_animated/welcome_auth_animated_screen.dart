@@ -52,7 +52,7 @@ class _WelcomeAuthAnimatedScreenState
                   height: 280,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary.withOpacity(0.15),
+                    color: AppColors.primary.withValues(alpha: 0.15),
                   ),
                 ),
               ),
@@ -64,7 +64,7 @@ class _WelcomeAuthAnimatedScreenState
                   height: 260,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.secondary.withOpacity(0.15),
+                    color: AppColors.secondary.withValues(alpha: 0.15),
                   ),
                 ),
               ),

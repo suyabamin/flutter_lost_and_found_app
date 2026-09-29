@@ -154,7 +154,7 @@ class _UniversityDashboardScreenState
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: myCampuses.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  separatorBuilder: (_, _) => const SizedBox(width: 8),
                   itemBuilder: (context, index) {
                     final campus = myCampuses[index];
                     final isActive = campus.id == activeCampus.id;
@@ -403,7 +403,7 @@ class _UniversityDashboardScreenState
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          error: (_, __) => const Text(
+                          error: (_, _) => const Text(
                             '0',
                             style: TextStyle(
                               fontSize: 22,
@@ -450,7 +450,7 @@ class _UniversityDashboardScreenState
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          error: (_, __) => const Text(
+                          error: (_, _) => const Text(
                             '1',
                             style: TextStyle(
                               fontSize: 22,
@@ -548,7 +548,7 @@ class _UniversityDashboardScreenState
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: _categories.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   final cat = _categories[index];
                   final isSelected = _selectedCategory == cat;
@@ -634,7 +634,7 @@ class _UniversityDashboardScreenState
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = filtered[index];
                     final isLost = item.type == 'lost';
@@ -889,9 +889,11 @@ class _UniversityDashboardScreenState
 
               ref.read(selectedCampusProvider.notifier).state = campus;
 
+              if (ctx.mounted) {
+                Navigator.of(ctx).pop();
+              }
               if (mounted) {
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(this.context).showSnackBar(
                   SnackBar(
                     content: Text(
                       'Campus "${campus.name}" created! You are now its admin.',
@@ -1004,9 +1006,11 @@ class _UniversityDashboardScreenState
 
               ref.read(selectedCampusProvider.notifier).state = targetCampus;
 
+              if (ctx.mounted) {
+                Navigator.of(ctx).pop();
+              }
               if (mounted) {
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
+                ScaffoldMessenger.of(this.context).showSnackBar(
                   SnackBar(
                     content: Text('Successfully joined ${targetCampus.name}!'),
                   ),
@@ -1184,9 +1188,11 @@ class _UniversityDashboardScreenState
 
                 await ref.read(firestoreServiceProvider).createPost(post);
 
+                if (ctx.mounted) {
+                  Navigator.of(ctx).pop();
+                }
                 if (mounted) {
-                  Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  ScaffoldMessenger.of(this.context).showSnackBar(
                     SnackBar(
                       content: Text('Campus report "${post.title}" published!'),
                     ),
@@ -1448,7 +1454,7 @@ class _CampusSwitchSheetState extends ConsumerState<_CampusSwitchSheet>
   ) {
     return allCampusesAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (_, __) => const Center(
+      error: (_, _) => const Center(
         child: Text('Could not load campuses. Check connection.'),
       ),
       data: (_) {

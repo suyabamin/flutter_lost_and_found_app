@@ -36,8 +36,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
   List<String> _existingImages = [];
   final List<XFile> _newPickedFiles = [];
   final List<Uint8List> _newPickedBytes = [];
-
-  bool _isInit = false;
   bool _isLoadingPost = true;
   bool _isSaving = false;
   String _statusMessage = '';
@@ -98,7 +96,6 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
       _longitude = post.longitude;
       _existingImages = List<String>.from(post.images);
       _isLoadingPost = false;
-      _isInit = true;
     });
   }
 
@@ -359,8 +356,9 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                           onSelected: _isSaving
                               ? null
                               : (sel) {
-                                  if (sel)
+                                  if (sel) {
                                     setState(() => _selectedType = 'lost');
+                                  }
                                 },
                         ),
                       ),
@@ -378,8 +376,9 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                           onSelected: _isSaving
                               ? null
                               : (sel) {
-                                  if (sel)
+                                  if (sel) {
                                     setState(() => _selectedType = 'found');
+                                  }
                                 },
                         ),
                       ),
@@ -410,7 +409,7 @@ class _EditPostScreenState extends ConsumerState<EditPostScreen> {
                       const SizedBox(height: 14),
 
                       DropdownButtonFormField<String>(
-                        value: _selectedCategory,
+                        initialValue: _selectedCategory,
                         decoration: InputDecoration(
                           labelText: 'Category',
                           prefixIcon: const Icon(Icons.category_outlined),

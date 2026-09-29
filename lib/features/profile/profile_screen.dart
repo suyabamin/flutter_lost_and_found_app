@@ -12,7 +12,6 @@ class ProfileScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final user = ref.watch(currentUserProvider).value;
     final authService = ref.watch(authServiceProvider);
 
@@ -57,7 +56,7 @@ class ProfileScreen extends ConsumerWidget {
                                   width: 92,
                                   height: 92,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Center(
+                                  errorBuilder: (_, _, _) => Center(
                                     child: Text(
                                       user.displayName.isNotEmpty
                                           ? user.displayName[0].toUpperCase()
@@ -421,7 +420,7 @@ class ProfileScreen extends ConsumerWidget {
                                       itemCount: ratings.length > 3
                                           ? 3
                                           : ratings.length,
-                                      separatorBuilder: (_, __) =>
+                                      separatorBuilder: (_, _) =>
                                           const SizedBox(height: 8),
                                       itemBuilder: (context, idx) {
                                         final r = ratings[idx];

@@ -165,7 +165,7 @@ class RadiusSearchScreen extends ConsumerWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: nearbyPostsWithDistance.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final itemWithDist = nearbyPostsWithDistance[index];
                     final item = itemWithDist.post;
@@ -248,7 +248,7 @@ class RadiusSearchScreen extends ConsumerWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: AppColors.primaryContainer
-                                              .withOpacity(0.5),
+                                              .withValues(alpha: 0.5),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),

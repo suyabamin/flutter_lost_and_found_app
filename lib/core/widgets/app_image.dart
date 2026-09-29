@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -88,7 +87,7 @@ class AppImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        errorBuilder: (_, __, ___) =>
+        errorBuilder: (_, _, _) =>
             Image.network(fallbackUrl, width: width, height: height, fit: fit),
       );
     }
@@ -111,7 +110,7 @@ class AppImage extends StatelessWidget {
             width: width,
             height: height,
             fit: fit,
-            errorBuilder: (_, __, ___) => Image.network(
+            errorBuilder: (_, _, _) => Image.network(
               fallbackUrl,
               width: width,
               height: height,
@@ -129,7 +128,7 @@ class AppImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        errorBuilder: (_, __, ___) =>
+        errorBuilder: (_, _, _) =>
             Image.network(fallbackUrl, width: width, height: height, fit: fit),
       );
     }
@@ -144,7 +143,7 @@ class AppImage extends StatelessWidget {
             width: width,
             height: height,
             fit: fit,
-            errorBuilder: (_, __, ___) => Image.network(
+            errorBuilder: (_, _, _) => Image.network(
               fallbackUrl,
               width: width,
               height: height,

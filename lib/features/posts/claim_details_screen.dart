@@ -414,7 +414,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: claim.claimImages.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 10),
+                      separatorBuilder: (_, _) => const SizedBox(width: 10),
                       itemBuilder: (context, index) {
                         final localBytes =
                             FirestoreService.getLocalClaimImageBytes(
@@ -470,7 +470,7 @@ class _ClaimDetailsScreenState extends ConsumerState<ClaimDetailsScreen> {
                             ),
                             Switch(
                               value: _isSharingLiveLocation,
-                              activeColor: AppColors.primary,
+                              activeThumbColor: AppColors.primary,
                               onChanged: (val) =>
                                   _toggleLiveLocationSharing(claim, isOwner),
                             ),

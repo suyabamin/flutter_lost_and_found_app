@@ -231,7 +231,7 @@ class WalletScreen extends ConsumerWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: payments.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        separatorBuilder: (_, _) => const SizedBox(height: 10),
                         itemBuilder: (context, index) {
                           final p = payments[index];
                           final isEarned = p.finderId == currentUid;
@@ -245,8 +245,8 @@ class WalletScreen extends ConsumerWidget {
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
                                     color: isEarned
-                                        ? Colors.green.withOpacity(0.12)
-                                        : AppColors.error.withOpacity(0.12),
+                                        ? Colors.green.withValues(alpha: 0.12)
+                                        : AppColors.error.withValues(alpha: 0.12),
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: Icon(
@@ -306,8 +306,8 @@ class WalletScreen extends ConsumerWidget {
                                       ),
                                       decoration: BoxDecoration(
                                         color: p.status == 'completed'
-                                            ? Colors.green.withOpacity(0.15)
-                                            : Colors.orange.withOpacity(0.15),
+                                            ? Colors.green.withValues(alpha: 0.15)
+                                            : Colors.orange.withValues(alpha: 0.15),
                                         borderRadius: BorderRadius.circular(6),
                                       ),
                                       child: Text(

@@ -68,9 +68,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         AppColors.darkBackground,
                       ]
                     : [
-                        AppColors.primaryContainer.withOpacity(0.15),
+                        AppColors.primaryContainer.withValues(alpha: 0.15),
                         AppColors.background,
-                        AppColors.secondaryContainer.withOpacity(0.15),
+                        AppColors.secondaryContainer.withValues(alpha: 0.15),
                       ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -95,7 +95,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.2),
+                            color: AppColors.primary.withValues(alpha: 0.2),
                             blurRadius: 40,
                             spreadRadius: 10,
                           ),
@@ -135,7 +135,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                       letterSpacing: 2.0,
                       color: isDark
                           ? Colors.white70
-                          : AppColors.onSurfaceVariant.withOpacity(0.8),
+                          : AppColors.onSurfaceVariant.withValues(alpha: 0.8),
                     ),
                   ),
                   const Spacer(),

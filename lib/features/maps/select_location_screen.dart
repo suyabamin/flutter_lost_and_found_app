@@ -8,7 +8,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/primary_button.dart';
-import '../../core/widgets/glass_container.dart';
 import '../../core/utils/location_utils.dart';
 
 class LocationSearchResult {
@@ -186,8 +185,10 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 7),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 7),
+        ),
       );
 
       final newPoint = ll.LatLng(position.latitude, position.longitude);
@@ -416,7 +417,7 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                           width: 44,
                           height: 44,
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.25),
+                            color: AppColors.primary.withValues(alpha: 0.25),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -446,7 +447,7 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.12),
+                          color: Colors.black.withValues(alpha: 0.12),
                           blurRadius: 14,
                           offset: const Offset(0, 4),
                         ),
@@ -519,7 +520,7 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.15),
+                            color: Colors.black.withValues(alpha: 0.15),
                             blurRadius: 16,
                             offset: const Offset(0, 6),
                           ),
@@ -529,7 +530,7 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                         shrinkWrap: true,
                         padding: const EdgeInsets.symmetric(vertical: 6),
                         itemCount: _searchResults.length,
-                        separatorBuilder: (_, __) => const Divider(height: 1),
+                        separatorBuilder: (_, _) => const Divider(height: 1),
                         itemBuilder: (context, index) {
                           final item = _searchResults[index];
                           return ListTile(
@@ -603,13 +604,13 @@ class _SelectLocationScreenState extends ConsumerState<SelectLocationScreen> {
                                 border: Border.all(
                                   color: isSel
                                       ? AppColors.primary
-                                      : AppColors.outlineVariant.withOpacity(
-                                          0.5,
+                                      : AppColors.outlineVariant.withValues(
+                                          alpha: 0.5,
                                         ),
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.06),
+                                    color: Colors.black.withValues(alpha: 0.06),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),

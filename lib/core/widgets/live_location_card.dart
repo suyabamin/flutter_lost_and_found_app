@@ -32,7 +32,7 @@ class LiveLocationCard extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: _getStatusColor(liveState).withOpacity(0.15),
+                  color: _getStatusColor(liveState).withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -93,9 +93,9 @@ class LiveLocationCard extends ConsumerWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.08),
+              color: Colors.blue.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.blue.withOpacity(0.2)),
+              border: Border.all(color: Colors.blue.withValues(alpha: 0.2)),
             ),
             child: const Row(
               children: [
@@ -123,7 +123,7 @@ class LiveLocationCard extends ConsumerWidget {
               color: isDark ? AppColors.darkSurface : Colors.grey.shade50,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: AppColors.outlineVariant.withOpacity(0.5),
+                color: AppColors.outlineVariant.withValues(alpha: 0.5),
               ),
             ),
             child: Column(
@@ -172,7 +172,7 @@ class LiveLocationCard extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -282,7 +282,7 @@ class LiveLocationCard extends ConsumerWidget {
               // STOP LIVE LOCATION
               IconButton(
                 style: IconButton.styleFrom(
-                  backgroundColor: AppColors.error.withOpacity(0.1),
+                  backgroundColor: AppColors.error.withValues(alpha: 0.1),
                   foregroundColor: AppColors.error,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

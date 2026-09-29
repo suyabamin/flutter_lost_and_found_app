@@ -120,7 +120,7 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
               child: Column(
                 children: [
                   DropdownButtonFormField<String>(
-                    value: _selectedCategory,
+                    initialValue: _selectedCategory,
                     decoration: const InputDecoration(labelText: 'Category'),
                     items:
                         [
@@ -139,7 +139,7 @@ class _AiSmartSearchScreenState extends ConsumerState<AiSmartSearchScreen> {
                   ),
                   const SizedBox(height: 16),
                   DropdownButtonFormField<String>(
-                    value: _selectedDateRange,
+                    initialValue: _selectedDateRange,
                     decoration: const InputDecoration(labelText: 'Time Window'),
                     items:
                         [

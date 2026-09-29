@@ -171,7 +171,7 @@ class _RecoveryHistoryScreenState extends ConsumerState<RecoveryHistoryScreen> {
                 return ListView.separated(
                   padding: const EdgeInsets.all(16),
                   itemCount: filteredList.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  separatorBuilder: (_, _) => const SizedBox(height: 12),
                   itemBuilder: (context, index) {
                     final item = filteredList[index];
                     final isPoster = item.posterId == currentUid;

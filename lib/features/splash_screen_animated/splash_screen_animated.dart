@@ -71,14 +71,14 @@ class _SplashScreenAnimatedScreenState
                           ]
                         : [
                             Color.lerp(
-                              AppColors.primaryContainer.withOpacity(0.2),
-                              AppColors.secondaryContainer.withOpacity(0.3),
+                              AppColors.primaryContainer.withValues(alpha: 0.2),
+                              AppColors.secondaryContainer.withValues(alpha: 0.3),
                               _bgController.value,
                             )!,
                             AppColors.background,
                             Color.lerp(
-                              AppColors.secondaryContainer.withOpacity(0.3),
-                              AppColors.primaryContainer.withOpacity(0.2),
+                              AppColors.secondaryContainer.withValues(alpha: 0.3),
+                              AppColors.primaryContainer.withValues(alpha: 0.2),
                               _bgController.value,
                             )!,
                           ],
@@ -144,7 +144,7 @@ class _SplashScreenAnimatedScreenState
                         width: 140,
                         height: 4,
                         decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(2),
                         ),
                         child: Align(

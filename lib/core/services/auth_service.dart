@@ -104,12 +104,13 @@ class AuthService {
           '779298287833-apkicde2h99c79olnea347540ol3rkv5.apps.googleusercontent.com';
       await GoogleSignIn.instance.initialize(serverClientId: clientId);
 
-      // google_sign_in v7: authenticate() returns non-nullable GoogleSignInAccount
-      final GoogleSignInAccount googleUser =
-          await GoogleSignIn.instance.authenticate();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn.instance
+          .authenticate();
 
-      // In v7, authentication is a synchronous getter — do NOT await it
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      if (googleUser == null) return null;
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       if (googleAuth.idToken == null) {
         throw 'Google ID Token is null. Check Firebase OAuth configuration.';
@@ -126,7 +127,7 @@ class AuthService {
       }
       throw _handleFirebaseError(e);
     } catch (e) {
-      debugPrint('Google Sign In Error: $e');
+      print('Google Sign In Error: $e');
       if (e.toString().contains('canceled') ||
           e.toString().contains('cancelled') ||
           e.toString().contains('popup-closed-by-user')) {
@@ -165,7 +166,7 @@ class AuthService {
           await firestoreService.saveUser(newUser);
         }
       } catch (e) {
-        debugPrint('Firestore user profile sync warning: $e');
+        print('Firestore user profile sync warning: $e');
       }
     }
     return cred;

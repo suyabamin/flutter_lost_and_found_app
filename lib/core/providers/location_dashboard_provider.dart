@@ -136,8 +136,10 @@ class LiveLocationNotifier extends StateNotifier<LiveLocationState> {
 
     try {
       final pos = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-        timeLimit: const Duration(seconds: 8),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 8),
+        ),
       );
       await _cacheLocation(pos.latitude, pos.longitude);
 

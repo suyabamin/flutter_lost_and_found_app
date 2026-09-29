@@ -29,7 +29,7 @@ class AppStatesEmptyOfflineScreen extends ConsumerWidget {
                 Icon(
                   Icons.wifi_off_rounded,
                   size: 72,
-                  color: AppColors.primary.withOpacity(0.6),
+                  color: AppColors.primary.withValues(alpha: 0.6),
                 ),
                 const SizedBox(height: 16),
                 const Text(

@@ -26,7 +26,7 @@ class WelcomeAuthScreen extends ConsumerWidget {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withValues(alpha: 0.12),
               ),
             ),
           ),
@@ -38,7 +38,7 @@ class WelcomeAuthScreen extends ConsumerWidget {
               height: 250,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.secondary.withOpacity(0.12),
+                color: AppColors.secondary.withValues(alpha: 0.12),
               ),
             ),
           ),
@@ -58,7 +58,7 @@ class WelcomeAuthScreen extends ConsumerWidget {
                       width: 100,
                       height: 100,
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
+                        color: AppColors.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(24),
                       ),
                       child: const Icon(

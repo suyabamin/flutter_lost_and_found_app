@@ -79,7 +79,7 @@ class _OnboardingFlowScreenState extends ConsumerState<OnboardingFlowScreen> {
                           height: 180,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha: 0.1),
                           ),
                           child: Icon(
                             index == 0

@@ -73,7 +73,9 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
       if (mounted) {
         setState(() {
@@ -445,7 +447,7 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                         _pickedImages.length < SubmitClaimScreen.maxClaimImages
                         ? _pickedImages.length + 1
                         : _pickedImages.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
                     itemBuilder: (context, index) {
                       if (index == _pickedImages.length &&
                           _pickedImages.length <
@@ -456,10 +458,10 @@ class _SubmitClaimScreenState extends ConsumerState<SubmitClaimScreen> {
                           child: Container(
                             width: 95,
                             decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
+                              color: AppColors.primary.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: AppColors.primary.withOpacity(0.3),
+                                color: AppColors.primary.withValues(alpha: 0.3),
                               ),
                             ),
                             child: const Column(

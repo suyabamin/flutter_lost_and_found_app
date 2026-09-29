@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/widgets/glass_container.dart';
 import '../../core/providers/providers.dart';
-import '../../core/models/post_model.dart';
 
 class SearchResultsScreen extends ConsumerWidget {
   final String query;
@@ -18,7 +17,6 @@ class SearchResultsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final postsAsync = ref.watch(postsStreamProvider);
 
     return Scaffold(
@@ -50,7 +48,7 @@ class SearchResultsScreen extends ConsumerWidget {
                   Icon(
                     Icons.search_off_rounded,
                     size: 72,
-                    color: AppColors.outline.withOpacity(0.5),
+                    color: AppColors.outline.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -70,7 +68,7 @@ class SearchResultsScreen extends ConsumerWidget {
           return ListView.separated(
             padding: const EdgeInsets.all(16),
             itemCount: filtered.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
+            separatorBuilder: (_, _) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final item = filtered[index];
               return GestureDetector(

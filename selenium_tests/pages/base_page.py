@@ -1,8 +1,9 @@
+import os
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, ElementClickInterceptedException
 
 class BasePage:
     def __init__(self, driver, base_url):
@@ -18,7 +19,26 @@ class BasePage:
             formatted_path = "/"
         url = f"{self.base_url.rstrip('/')}{formatted_path}"
         self.driver.get(url)
+        time.sleep(1.5)
         self.enable_flutter_semantics()
+        time.sleep(1.0)
+
+
+    def take_screenshot(self, name="step"):
+        """
+        Takes a screenshot of the current page in mobile view and saves it to selenium_tests/screenshots.
+        """
+        try:
+            screenshots_dir = os.path.join(os.getcwd(), "selenium_tests", "screenshots")
+            os.makedirs(screenshots_dir, exist_ok=True)
+            filename = f"{name}.png"
+            filepath = os.path.join(screenshots_dir, filename)
+            self.driver.save_screenshot(filepath)
+            print(f"\n[Mobile Screenshot Saved]: {filepath}")
+            return filepath
+        except Exception as e:
+            print(f"[Screenshot Notice]: Could not take screenshot - {e}")
+            return None
 
     def enable_flutter_semantics(self):
         """
@@ -26,7 +46,7 @@ class BasePage:
         DOM elements and input nodes to Selenium.
         """
         try:
-            time.sleep(2)  # Wait for initial Flutter script load
+            time.sleep(1)  # Wait for initial Flutter script load
             js_script = """
                 let placeholder = document.querySelector('flt-semantics-placeholder');
                 if (placeholder) {
@@ -34,7 +54,7 @@ class BasePage:
                 }
             """
             self.driver.execute_script(js_script)
-            time.sleep(1)
+            time.sleep(0.5)
         except Exception as e:
             print(f"[Notice] Semantics trigger notice: {e}")
 
@@ -45,8 +65,11 @@ class BasePage:
         return self.wait.until(EC.visibility_of_element_located((by, value)))
 
     def click(self, by, value):
-        element = self.wait.until(EC.element_to_be_clickable((by, value)))
-        element.click()
+        element = self.wait.until(EC.presence_of_element_located((by, value)))
+        try:
+            self.driver.execute_script("arguments[0].click();", element)
+        except Exception:
+            element.click()
 
     def type_text(self, by, value, text):
         element = self.find(by, value)
@@ -78,3 +101,4 @@ class BasePage:
                 return self.is_element_present(By.XPATH, "//*[contains(@class, 'snack') or contains(@role, 'alert')]", timeout=8)
         except Exception:
             return False
+

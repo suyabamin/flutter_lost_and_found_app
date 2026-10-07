@@ -9,7 +9,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--base-url",
         action="store",
-        default="http://localhost:59841",
+        default="http://localhost:49576",
         help="Base URL of the Flutter Lost and Found web application"
     )
     parser.addoption(
@@ -28,8 +28,14 @@ def driver(request):
     options = ChromeOptions()
     if request.config.getoption("--headless"):
         options.add_argument("--headless=new")
-    
-    options.add_argument("--window-size=1280,800")
+
+    # Emulate Mobile Screen (Mobile device viewport layout)
+    mobile_emulation = {
+        "deviceMetrics": { "width": 412, "height": 915, "pixelRatio": 2.6 },
+        "userAgent": "Mozilla/5.0 (Linux; Android 13; Mobile Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36"
+    }
+    options.add_experimental_option("mobileEmulation", mobile_emulation)
+    options.add_argument("--window-size=430,930")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--disable-gpu")
@@ -41,12 +47,19 @@ def driver(request):
     
     yield web_driver
     
-    # Take screenshot on test failure
-    if hasattr(request.node, "rep_call") and request.node.rep_call.failed:
-        os.makedirs("selenium_tests/screenshots", exist_ok=True)
-        screenshot_path = f"selenium_tests/screenshots/{request.node.name}.png"
+    # Automatically take and save screenshot at the end of EVERY test
+    screenshots_dir = os.path.join(os.getcwd(), "selenium_tests", "screenshots")
+    os.makedirs(screenshots_dir, exist_ok=True)
+    
+    raw_name = request.node.name.replace("[", "_").replace("]", "_").replace("/", "_")
+    status = "FAILED" if (hasattr(request.node, "rep_call") and request.node.rep_call.failed) else "PASSED"
+    screenshot_path = os.path.join(screenshots_dir, f"{raw_name}_{status}.png")
+    
+    try:
         web_driver.save_screenshot(screenshot_path)
-        print(f"\n[Screenshot saved]: {screenshot_path}")
+        print(f"\n[Mobile Screenshot saved]: {screenshot_path}")
+    except Exception as e:
+        print(f"\n[Screenshot Notice]: {e}")
 
     web_driver.quit()
 
@@ -55,3 +68,4 @@ def pytest_runtest_makereport(item, call):
     outcome = yield
     rep = outcome.get_result()
     setattr(item, "rep_" + rep.when, rep)
+

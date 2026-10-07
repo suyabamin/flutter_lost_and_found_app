@@ -19,13 +19,20 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/claims/$(claimId));
     }
 
+    // Safely gets the owner ID from a claim document
+    function getClaimOwnerId(cData) {
+      return cData.keys().hasAny(['postOwnerId']) ? cData.postOwnerId :
+             cData.keys().hasAny(['posterId']) ? cData.posterId :
+             cData.keys().hasAny(['ownerId']) ? cData.ownerId : '';
+    }
+
     // Is the signed-in user a participant (owner OR claimer) of this claim?
     function isClaimParticipant(claimId) {
       return claimId != null &&
         claimId != '' &&
         exists(/databases/$(database)/documents/claims/$(claimId)) &&
-        (claimDoc(claimId).data.postOwnerId == request.auth.uid ||
-         claimDoc(claimId).data.claimerId == request.auth.uid);
+        (getClaimOwnerId(claimDoc(claimId).data) == request.auth.uid ||
+         (claimDoc(claimId).data.keys().hasAny(['claimerId']) && claimDoc(claimId).data.claimerId == request.auth.uid));
     }
 
     // Is the signed-in user one participant AND targetUserId is the OTHER participant?
@@ -34,10 +41,10 @@ service cloud.firestore {
       return claimId != null &&
         claimId != '' &&
         exists(/databases/$(database)/documents/claims/$(claimId)) &&
-        ((claimDoc(claimId).data.postOwnerId == request.auth.uid &&
-          claimDoc(claimId).data.claimerId == targetUserId) ||
-         (claimDoc(claimId).data.claimerId == request.auth.uid &&
-          claimDoc(claimId).data.postOwnerId == targetUserId));
+        ((getClaimOwnerId(claimDoc(claimId).data) == request.auth.uid &&
+          claimDoc(claimId).data.keys().hasAny(['claimerId']) && claimDoc(claimId).data.claimerId == targetUserId) ||
+         (claimDoc(claimId).data.keys().hasAny(['claimerId']) && claimDoc(claimId).data.claimerId == request.auth.uid &&
+          getClaimOwnerId(claimDoc(claimId).data) == targetUserId));
     }
 
     // ── Users ─────────────────────────────────────────────────────────────────
@@ -56,7 +63,8 @@ service cloud.firestore {
           request.resource.data.role == resource.data.role ||
           isAdmin()
         )) ||
-        isOtherClaimParticipant(request.resource.data.updatedViaClaimId, userId)
+        (request.resource.data.keys().hasAny(['updatedViaClaimId']) &&
+         isOtherClaimParticipant(request.resource.data.updatedViaClaimId, userId))
       );
       // Owner or Admin can delete user profile
       allow delete: if isSignedIn() && (request.auth.uid == userId || isAdmin());
@@ -70,24 +78,24 @@ service cloud.firestore {
       // Claim participant can mark post as 'completed' or 'resolved' when item is recovered.
       // Admins can update any post for moderation.
       allow update: if isSignedIn() && (
-        request.auth.uid == resource.data.userId ||
-        (resource.data.posterId != null && resource.data.posterId == request.auth.uid) ||
-        (resource.data.ownerId != null && resource.data.ownerId == request.auth.uid) ||
-        (resource.data.createdBy != null && resource.data.createdBy == request.auth.uid) ||
+        (resource.data.keys().hasAny(['userId']) && resource.data.userId == request.auth.uid) ||
+        (resource.data.keys().hasAny(['posterId']) && resource.data.posterId == request.auth.uid) ||
+        (resource.data.keys().hasAny(['ownerId']) && resource.data.ownerId == request.auth.uid) ||
+        (resource.data.keys().hasAny(['createdBy']) && resource.data.createdBy == request.auth.uid) ||
         isAdmin() ||
         (request.resource.data.status in ['completed', 'resolved'] && (
-          isClaimParticipant(request.resource.data.completedClaimId) ||
-          isClaimParticipant(resource.data.completedClaimId)
+          (request.resource.data.keys().hasAny(['completedClaimId']) && isClaimParticipant(request.resource.data.completedClaimId)) ||
+          (resource.data.keys().hasAny(['completedClaimId']) && isClaimParticipant(resource.data.completedClaimId))
         ))
       );
       // Owner or Admin can delete post. Also allow claim participants to delete when claim is completed.
       allow delete: if isSignedIn() && (
-        request.auth.uid == resource.data.userId ||
-        (resource.data.posterId != null && resource.data.posterId == request.auth.uid) ||
-        (resource.data.ownerId != null && resource.data.ownerId == request.auth.uid) ||
-        (resource.data.createdBy != null && resource.data.createdBy == request.auth.uid) ||
+        (resource.data.keys().hasAny(['userId']) && resource.data.userId == request.auth.uid) ||
+        (resource.data.keys().hasAny(['posterId']) && resource.data.posterId == request.auth.uid) ||
+        (resource.data.keys().hasAny(['ownerId']) && resource.data.ownerId == request.auth.uid) ||
+        (resource.data.keys().hasAny(['createdBy']) && resource.data.createdBy == request.auth.uid) ||
         isAdmin() ||
-        (resource.data.completedClaimId != null && isClaimParticipant(resource.data.completedClaimId))
+        (resource.data.keys().hasAny(['completedClaimId']) && isClaimParticipant(resource.data.completedClaimId))
       );
     }
 
@@ -102,7 +110,7 @@ service cloud.firestore {
       // Claimer can update live location, confirmation, and set status to 'completed' on completion;
       // Admins can update any claim.
       allow update: if isSignedIn() && (
-        request.auth.uid == resource.data.postOwnerId ||
+        getClaimOwnerId(resource.data) == request.auth.uid ||
         isAdmin() ||
         (request.auth.uid == resource.data.claimerId && (
           !request.resource.data.diff(resource.data).affectedKeys().hasAny(['status']) ||
@@ -122,7 +130,7 @@ service cloud.firestore {
       // Users can only update/delete their own notifications (e.g. mark as read), broadcast notifications, or admin
       allow update, delete: if isSignedIn() && (
         request.auth.uid == resource.data.userId ||
-        (resource.data.recipientId != null && request.auth.uid == resource.data.recipientId) ||
+        (resource.data.keys().hasAny(['recipientId']) && resource.data.recipientId != null && request.auth.uid == resource.data.recipientId) ||
         resource.data.userId == 'all' ||
         resource.data.userId == 'guest' ||
         isAdmin()
@@ -162,21 +170,21 @@ service cloud.firestore {
     match /ratings/{ratingId} {
       allow read: if isSignedIn();
       // RatingModel stores 'fromUserId' / 'fromUser' — must match auth uid
-      allow create: if isSignedIn() && (
-        request.auth.uid == request.resource.data.fromUserId ||
-        request.auth.uid == request.resource.data.fromUser
+      allow create, update: if isSignedIn() && (
+        (request.resource.data.keys().hasAny(['fromUserId']) && request.auth.uid == request.resource.data.fromUserId) ||
+        (request.resource.data.keys().hasAny(['fromUser']) && request.auth.uid == request.resource.data.fromUser)
       );
-      allow update, delete: if false;
+      allow delete: if false;
     }
 
     // ── Reviews (duplicate archive of ratings) ────────────────────────────────
     match /reviews/{reviewId} {
       allow read: if isSignedIn();
-      allow create: if isSignedIn() && (
-        request.auth.uid == request.resource.data.fromUserId ||
-        request.auth.uid == request.resource.data.fromUser
+      allow create, update: if isSignedIn() && (
+        (request.resource.data.keys().hasAny(['fromUserId']) && request.auth.uid == request.resource.data.fromUserId) ||
+        (request.resource.data.keys().hasAny(['fromUser']) && request.auth.uid == request.resource.data.fromUser)
       );
-      allow update, delete: if false;
+      allow delete: if false;
     }
 
     // ── Payments ──────────────────────────────────────────────────────────────
@@ -254,3 +262,4 @@ service cloud.firestore {
 
   }
 }
+
